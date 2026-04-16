@@ -17,7 +17,7 @@ function useChatFormSubmit(
    * Handles the submission of the chat form.
    * @param e The form event.
    */
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const value = inputValue.trim();
     if (!value) return;
