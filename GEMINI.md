@@ -9,7 +9,7 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 - **Backend Framework:** NestJS (AI Gateway)
 - **Build Tool:** [Vite](https://vitejs.dev) (Frontend), [Webpack](https://webpack.js.org) (Backend)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
-- **AI Integration:** Google Generative AI (Gemini 1.5 Flash)
+- **AI Integration:** Google Gen AI SDK (`@google/genai`) - Gemini 2.5 Flash
 - **Testing:**
   - Frontend Unit/Component: [Vitest](https://vitest.dev)
   - Backend Unit/Integration: [Jest](https://jestjs.io)

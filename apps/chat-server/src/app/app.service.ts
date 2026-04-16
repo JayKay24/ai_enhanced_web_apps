@@ -1,27 +1,30 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AppService {
   private readonly logger = new Logger(AppService.name);
-  private readonly genAI: GoogleGenerativeAI;
+  private readonly ai: GoogleGenAI;
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
     if (!apiKey) {
       this.logger.error('GEMINI_API_KEY is not defined in the environment variables');
     }
-    this.genAI = new GoogleGenerativeAI(apiKey || '');
+    this.ai = new GoogleGenAI({
+      apiKey: apiKey || '',
+    });
   }
 
   async getAssistantResponse(text: string) {
     try {
       this.logger.log(`Received request text: ${text}`);
 
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      const chat = model.startChat({
+      // Switching to gemini-2.0-flash to avoid high demand on 2.5-flash
+      const chat = this.ai.chats.create({
+        model: 'gemini-2.0-flash',
         history: [
           {
             role: 'user',
@@ -38,8 +41,11 @@ export class AppService {
         ],
       });
 
-      const result = await chat.sendMessage(text);
-      const responseMessage = result.response.text();
+      const result = await chat.sendMessage({
+        message: text,
+      });
+
+      const responseMessage = result.text;
 
       this.logger.log(`Assistant response: ${responseMessage}`);
 
