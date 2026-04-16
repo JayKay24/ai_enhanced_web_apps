@@ -1,0 +1,26 @@
+{
+  "name": "@ai-enhanced-web-apps/chat-server-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@ai-enhanced-web-apps/chat-server"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/chat-server-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@ai-enhanced-web-apps/chat-server:build",
+          "@ai-enhanced-web-apps/chat-server:serve"
+        ]
+      }
+    }
+  }
+}
