@@ -1,0 +1,8 @@
+{
+  "name": "@ai-enhanced-web-apps/chat-client-react",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "chat-client-react"
+  }
+}

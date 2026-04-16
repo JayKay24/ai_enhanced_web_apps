@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
-  cacheDir: '../../node_modules/.vite/apps/ai_enhanced_web_apps',
+  cacheDir: '../../node_modules/.vite/apps/chat-client-react',
   server: {
     port: 4200,
     host: 'localhost',
@@ -27,7 +27,7 @@ export default defineConfig(() => ({
     },
   },
   test: {
-    name: '@ai-enhanced-web-apps/ai_enhanced_web_apps',
+    name: '@ai-enhanced-web-apps/chat-client-react',
     watch: false,
     globals: true,
     environment: 'jsdom',

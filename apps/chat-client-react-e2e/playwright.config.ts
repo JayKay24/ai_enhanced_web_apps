@@ -24,7 +24,7 @@ export default defineConfig({
   },
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npx nx run @ai-enhanced-web-apps/ai_enhanced_web_apps:preview',
+    command: 'npx nx run chat-client-react:preview',
     url: 'http://localhost:4300',
     reuseExistingServer: true,
     cwd: workspaceRoot,

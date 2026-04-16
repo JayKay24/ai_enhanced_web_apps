@@ -21,7 +21,7 @@ describe('App', () => {
     );
     expect(
       getAllByText(
-        new RegExp('Welcome @ai-enhanced-web-apps/ai_enhanced_web_apps', 'gi'),
+        new RegExp('Welcome @ai-enhanced-web-apps/chat-client-react', 'gi'),
       ).length > 0,
     ).toBeTruthy();
   });

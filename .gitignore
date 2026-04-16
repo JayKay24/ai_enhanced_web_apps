@@ -38,6 +38,24 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# local env files
+.env
+*.env
+.env.*
+!.env.example
+
+# playwright
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
+
+# typescript
+*.tsbuildinfo
+
+# eslint
+.eslintcache
+
 .nx/cache
 .nx/workspace-data
 .claude/worktrees
@@ -46,3 +64,5 @@ Thumbs.db
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 test-output
+
+.nx/polygraph
