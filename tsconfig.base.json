@@ -16,6 +16,11 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@ai-enhanced-web-apps/source"]
+    "customConditions": ["@ai-enhanced-web-apps/source"],
+    "baseUrl": ".",
+    "paths": {
+      "@lib/*": ["apps/chat-client-react/src/lib/*"],
+      "@apps/chat-client-react/*": ["apps/chat-client-react/src/*"]
+    }
   }
 }
