@@ -1,25 +1,47 @@
 # Project Context: ChatClientReact
 
-This project is an Nx-based monorepo designed for building AI-enhanced web applications. It uses a modern frontend stack with React 19, Vite, and Tailwind CSS.
+This project is an Nx-based monorepo designed for building AI-enhanced web applications. It uses a modern stack with React 19 on the frontend and NestJS on the backend.
 
 ## Project Overview
 
 - **Monorepo Tool:** [Nx](https://nx.dev)
-- **Framework:** React 19
-- **Build Tool:** [Vite](https://vitejs.dev)
+- **Frontend Framework:** React 19 (Astra AI)
+- **Backend Framework:** NestJS (AI Gateway)
+- **Build Tool:** [Vite](https://vitejs.dev) (Frontend), [Webpack](https://webpack.js.org) (Backend)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
+- **AI Integration:** Google Generative AI (Gemini 1.5 Flash)
 - **Testing:**
-  - Unit/Component: [Vitest](https://vitest.dev)
+  - Frontend Unit/Component: [Vitest](https://vitest.dev)
+  - Backend Unit/Integration: [Jest](https://jestjs.io)
   - End-to-End: [Playwright](https://playwright.dev)
 - **Linting & Formatting:** [ESLint](https://eslint.org) (Flat config) and [Prettier](https://prettier.io)
 
 ## Directory Structure
 
-- `apps/chat-client-react/`: The main React application.
-- `apps/chat-client-react-e2e/`: End-to-end testing suite for the main application.
+- `apps/chat-client-react/`: The main React application featuring the Astra AI interface.
+- `apps/chat-client-react-e2e/`: End-to-end testing suite for the React application.
+- `apps/chat-server/`: The NestJS backend application integrating with Gemini AI.
+- `apps/chat-server-e2e/`: End-to-end testing suite for the backend application.
 - `node_modules/`: Project dependencies.
 - `nx.json`: Nx workspace configuration.
 - `tsconfig.base.json`: Base TypeScript configuration for the workspace.
+
+## Application Architecture
+
+### Frontend (Astra AI)
+- **UI Components:** Built with custom Tailwind-styled components, Radix UI primitives, and Lucide React icons.
+- **Hooks:** 
+  - `useChatFormSubmit`: Manages chat state and API calls.
+  - `useEnterSubmit`: Handles Enter key for message submission.
+  - `useFocusOnSlashPress`: Global shortcut to focus the chat input.
+- **Utilities:** Custom auto-scroll management for the message list.
+
+### Backend (AI Gateway)
+- **Generative AI:** Uses `@google/generative-ai` to interface with the `gemini-1.5-flash` model.
+- **Configuration:** Uses `ConfigModule` to manage environment variables like `GEMINI_API_KEY`.
+- **API Endpoints:**
+  - `POST /`: Main chat endpoint that processes user input and returns AI responses.
+  - `GET /`: Health check endpoint.
 
 ## Building and Running
 
@@ -28,32 +50,44 @@ Commands are typically executed via Nx.
 ### Development
 
 ```sh
-# Run the main application in development mode
+# Run the frontend application
 npx nx serve chat-client-react
+
+# Run the backend application
+npx nx serve chat-server
 ```
 
 ### Build
 
 ```sh
-# Create a production build of the main application
+# Create a production build of the frontend
 npx nx build chat-client-react
+
+# Create a production build of the backend
+npx nx build chat-server
 ```
 
 ### Testing
 
 ```sh
-# Run unit tests using Vitest
+# Run frontend unit tests
 npx nx test chat-client-react
 
-# Run E2E tests using Playwright
+# Run backend unit tests
+npx nx test chat-server
+
+# Run frontend E2E tests
 npx nx e2e chat-client-react-e2e
+
+# Run backend E2E tests
+npx nx e2e chat-server-e2e
 ```
 
 ### Linting and Formatting
 
 ```sh
-# Lint the project
-npx nx lint chat-client-react
+# Lint the entire workspace
+npx nx run-many -t lint
 
 # Check formatting
 npx prettier --check .
