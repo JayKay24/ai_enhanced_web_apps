@@ -37,7 +37,7 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 - **Utilities:** Custom auto-scroll management for the message list.
 
 ### Backend (AI Gateway)
-- **Generative AI:** Uses `@google/generative-ai` to interface with the `gemini-1.5-flash` model.
+- **Generative AI:** Uses `@google/genai` to interface with the `gemini-2.5-flash` model.
 - **Configuration:** Uses `ConfigModule` to manage environment variables like `GEMINI_API_KEY`.
 - **API Endpoints:**
   - `POST /`: Main chat endpoint that processes user input and returns AI responses.
