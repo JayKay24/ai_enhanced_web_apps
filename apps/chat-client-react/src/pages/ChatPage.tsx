@@ -1,13 +1,18 @@
 import React, { useRef, useState, useCallback, ChangeEvent } from 'react';
-import { Textarea } from '../components/ui/textarea';
-import ChatList from '../components/chat/ChatList';
-import useEnterSubmit from '../hooks/use-enter-submit';
-import AutoScroll, { AutoScrollHandle } from '../components/AutoScroll';
-import useFocusOnSlashPress from '../hooks/use-focus-on-slash-press';
-import useChatFormSubmit from '../hooks/use-chat-form-submit';
+import { 
+  Textarea, 
+  ChatList, 
+  AutoScroll, 
+  AutoScrollHandle,
+  Button 
+} from '@ai-enhanced-web-apps/chat-ui';
+import { 
+  useEnterSubmit, 
+  useFocusOnSlashPress, 
+  useChatFormSubmit 
+} from '@ai-enhanced-web-apps/chat-hooks';
 import { getAssistantResponse } from '../lib/getAssistantResponse';
 
-import Button from '../components/ui/button';
 import { ChevronUp } from 'lucide-react';
 
 const ChatPage: React.FC = () => {

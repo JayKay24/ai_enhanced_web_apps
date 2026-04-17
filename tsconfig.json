@@ -20,6 +20,15 @@
     },
     {
       "path": "./apps/chat-client-next"
+    },
+    {
+      "path": "./libs/chat-ui"
+    },
+    {
+      "path": "./libs/chat-hooks"
+    },
+    {
+      "path": "./libs/shared-utils"
     }
   ]
 }

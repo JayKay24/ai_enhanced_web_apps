@@ -1,3 +1,4 @@
+"use client";
 import { Card } from "../ui/card";
 
 const ChatBubbleLoading: React.FC = () => {

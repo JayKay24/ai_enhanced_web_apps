@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@ai-enhanced-web-apps/chat-hooks": "^0.0.1",
+    "@ai-enhanced-web-apps/chat-ui": "^0.0.1",
     "@ai-enhanced-web-apps/shared-types": "^0.0.1",
+    "@ai-enhanced-web-apps/shared-utils": "^0.0.1",
     "next": "~16.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

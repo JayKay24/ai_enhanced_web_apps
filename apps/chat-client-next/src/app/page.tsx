@@ -1,69 +1,49 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useRef, useState, useCallback, ChangeEvent } from 'react';
+import { 
+  Textarea, 
+  ChatList, 
+  AutoScroll, 
+  AutoScrollHandle,
+  Button 
+} from '@ai-enhanced-web-apps/chat-ui';
+import { 
+  useEnterSubmit, 
+  useFocusOnSlashPress, 
+  useChatFormSubmit 
+} from '@ai-enhanced-web-apps/chat-hooks';
+import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
+import { fetchAssistantResponse } from '@ai-enhanced-web-apps/shared-utils';
+import { ChevronUp } from 'lucide-react';
+
+const getAssistantResponse = async (text: string): Promise<ChatResponse> => {
+  return fetchAssistantResponse('/api/chat', text);
+};
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, isLoading]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
-
-    const userMessage: Message = {
-      id: uuidv4(),
-      role: 'user',
-      content: inputValue,
-      created: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: userMessage.content }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch response');
-      }
-
-      const data: ChatResponse = await response.json();
-      setMessages((prev) => [...prev, data.message]);
-    } catch (error) {
-      console.error('Error fetching chat response:', error);
-      const errorMessage: Message = {
-        id: uuidv4(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
-        created: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
+  const { formRef, onKeyDown } = useEnterSubmit();
+  const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
+  const { messages, isLoading, handleSubmit, inputValue, setInputValue } = useChatFormSubmit(getAssistantResponse);
+  
+  const onInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
   };
 
+  const autoScrollRef = useRef<AutoScrollHandle>(null);
+  const [isAtTop, setIsAtTop] = useState(true);
+
+  const handleScrollToTop = useCallback(() => {
+    autoScrollRef.current?.scrollToTop();
+  }, []);
+
+  const handleScrollPositionChange = useCallback((position: { atTop: boolean }) => {
+    setIsAtTop(position.atTop);
+  }, []);
+
   return (
-    <main className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative">
-      <div 
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto mb-32 px-4 scroll-smooth"
-      >
+    <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
+      <AutoScroll ref={autoScrollRef} onScrollPositionChange={handleScrollPositionChange}>
         {messages.length === 0 && (
           <div className="mt-4 mb-16">
             <h1 className="text-6xl font-semibold leading-tight">
@@ -76,50 +56,39 @@ export default function ChatPage() {
             <p className="text-6xl font-semibold text-gray-400">Ask me anything you want</p>
           </div>
         )}
-
-        <div className="flex flex-col gap-5">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`p-5 flex flex-col gap-3 rounded-lg shadow-sm w-fit max-w-md ${
-                message.role === 'assistant' 
-                  ? 'mr-auto bg-white border border-gray-100' 
-                  : 'ml-auto bg-blue-50 text-blue-900 border border-blue-100'
-              }`}
-            >
-              <h5 className="text-lg font-semibold">
-                {message.role === 'assistant' ? `✴️ Astra` : `👤 You`}
-              </h5>
-              <p className="whitespace-pre-wrap">{message.content}</p>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="mr-auto p-5 bg-white border border-gray-100 rounded-lg shadow-sm w-fit animate-pulse">
-              <h5 className="text-lg font-semibold text-gray-300">✴️ Astra</h5>
-              <div className="h-4 w-24 bg-gray-200 rounded mt-2"></div>
-            </div>
-          )}
-        </div>
-      </div>
-
+        {messages.length > 0 && <ChatList messages={messages} isLoading={isLoading} />}
+      </AutoScroll>
       <form
+        className="stretch max-w-4xl flex flex-row"
+        ref={formRef}
+        aria-labelledby="chat-form-label"
         onSubmit={handleSubmit}
-        className="fixed bottom-0 w-full max-w-4xl px-4 mb-8 bg-white"
       >
-        <textarea
-          className="w-full p-4 border border-gray-300 rounded-xl shadow-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+        <Textarea
+          ref={inputRef}
+          className="fixed bottom-0 w-full max-w-4xl p-2 mb-8 border border-gray-300 rounded shadow-xl"
           placeholder="Type your message here..."
+          tabIndex={0}
+          autoFocus
+          spellCheck={false}
+          autoComplete="off"
+          autoCorrect="off"
+          name="message"
           rows={1}
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit(e);
-            }
-          }}
+          onChange={onInputChange}
+          onKeyDown={onKeyDown}
         />
       </form>
-    </main>
+      {!isAtTop && messages.length > 0 && (
+        <Button
+          onClick={handleScrollToTop}
+          className="fixed top-32 right-8 p-3 rounded-full shadow-lg bg-blue-500 text-white hover:bg-blue-600 z-50"
+          aria-label="Scroll to top of conversation"
+        >
+          <ChevronUp className="h-6 w-6" />
+        </Button>
+      )}
+    </div>
   );
 }

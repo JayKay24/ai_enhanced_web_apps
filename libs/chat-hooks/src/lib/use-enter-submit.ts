@@ -1,3 +1,4 @@
+"use client";
 import { useRef, KeyboardEvent, RefObject } from 'react';
 
 /**

@@ -6,6 +6,9 @@
     "name": "chat-client-react"
   },
   "dependencies": {
-    "@ai-enhanced-web-apps/shared-types": "^0.0.1"
+    "@ai-enhanced-web-apps/chat-hooks": "^0.0.1",
+    "@ai-enhanced-web-apps/chat-ui": "^0.0.1",
+    "@ai-enhanced-web-apps/shared-types": "^0.0.1",
+    "@ai-enhanced-web-apps/shared-utils": "^0.0.1"
   }
 }

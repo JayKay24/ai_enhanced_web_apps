@@ -35,7 +35,16 @@
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
+      "path": "../../libs/shared-utils/tsconfig.lib.json"
+    },
+    {
       "path": "../../libs/shared-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/chat-ui/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/chat-hooks/tsconfig.lib.json"
     }
   ]
 }

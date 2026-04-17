@@ -1,18 +1,6 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
+import { fetchAssistantResponse } from '@ai-enhanced-web-apps/shared-utils';
 
 export async function getAssistantResponse(text: string): Promise<ChatResponse> {
-  const response = await fetch("http://localhost:3000/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ text }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch response from server");
-  }
-
-  return await response.json();
+  return fetchAssistantResponse("http://localhost:3000/", text);
 }

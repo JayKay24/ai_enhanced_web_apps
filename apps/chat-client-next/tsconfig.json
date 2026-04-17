@@ -44,7 +44,16 @@
   ],
   "references": [
     {
+      "path": "../../libs/shared-utils"
+    },
+    {
       "path": "../../libs/shared-types"
+    },
+    {
+      "path": "../../libs/chat-ui"
+    },
+    {
+      "path": "../../libs/chat-hooks"
     }
   ]
 }

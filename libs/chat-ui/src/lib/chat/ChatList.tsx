@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import ChatMessage from './ChatMessage';
 import ChatBubbleLoading from './ChatBubbleLoading';
