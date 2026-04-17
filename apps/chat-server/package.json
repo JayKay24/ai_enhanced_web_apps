@@ -1,5 +1,5 @@
 {
-  "name": "@ai-enhanced-web-apps/chat-server",
+  "name": "chat-server",
   "version": "0.0.1",
   "private": true,
   "nx": {
@@ -63,15 +63,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/chat-server:build",
+          "buildTarget": "chat-server:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/chat-server:build:development"
+            "buildTarget": "chat-server:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/chat-server:build:production"
+            "buildTarget": "chat-server:build:production"
           }
         }
       },

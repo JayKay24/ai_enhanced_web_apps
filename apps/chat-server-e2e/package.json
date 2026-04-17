@@ -1,10 +1,10 @@
 {
-  "name": "@ai-enhanced-web-apps/chat-server-e2e",
+  "name": "chat-server-e2e",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "implicitDependencies": [
-      "@ai-enhanced-web-apps/chat-server"
+      "chat-server"
     ],
     "targets": {
       "e2e": {
@@ -17,8 +17,8 @@
           "passWithNoTests": true
         },
         "dependsOn": [
-          "@ai-enhanced-web-apps/chat-server:build",
-          "@ai-enhanced-web-apps/chat-server:serve"
+          "chat-server:build",
+          "chat-server:serve"
         ]
       }
     }

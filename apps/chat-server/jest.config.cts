@@ -10,7 +10,7 @@ const swcJestConfig = JSON.parse(
 swcJestConfig.swcrc = false;
 
 module.exports = {
-  displayName: '@ai-enhanced-web-apps/chat-server',
+  displayName: 'chat-server',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
