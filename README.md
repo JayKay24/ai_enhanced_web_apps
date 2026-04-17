@@ -1,13 +1,21 @@
 # AI Enhanced Web Apps
 
-This is an Nx-based monorepo for building AI-enhanced web applications. It features a React frontend and a NestJS backend.
+This is an Nx-based monorepo for building AI-enhanced web applications. It features multiple chat clients integrated with a NestJS backend and Google Gemini 2.5 Flash via Vertex AI.
 
 ## Project Structure
 
-- `apps/chat-client-react`: A React 19 frontend application featuring a responsive chat interface called "Astra AI". It includes auto-scrolling, keyboard shortcuts (like '/' to focus), and integrates with the backend for real-time AI responses.
-- `apps/chat-server`: A NestJS backend that serves as an AI gateway. It integrates with Google's Gemini Pro API (`gemini-1.5-flash`) to process chat messages and provides a simple REST API for the frontend.
-- `apps/chat-client-react-e2e`: Playwright end-to-end tests for the frontend.
-- `apps/chat-server-e2e`: Jest end-to-end tests for the backend.
+### Applications
+- `apps/chat-client-react`: A React 19 frontend application featuring the "Astra AI" chat interface. Built with Vite. Runs on port **4200**.
+- `apps/chat-client-next`: A Next.js 15+ implementation with a built-in API route (`/api/chat`). Features parity with the React client. Runs on port **4300**.
+- `apps/chat-server`: A NestJS backend serving as an AI gateway. Integrates with Vertex AI. Runs on port **3000**.
+- `apps/chat-client-react-e2e`: Playwright E2E tests for the React application.
+- `apps/chat-server-e2e`: Jest E2E tests for the backend.
+
+### Libraries
+- `libs/chat-ui`: Shared React components (Radix UI, Tailwind CSS).
+- `libs/chat-hooks`: Shared React hooks for chat logic and keyboard shortcuts.
+- `libs/shared-types`: Shared TypeScript interfaces and API contracts.
+- `libs/shared-utils`: Shared utility functions (e.g., `cn`, `fetchAssistantResponse`).
 
 ## Getting Started
 
@@ -15,6 +23,14 @@ This is an Nx-based monorepo for building AI-enhanced web applications. It featu
 
 - Node.js (v18+)
 - npm
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (for Vertex AI authentication)
+
+### Authentication
+
+Ensure you have Application Default Credentials (ADC) set up:
+```bash
+gcloud auth application-default login
+```
 
 ### Installation
 
@@ -24,12 +40,17 @@ npm install
 
 ### Running the Applications
 
-To run the frontend in development mode:
+To run the React frontend:
 ```bash
 npx nx serve chat-client-react
 ```
 
-To run the backend in development mode:
+To run the Next.js frontend:
+```bash
+npx nx serve chat-client-next
+```
+
+To run the backend:
 ```bash
 npx nx serve chat-server
 ```
@@ -41,11 +62,7 @@ Nx is used for running all tasks.
 ### Build
 
 ```bash
-# Build frontend
-npx nx build chat-client-react
-
-# Build backend
-npx nx build chat-server
+npx nx run-many -t build
 ```
 
 ### Test
