@@ -1,18 +1,7 @@
 import React from 'react';
 import ChatMessage from './ChatMessage';
 import ChatBubbleLoading from './ChatBubbleLoading';
-
-/**
- * Represents a single message in the chat.
- */
-export interface Message {
-  /** Unique identifier for the message. */
-  id: string;
-  /** The role of the message sender (e.g., 'user', 'assistant'). */
-  role: string;
-  /** The text content of the message. */
-  content: string;
-}
+import { Message } from '@ai-enhanced-web-apps/shared-types';
 
 /**
  * Props for the ChatList component.

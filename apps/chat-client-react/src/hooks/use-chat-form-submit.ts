@@ -1,13 +1,13 @@
 import { useState, FormEvent } from 'react';
 import { generateUniqueId } from '../lib/generateUniqueId';
-import { Message } from '../components/chat/ChatList';
+import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 /**
  * Hook to handle chat form submission and message state management.
  * @param getAssistantResponse Function to fetch the assistant's response.
  */
 function useChatFormSubmit(
-  getAssistantResponse: (text: string) => Promise<{ message: Message }>
+  getAssistantResponse: (text: string) => Promise<ChatResponse>
 ) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');

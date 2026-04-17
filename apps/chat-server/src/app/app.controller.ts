@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, InternalServerErrorException } from '@nestjs/common';
 import { AppService } from './app.service';
+import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 @Controller()
 export class AppController {
@@ -11,7 +12,7 @@ export class AppController {
   }
 
   @Post()
-  async getAssistantResponse(@Body('text') text: string) {
+  async getAssistantResponse(@Body('text') text: string): Promise<ChatResponse> {
     try {
       return await this.appService.getAssistantResponse(text);
     } catch {

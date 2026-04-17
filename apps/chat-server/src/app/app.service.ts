@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
 import { v4 as uuidv4 } from 'uuid';
+import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 @Injectable()
 export class AppService {
@@ -18,7 +19,7 @@ export class AppService {
     });
   }
 
-  async getAssistantResponse(text: string) {
+  async getAssistantResponse(text: string): Promise<ChatResponse> {
     try {
       this.logger.log(`Received request text: ${text}`);
 
@@ -45,7 +46,7 @@ export class AppService {
         message: text,
       });
 
-      const responseMessage = result.text;
+      const responseMessage = result.text || '';
 
       this.logger.log(`Assistant response: ${responseMessage}`);
 

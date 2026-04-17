@@ -4,5 +4,8 @@
   "private": true,
   "nx": {
     "name": "chat-client-react"
+  },
+  "dependencies": {
+    "@ai-enhanced-web-apps/shared-types": "^0.0.1"
   }
 }

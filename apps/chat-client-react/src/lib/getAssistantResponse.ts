@@ -1,4 +1,6 @@
-export async function getAssistantResponse(text: string) {
+import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
+
+export async function getAssistantResponse(text: string): Promise<ChatResponse> {
   const response = await fetch("http://localhost:3000/", {
     method: "POST",
     headers: {
