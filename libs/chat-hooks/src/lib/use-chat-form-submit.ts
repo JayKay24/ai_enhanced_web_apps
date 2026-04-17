@@ -1,7 +1,6 @@
 "use client";
 import { useState, FormEvent } from 'react';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 /**
