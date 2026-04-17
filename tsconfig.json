@@ -17,6 +17,9 @@
     },
     {
       "path": "./libs/shared-types"
+    },
+    {
+      "path": "./apps/chat-client-next"
     }
   ]
 }

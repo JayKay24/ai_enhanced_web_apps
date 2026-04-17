@@ -66,3 +66,7 @@ vitest.config.*.timestamp*
 test-output
 
 .nx/polygraph
+
+# Next.js
+.next
+out

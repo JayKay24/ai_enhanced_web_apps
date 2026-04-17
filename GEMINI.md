@@ -20,6 +20,7 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 
 - `apps/chat-client-react/`: The main React application featuring the Astra AI interface.
 - `apps/chat-client-react-e2e/`: End-to-end testing suite for the React application.
+- `apps/chat-client-next/`: A standalone Next.js application with a built-in API route duplicating the chat logic.
 - `apps/chat-server/`: The NestJS backend application integrating with Gemini AI.
 - `apps/chat-server-e2e/`: End-to-end testing suite for the backend application.
 - `libs/shared-types/`: Shared TypeScript interfaces and types used across the workspace.
@@ -35,7 +36,8 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
   - `ChatResponse`: Standard API response wrapper containing a `Message`.
 
 ### Frontend (Astra AI)
-- **UI Components:** Built with custom Tailwind-styled components, Radix UI primitives, and Lucide React icons. Uses `Message` type from shared-types for consistency.
+- **`chat-client-react`**: Built with custom Tailwind-styled components, Radix UI primitives, and Lucide React icons. Uses `Message` type from shared-types for consistency.
+- **`chat-client-next`**: A Next.js 15+ implementation using the App Router. It includes its own API route (`/api/chat`) that mirrors the `chat-server` logic, providing a self-contained AI chat experience while sharing the same styles and layout as the React version.
 - **Hooks:** 
   - `useChatFormSubmit`: Manages chat state and API calls.
   - `useEnterSubmit`: Handles Enter key for message submission.
