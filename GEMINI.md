@@ -22,14 +22,20 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 - `apps/chat-client-react-e2e/`: End-to-end testing suite for the React application.
 - `apps/chat-server/`: The NestJS backend application integrating with Gemini AI.
 - `apps/chat-server-e2e/`: End-to-end testing suite for the backend application.
+- `libs/shared-types/`: Shared TypeScript interfaces and types used across the workspace.
 - `node_modules/`: Project dependencies.
 - `nx.json`: Nx workspace configuration.
 - `tsconfig.base.json`: Base TypeScript configuration for the workspace.
 
 ## Application Architecture
 
+### Shared Libraries
+- **`@ai-enhanced-web-apps/shared-types`**: Defines the data contract between the frontend and backend.
+  - `Message`: Standard structure for chat messages (id, role, content, created).
+  - `ChatResponse`: Standard API response wrapper containing a `Message`.
+
 ### Frontend (Astra AI)
-- **UI Components:** Built with custom Tailwind-styled components, Radix UI primitives, and Lucide React icons.
+- **UI Components:** Built with custom Tailwind-styled components, Radix UI primitives, and Lucide React icons. Uses `Message` type from shared-types for consistency.
 - **Hooks:** 
   - `useChatFormSubmit`: Manages chat state and API calls.
   - `useEnterSubmit`: Handles Enter key for message submission.
@@ -37,10 +43,10 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 - **Utilities:** Custom auto-scroll management for the message list.
 
 ### Backend (AI Gateway)
-- **Generative AI:** Uses `@google/genai` to interface with the `gemini-2.5-flash` model.
-- **Configuration:** Uses `ConfigModule` to manage environment variables like `GEMINI_API_KEY`.
+- **Generative AI:** Uses `@google/genai` to interface with the `gemini-2.5-flash` model via Vertex AI.
+- **Configuration:** Uses `ConfigModule` to manage environment variables like `VERTEX_AI_PROJECT_ID`.
 - **API Endpoints:**
-  - `POST /`: Main chat endpoint that processes user input and returns AI responses.
+  - `POST /`: Main chat endpoint. Returns a `ChatResponse` following the shared contract.
   - `GET /`: Health check endpoint.
 
 ## Building and Running
@@ -95,7 +101,7 @@ npx prettier --check .
 
 ## Development Conventions
 
-- **Module Boundaries:** The project uses `@nx/enforce-module-boundaries` to maintain a clean architecture. Ensure dependencies between apps and libraries follow the defined constraints in `nx.json` and `eslint.config.mjs`.
+- **Module Boundaries:** The project uses `@nx/enforce-module-boundaries` to maintain a clean architecture. Ensure dependencies between apps and libraries follow the defined constraints in `nx.json` and `eslint.config.mjs`. Always prefer importing shared types from `@ai-enhanced-web-apps/shared-types` rather than defining local duplicates.
 - **TypeScript:** Use strict TypeScript. Configurations are managed via `tsconfig.base.json` and project-specific `tsconfig.json` files.
 - **Styling:** Prefer Tailwind utility classes for styling. Global styles are located in `apps/chat-client-react/src/styles.css`.
 - **Testing:**
