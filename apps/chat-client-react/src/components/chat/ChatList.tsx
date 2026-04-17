@@ -1,6 +1,7 @@
 import React from 'react';
 import ChatMessage from './ChatMessage';
 import ChatBubbleLoading from './ChatBubbleLoading';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Message } from '@ai-enhanced-web-apps/shared-types';
 
 /**

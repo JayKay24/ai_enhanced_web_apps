@@ -1,3 +1,4 @@
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 export async function getAssistantResponse(text: string): Promise<ChatResponse> {

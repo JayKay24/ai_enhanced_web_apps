@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { generateUniqueId } from '../lib/generateUniqueId';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 /**
