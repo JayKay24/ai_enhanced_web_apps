@@ -1,0 +1,24 @@
+{
+  "name": "chat-client-next",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/chat-client-next/src",
+  "tags": [],
+  "targets": {
+    "dev": {
+      "options": {
+        "command": "next dev -p 4300"
+      }
+    },
+    "start": {
+      "options": {
+        "command": "next start -p 4300"
+      }
+    },
+    "serve-static": {
+      "options": {
+        "command": "next start -p 4300"
+      }
+    }
+  }
+}
