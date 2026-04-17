@@ -36,7 +36,7 @@ const ChatPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative">
+    <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
       <AutoScroll ref={autoScrollRef} onScrollPositionChange={handleScrollPositionChange}>
         {messages.length === 0 && (
           <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">

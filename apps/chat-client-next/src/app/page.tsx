@@ -45,16 +45,17 @@ export default function ChatPage() {
     <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
       <AutoScroll ref={autoScrollRef} onScrollPositionChange={handleScrollPositionChange}>
         {messages.length === 0 && (
-          <div className="mt-4 mb-16">
-            <h1 className="text-6xl font-semibold leading-tight">
+          <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
+            <div className="inline-block">
               Hello, I'm{" "}
               <span role="img" aria-label="eight-pointed star">
                 ✴️
               </span>{" "}
               Astra
-            </h1>
-            <p className="text-6xl font-semibold text-gray-400">Ask me anything you want</p>
-          </div>
+            </div>
+            <br />
+            <span className="text-gray-400">Ask me anything you want</span>
+          </h1>
         )}
         {messages.length > 0 && <ChatList messages={messages} isLoading={isLoading} />}
       </AutoScroll>
