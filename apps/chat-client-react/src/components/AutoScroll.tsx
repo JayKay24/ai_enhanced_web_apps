@@ -16,14 +16,20 @@ export interface AutoScrollProps {
   children?: ReactNode;
   /** Optional callback triggered when the scroll status (at bottom or not) changes. */
   onScrollStatusChange?: (atBottom: boolean) => void;
+  /** Optional callback triggered when the scroll position changes. */
+  onScrollPositionChange?: (position: { atTop: boolean; atBottom: boolean }) => void;
 }
 
 /**
  * Handle type for the AutoScroll component exposed via ref.
  */
 export interface AutoScrollHandle {
+  /** Imperatively scrolls the container to its top. */
+  scrollToTop: () => void;
   /** Imperatively scrolls the container to its bottom. */
   scrollToBottom: () => void;
+  /** Returns whether the current scroll position is at the top. */
+  getIsAtTop: () => boolean;
   /** Returns the current scroll position status. */
   getIsAtBottom: () => boolean;
 }
@@ -34,13 +40,22 @@ export interface AutoScrollHandle {
  * It exposes a `scrollToBottom` method via `ref`.
  */
 const AutoScroll = forwardRef<AutoScrollHandle, AutoScrollProps>(
-  ({ children, onScrollStatusChange }, ref) => {
+  ({ children, onScrollStatusChange, onScrollPositionChange }, ref) => {
     const scrollableRef = useRef<HTMLDivElement>(null);
-    // State to track if the user is currently at the bottom of the scroll area
+    // State to track the user's scroll position within the container.
+    const [isAtTop, setIsAtTop] = useState(true);
     const [isAtBottom, setIsAtBottom] = useState(true);
 
-    // Expose a `scrollToBottom` method to the parent component via ref.
+    // Expose scroll helpers to the parent component via ref.
     useImperativeHandle(ref, () => ({
+      /**
+       * Imperatively scrolls the container to its top.
+       */
+      scrollToTop: () => {
+        if (scrollableRef.current) {
+          scrollableRef.current.scrollTop = 0;
+        }
+      },
       /**
        * Imperatively scrolls the container to its bottom.
        */
@@ -50,11 +65,16 @@ const AutoScroll = forwardRef<AutoScrollHandle, AutoScrollProps>(
         }
       },
       /**
+       * Returns the current `isAtTop` status.
+       * @returns {boolean} True if the user is at the top, false otherwise.
+       */
+      getIsAtTop: () => isAtTop,
+      /**
        * Returns the current `isAtBottom` status.
        * @returns {boolean} True if the user is at or near the bottom, false otherwise.
        */
       getIsAtBottom: () => isAtBottom,
-    }));
+    }), [isAtBottom, isAtTop]);
 
     /**
      * Handles scroll events to update the `isAtBottom` state.
@@ -63,17 +83,23 @@ const AutoScroll = forwardRef<AutoScrollHandle, AutoScrollProps>(
     const handleScroll = useCallback(() => {
       if (scrollableRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = scrollableRef.current;
+        const atTop = scrollTop <= 0;
         // Check if user is at or very near the bottom
         const atBottom = scrollHeight - scrollTop <= clientHeight + 10;
+        if (atTop !== isAtTop) {
+          setIsAtTop(atTop);
+        }
         if (atBottom !== isAtBottom) {
           setIsAtBottom(atBottom);
-          // Inform the parent component about the scroll status change
-          if (onScrollStatusChange) {
-            onScrollStatusChange(atBottom);
-          }
+        }
+        if (atBottom !== isAtBottom && onScrollStatusChange) {
+          onScrollStatusChange(atBottom);
+        }
+        if ((atTop !== isAtTop || atBottom !== isAtBottom) && onScrollPositionChange) {
+          onScrollPositionChange({ atTop, atBottom });
         }
       }
-    }, [isAtBottom, onScrollStatusChange]);
+    }, [isAtBottom, isAtTop, onScrollPositionChange, onScrollStatusChange]);
 
     // Attach and detach scroll event listener
     useEffect(() => {

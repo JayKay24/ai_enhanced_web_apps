@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState, useCallback, ChangeEvent } from 'react';
+import React, { useRef, useState, useCallback, ChangeEvent } from 'react';
 import { Textarea } from '../components/ui/textarea';
 import ChatList from '../components/chat/ChatList';
 import useEnterSubmit from '../hooks/use-enter-submit';
-import AutoScroll from '../components/AutoScroll';
+import AutoScroll, { AutoScrollHandle } from '../components/AutoScroll';
 import useFocusOnSlashPress from '../hooks/use-focus-on-slash-press';
 import useChatFormSubmit from '../hooks/use-chat-form-submit';
 import { getAssistantResponse } from '../lib/getAssistantResponse';
@@ -19,55 +19,35 @@ const ChatPage: React.FC = () => {
     setInputValue(e.target.value);
   };
 
-  const mainScrollContainerRef = useRef<HTMLDivElement>(null);
+  const autoScrollRef = useRef<AutoScrollHandle>(null);
   const [isAtTop, setIsAtTop] = useState(true);
 
   const handleScrollToTop = useCallback(() => {
-    if (mainScrollContainerRef.current) {
-      mainScrollContainerRef.current.scrollTop = 0;
-    }
+    autoScrollRef.current?.scrollToTop();
   }, []);
 
-  const handleScroll = useCallback(() => {
-    if (mainScrollContainerRef.current) {
-      const newIsAtTop = mainScrollContainerRef.current.scrollTop === 0;
-      if (newIsAtTop !== isAtTop) {
-        setIsAtTop(newIsAtTop);
-      }
-    }
-  }, [isAtTop]);
-
-  useEffect(() => {
-    const container = mainScrollContainerRef.current;
-    if (!container) return;
-
-    container.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-    };
-  }, [handleScroll]);
+  const handleScrollPositionChange = useCallback((position: { atTop: boolean }) => {
+    setIsAtTop(position.atTop);
+  }, []);
 
   return (
-    <div
-      ref={mainScrollContainerRef}
-      className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative overflow-y-auto"
-    >
-      {messages.length === 0 && (
-        <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
-          <div className="inline-block">
-            Hello, I'm{" "}
-            <span role="img" aria-label="eight-pointed star">
-              ✴️
-            </span>{" "}
-            Astra
-          </div>
-          <br />
-          <span className="text-gray-400">Ask me anything you want</span>
-        </h1>
-      )}
-      {messages.length > 0 && <ChatList messages={messages} isLoading={isLoading} />}
+    <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative">
+      <AutoScroll ref={autoScrollRef} onScrollPositionChange={handleScrollPositionChange}>
+        {messages.length === 0 && (
+          <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
+            <div className="inline-block">
+              Hello, I'm{" "}
+              <span role="img" aria-label="eight-pointed star">
+                ✴️
+              </span>{" "}
+              Astra
+            </div>
+            <br />
+            <span className="text-gray-400">Ask me anything you want</span>
+          </h1>
+        )}
+        {messages.length > 0 && <ChatList messages={messages} isLoading={isLoading} />}
+      </AutoScroll>
       <form
         className="stretch max-w-4xl flex flex-row"
         ref={formRef}
@@ -90,7 +70,6 @@ const ChatPage: React.FC = () => {
           onKeyDown={onKeyDown}
         />
       </form>
-      <AutoScroll />
       {!isAtTop && messages.length > 0 && (
         <Button
           onClick={handleScrollToTop}
