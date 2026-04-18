@@ -3,6 +3,8 @@ import { GoogleGenAI } from '@google/genai';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { text } = await req.json();
