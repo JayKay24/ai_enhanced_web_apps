@@ -9,6 +9,7 @@
     ],
     "rootDir": "src",
     "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "es2022"],
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo"
   },
   "exclude": [
