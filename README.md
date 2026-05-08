@@ -17,6 +17,12 @@ This is an Nx-based monorepo for building AI-enhanced web applications. It featu
 - `libs/shared-types`: Shared TypeScript interfaces and API contracts.
 - `libs/shared-utils`: Shared utility functions (e.g., `cn`, `fetchAssistantResponse`).
 
+## Screenshots
+
+| ![Screenshot 1](./docs/Screenshot%202026-05-08%20at%2018.11.51%20(2).png) | ![Screenshot 2](./docs/Screenshot%202026-05-08%20at%2018.13.14%20(2).png) | ![Screenshot 3](./docs/Screenshot%202026-05-08%20at%2018.13.45%20(2).png) |
+|:---:|:---:|:---:|
+| Initial View | Chatting with Astra | Full Conversation |
+
 ## Getting Started
 
 ### Prerequisites
