@@ -86,6 +86,38 @@ npx nx test chat-server
 - **Styling:** Tailwind utility classes are preferred. Shared styles are managed via the `chat-ui` library.
 - **Testing:** New features MUST include corresponding unit or E2E tests.
 
+### Shared Library Imports
+
+When using components, hooks, or types from shared libraries, always use the workspace-aliased paths.
+
+#### Chat UI Components and Types
+Import from `@ai-enhanced-web-apps/chat-ui`:
+```typescript
+import { 
+  AutoScroll, 
+  AutoScrollHandle, 
+  ChatList, 
+  ChatMessage, 
+  Button 
+} from '@ai-enhanced-web-apps/chat-ui';
+```
+
+#### Chat Hooks and Types
+Import from `@ai-enhanced-web-apps/chat-hooks`:
+```typescript
+import { 
+  useChatFormSubmit, 
+  useEnterSubmit, 
+  useFocusOnSlashPress 
+} from '@ai-enhanced-web-apps/chat-hooks';
+```
+
+#### Shared Types
+Import from `@ai-enhanced-web-apps/shared-types`:
+```typescript
+import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
+```
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
