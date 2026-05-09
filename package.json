@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@ai-sdk/google": "^3.0.71",
     "@google/genai": "^1.50.1",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.4",
@@ -12,6 +13,7 @@
     "@nestjs/platform-express": "^11.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.4",
+    "ai": "^6.0.177",
     "axios": "^1.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
