@@ -70,3 +70,4 @@ test-output
 # Next.js
 .next
 out
+next-env.d.ts
