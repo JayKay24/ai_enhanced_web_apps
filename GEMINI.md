@@ -118,6 +118,11 @@ Import from `@ai-enhanced-web-apps/shared-types`:
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 ```
 
+## MCP
+
+- **Context7** - Always use Context7 MCP when writing or explaining code that involves external libraries, frameworks, or any npm package.
+  Fetch current docs automatically without me having to ask. If you know the specific library, resolve its Context7 ID directly and skip straight to fetching docs.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
