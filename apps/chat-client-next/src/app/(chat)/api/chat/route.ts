@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createVertex } from '@ai-sdk/google-vertex';
 import { generateText } from 'ai';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
@@ -14,14 +14,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing message text' }, { status: 400 });
     }
 
-    const model = createGoogleGenerativeAI({
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
+    const vertex = createVertex({
+      project: process.env.VERTEX_AI_PROJECT_ID,
+      location: process.env.VERTEX_AI_LOCATION || 'us-central1',
     });
 
-    // Note: @ai-sdk/google uses the GOOGLE_GENERATIVE_AI_API_KEY environment variable.
-    // If you wish to continue using Vertex AI, use @ai-sdk/google-vertex instead.
     const { text: responseMessage } = await generateText({
-      model: model('gemini-2.0-flash'),
+      model: vertex('gemini-2.5-flash'),
       messages: [
         {
           role: 'user',
