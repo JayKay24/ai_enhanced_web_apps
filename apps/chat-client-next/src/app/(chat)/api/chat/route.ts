@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { generateText } from 'ai';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
@@ -13,53 +14,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing message text' }, { status: 400 });
     }
 
-    const projectId = process.env.VERTEX_AI_PROJECT_ID;
-    const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
-    const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-
-    if (!projectId) {
-      console.error('VERTEX_AI_PROJECT_ID is not defined in the environment variables');
-      return NextResponse.json({ error: 'Missing Vertex AI configuration' }, { status: 500 });
-    }
-
-    console.log(`Initializing GoogleGenAI with Vertex AI (Project: ${projectId}, Location: ${location})`);
-    
-    if (credentialsPath) {
-      console.log(`Using GOOGLE_APPLICATION_CREDENTIALS from: ${credentialsPath}`);
-    } else {
-      console.warn('GOOGLE_APPLICATION_CREDENTIALS not set; falling back to standard Application Default Credentials (ADC).');
-      console.warn('Ensure you have run: gcloud auth application-default login');
-    }
-
-    const ai = new GoogleGenAI({
-      vertexai: true,
-      project: projectId,
-      location: location,
+    const model = createGoogleGenerativeAI({
+      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
     });
 
-    const chat = ai.chats.create({
-      model: 'gemini-2.5-flash',
-      history: [
+    // Note: @ai-sdk/google uses the GOOGLE_GENERATIVE_AI_API_KEY environment variable.
+    // If you wish to continue using Vertex AI, use @ai-sdk/google-vertex instead.
+    const { text: responseMessage } = await generateText({
+      model: model('gemini-2.0-flash'),
+      messages: [
         {
           role: 'user',
-          parts: [{ text: 'Hello' }],
+          content: 'Hello',
         },
         {
-          role: 'model',
-          parts: [
-            {
-              text: "I'm happy to assist you in any way I can. How can I be of service today?",
-            },
-          ],
+          role: 'assistant',
+          content: "I'm happy to assist you in any way I can. How can I be of service today?",
+        },
+        {
+          role: 'user',
+          content: text,
         },
       ],
     });
-
-    const result = await chat.sendMessage({
-      message: text,
-    });
-
-    const responseMessage = result.text || '';
 
     console.log(`Assistant response: ${responseMessage}`);
 

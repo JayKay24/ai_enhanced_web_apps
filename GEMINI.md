@@ -36,9 +36,12 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 ## Application Architecture
 
 ### AI Integration
-- Uses `@google/genai` with `vertexai: true`.
-- Requires Application Default Credentials (ADC) for local development (`gcloud auth application-default login`).
-- Backend responses strictly follow the `ChatResponse` contract from `shared-types`.
+- **Next.js Client (`chat-client-next`):** Uses the Vercel AI SDK (`ai` and `@ai-sdk/google`).
+  - Uses `generateText` for API responses.
+  - Requires `GOOGLE_GENERATIVE_AI_API_KEY` environment variable.
+- **Backend and React Client:** Use the Google Gen AI SDK (`@google/genai`) with `vertexai: true`.
+  - Requires Application Default Credentials (ADC) for local development (`gcloud auth application-default login`).
+- All backend responses strictly follow the `ChatResponse` contract from `shared-types`.
 
 ### Client Parity
 - Both clients use shared components from `@ai-enhanced-web-apps/chat-ui`.
