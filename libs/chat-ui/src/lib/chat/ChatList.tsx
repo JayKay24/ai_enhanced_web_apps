@@ -25,6 +25,7 @@ const ChatList: React.FC<ChatListProps> = ({ messages, isLoading }) => {
           <ChatMessage
             role={message.role}
             text={message.content}
+            attachments={message.attachments}
             className={`${
               message.role === 'assistant' ? 'mr-auto' : 'ml-auto'
             } border-none`}

@@ -10,6 +10,12 @@ export interface Message {
   content: string;
   /** Optional timestamp when the message was created. */
   created?: Date | string;
+  /** Optional attachments (e.g., images). */
+  attachments?: {
+    url: string;
+    contentType: string;
+    name?: string;
+  }[];
 }
 
 /**

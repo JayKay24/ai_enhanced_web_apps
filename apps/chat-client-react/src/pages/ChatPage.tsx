@@ -5,20 +5,23 @@ import {
   AutoScroll, 
   AutoScrollHandle,
   Button,
-  ModelSelector
+  ModelSelector,
+  FileUploader,
+  FileAttachment
 } from '@ai-enhanced-web-apps/chat-ui';
 import { 
   useEnterSubmit, 
   useFocusOnSlashPress 
 } from '@ai-enhanced-web-apps/chat-hooks';
 import { useChat } from '@ai-sdk/react';
-import { ChevronUp } from 'lucide-react';
+import { ChevronUp, Send } from 'lucide-react';
 import { Message } from '@ai-enhanced-web-apps/shared-types';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from '@ai-enhanced-web-apps/shared-utils';
 
 const ChatPage: React.FC = () => {
   const [providerId, setProviderId] = useState<ProviderId>('vertex');
   const [modelId, setModelId] = useState<string>(SUPPORTED_PROVIDERS_CONFIG.vertex.models[0]);
+  const [files, setFiles] = useState<FileAttachment[]>([]);
 
   const { messages, sendMessage, status } = useChat({
     api: 'http://localhost:4300/api/chat',
@@ -34,9 +37,19 @@ const ChatPage: React.FC = () => {
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (input.trim()) {
+    if (input.trim() || files.length > 0) {
       sendMessage(
-        { text: input },
+        { 
+          parts: [
+            { type: 'text', text: input },
+            ...files.map(file => ({
+              type: 'file' as const,
+              url: file.data,
+              mediaType: file.type,
+              name: file.name
+            }))
+          ]
+        },
         {
           body: {
             provider: providerId,
@@ -45,7 +58,16 @@ const ChatPage: React.FC = () => {
         }
       );
       setInput('');
+      setFiles([]);
     }
+  };
+
+  const handleFileUpload = (newFiles: FileAttachment[]) => {
+    setFiles((prev) => [...prev, ...newFiles]);
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleProviderChange = (id: ProviderId) => {
@@ -61,6 +83,16 @@ const ChatPage: React.FC = () => {
     content: m.parts
       .map(p => (p.type === 'text' ? p.text : ''))
       .join(''),
+    attachments: m.parts
+      .filter(p => p.type === 'file')
+      .map(p => {
+        const filePart = p as any;
+        return {
+          url: filePart.url,
+          contentType: filePart.mediaType || 'image/png',
+          name: filePart.name
+        };
+      })
   }));
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
@@ -99,28 +131,63 @@ const ChatPage: React.FC = () => {
         )}
         {messages.length > 0 && <ChatList messages={mappedMessages} isLoading={isLoading} />}
       </AutoScroll>
-      <form
-        className="stretch max-w-4xl flex flex-row"
-        ref={formRef}
-        aria-labelledby="chat-form-label"
-        onSubmit={handleSubmit}
-      >
-        <Textarea
-          ref={inputRef}
-          className="fixed bottom-0 w-full max-w-4xl p-2 mb-8 border border-gray-300 rounded shadow-xl"
-          placeholder="Type your message here..."
-          tabIndex={0}
-          autoFocus
-          spellCheck={false}
-          autoComplete="off"
-          autoCorrect="off"
-          name="message"
-          rows={1}
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={onKeyDown}
-        />
-      </form>
+      
+      <div className="fixed bottom-0 w-full max-w-4xl left-1/2 -translate-x-1/2 px-4 pb-8 bg-gradient-to-t from-white via-white/90 to-transparent">
+        <form
+          className="flex flex-col gap-3 p-4 bg-white border border-gray-200 rounded-xl shadow-2xl transition-all focus-within:ring-2 focus-within:ring-blue-100"
+          ref={formRef}
+          aria-labelledby="chat-form-label"
+          onSubmit={handleSubmit}
+        >
+          {files.length > 0 && (
+            <div className="pt-2 border-b border-gray-50 pb-2">
+              <FileUploader 
+                files={files} 
+                onFileUpload={handleFileUpload} 
+                onRemoveFile={handleRemoveFile} 
+                disabled={isLoading} 
+              />
+            </div>
+          )}
+          
+          <div className="flex flex-row items-end gap-2">
+            {files.length === 0 && (
+              <FileUploader 
+                files={files} 
+                onFileUpload={handleFileUpload} 
+                onRemoveFile={handleRemoveFile} 
+                disabled={isLoading} 
+              />
+            )}
+            
+            <Textarea
+              ref={inputRef}
+              className="flex-1 min-h-[44px] max-h-[200px] border-none focus-visible:ring-0 shadow-none p-2 resize-none text-base"
+              placeholder="Type your message here..."
+              tabIndex={0}
+              autoFocus
+              spellCheck={false}
+              autoComplete="off"
+              autoCorrect="off"
+              name="message"
+              rows={1}
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={onKeyDown}
+            />
+            
+            <Button 
+              type="submit" 
+              size="icon" 
+              className="shrink-0 mb-0.5"
+              disabled={isLoading || (!input.trim() && files.length === 0)}
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </div>
+        </form>
+      </div>
+
       {!isAtTop && messages.length > 0 && (
         <Button
           onClick={handleScrollToTop}

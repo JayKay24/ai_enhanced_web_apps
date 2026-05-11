@@ -1,4 +1,6 @@
 export * from './lib/chat/ModelSelector';
+export * from './lib/chat/FileUploader';
+export { default as FileUploader } from './lib/chat/FileUploader';
 export { default as Button } from './lib/ui/button';
 export * from './lib/ui/button';
 export * from './lib/ui/card';
