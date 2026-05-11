@@ -27,7 +27,7 @@ export default function ChatPage() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
     e?.preventDefault();
     if (input.trim()) {
       sendMessage({ text: input });
@@ -40,9 +40,8 @@ export default function ChatPage() {
   const mappedMessages: Message[] = messages.map(m => ({
     id: m.id,
     role: m.role,
-    content: (m as any).content || m.parts
-      .filter((p: any) => p.type === 'text')
-      .map((p: any) => p.text)
+    content: m.parts
+      .map(p => (p.type === 'text' ? p.text : ''))
       .join(''),
   }));
 
