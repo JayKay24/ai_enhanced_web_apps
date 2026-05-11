@@ -11,6 +11,11 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./ai-providers": {
+      "types": "./src/lib/ai-providers.ts",
+      "import": "./src/lib/ai-providers.ts",
+      "default": "./src/lib/ai-providers.ts"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {}

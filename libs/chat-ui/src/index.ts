@@ -1,3 +1,4 @@
+export * from './lib/chat/ModelSelector';
 export { default as Button } from './lib/ui/button';
 export * from './lib/ui/button';
 export * from './lib/ui/card';

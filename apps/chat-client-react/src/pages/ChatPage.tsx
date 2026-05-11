@@ -1,28 +1,67 @@
-import React, { useRef, useState, useCallback, ChangeEvent } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { 
   Textarea, 
   ChatList, 
   AutoScroll, 
   AutoScrollHandle,
-  Button 
+  Button,
+  ModelSelector
 } from '@ai-enhanced-web-apps/chat-ui';
 import { 
   useEnterSubmit, 
-  useFocusOnSlashPress, 
-  useChatFormSubmit 
+  useFocusOnSlashPress 
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { getAssistantResponse } from '../lib/getAssistantResponse';
-
+import { useChat } from '@ai-sdk/react';
 import { ChevronUp } from 'lucide-react';
+import { Message } from '@ai-enhanced-web-apps/shared-types';
+import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from '@ai-enhanced-web-apps/shared-utils';
 
 const ChatPage: React.FC = () => {
+  const [providerId, setProviderId] = useState<ProviderId>('vertex');
+  const [modelId, setModelId] = useState<string>(SUPPORTED_PROVIDERS_CONFIG.vertex.models[0]);
+
+  const { messages, sendMessage, status } = useChat({
+    api: 'http://localhost:4300/api/chat',
+  });
+  const [input, setInput] = useState('');
+  
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
-  const { messages, isLoading, handleSubmit, inputValue, setInputValue } = useChatFormSubmit(getAssistantResponse);
   
-  const onInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
   };
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (input.trim()) {
+      sendMessage(
+        { text: input },
+        {
+          body: {
+            provider: providerId,
+            model: modelId,
+          },
+        }
+      );
+      setInput('');
+    }
+  };
+
+  const handleProviderChange = (id: ProviderId) => {
+    setProviderId(id);
+    setModelId(SUPPORTED_PROVIDERS_CONFIG[id].models[0]);
+  };
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const mappedMessages: Message[] = messages.map(m => ({
+    id: m.id,
+    role: m.role,
+    content: m.parts
+      .map(p => (p.type === 'text' ? p.text : ''))
+      .join(''),
+  }));
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
   const [isAtTop, setIsAtTop] = useState(true);
@@ -38,6 +77,13 @@ const ChatPage: React.FC = () => {
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
       <AutoScroll ref={autoScrollRef} onScrollPositionChange={handleScrollPositionChange}>
+        <ModelSelector 
+          providerId={providerId}
+          modelId={modelId}
+          onProviderChange={handleProviderChange}
+          onModelChange={setModelId}
+          disabled={isLoading}
+        />
         {messages.length === 0 && (
           <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
             <div className="inline-block">
@@ -51,7 +97,7 @@ const ChatPage: React.FC = () => {
             <span className="text-gray-400">Ask me anything you want</span>
           </h1>
         )}
-        {messages.length > 0 && <ChatList messages={messages} isLoading={isLoading} />}
+        {messages.length > 0 && <ChatList messages={mappedMessages} isLoading={isLoading} />}
       </AutoScroll>
       <form
         className="stretch max-w-4xl flex flex-row"
@@ -70,8 +116,8 @@ const ChatPage: React.FC = () => {
           autoCorrect="off"
           name="message"
           rows={1}
-          value={inputValue}
-          onChange={onInputChange}
+          value={input}
+          onChange={handleInputChange}
           onKeyDown={onKeyDown}
         />
       </form>

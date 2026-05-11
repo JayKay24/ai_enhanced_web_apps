@@ -37,11 +37,13 @@ This project is an Nx-based monorepo designed for building AI-enhanced web appli
 
 ### AI Integration
 - **Next.js Client (`chat-client-next`):** Uses the Vercel AI SDK (`ai` and `@ai-sdk/google`).
-  - Uses `generateText` for API responses.
-  - Requires `GOOGLE_GENERATIVE_AI_API_KEY` environment variable.
+  - Uses `generateText` or `streamText` for API responses.
+  - Requires `GOOGLE_GENERATIVE_AI_API_KEY` or Vertex AI ADC.
 - **Backend and React Client:** Use the Google Gen AI SDK (`@google/genai`) with `vertexai: true`.
-  - Requires Application Default Credentials (ADC) for local development (`gcloud auth application-default login`).
-- All backend responses strictly follow the `ChatResponse` contract from `shared-types`.
+- **Architectural Pattern for AI SDKs:**
+  - **Shared Config:** Store non-sensitive metadata (model names, provider IDs) in `libs/shared-utils/src/lib/ai-model-config.ts`. This file is safe for both client and server bundling.
+  - **Server-Only Logic:** Store model factory logic and SDK initializations (e.g., `createVertex`, `createOpenAI`) in `libs/shared-utils/src/lib/ai-providers.ts`. 
+  - **Bundling Protection:** NEVER export `ai-providers.ts` from the main `index.ts` barrel of a shared library that is imported by client components. Use sub-path exports (e.g., `@ai-enhanced-web-apps/shared-utils/ai-providers`) for server-side code only to avoid "Module not found: child_process/fs" errors in the browser.
 
 ### Client Parity
 - Both clients use shared components from `@ai-enhanced-web-apps/chat-ui`.

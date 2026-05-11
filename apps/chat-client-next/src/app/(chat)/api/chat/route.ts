@@ -1,19 +1,19 @@
-import { createVertex } from '@ai-sdk/google-vertex';
 import { convertToModelMessages, streamText } from 'ai';
+import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, provider, model } = await req.json();
 
-    const vertex = createVertex({
-      project: process.env.VERTEX_AI_PROJECT_ID,
-      location: process.env.VERTEX_AI_LOCATION || 'us-central1',
-    });
+    const modelInstance = getModelInstance(
+      provider || 'vertex',
+      model || 'gemini-2.5-flash'
+    );
 
     const result = streamText({
-      model: vertex('gemini-2.5-flash'),
+      model: modelInstance,
       messages: await convertToModelMessages(messages),
     });
 

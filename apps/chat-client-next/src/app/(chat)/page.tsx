@@ -6,7 +6,8 @@ import {
   ChatList, 
   AutoScroll, 
   AutoScrollHandle,
-  Button 
+  Button,
+  ModelSelector
 } from '@ai-enhanced-web-apps/chat-ui';
 import { 
   useEnterSubmit, 
@@ -15,8 +16,12 @@ import {
 import { useChat } from '@ai-sdk/react';
 import { ChevronUp } from 'lucide-react';
 import { Message } from '@ai-enhanced-web-apps/shared-types';
+import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from '@ai-enhanced-web-apps/shared-utils';
 
 export default function ChatPage() {
+  const [providerId, setProviderId] = useState<ProviderId>('vertex');
+  const [modelId, setModelId] = useState<string>(SUPPORTED_PROVIDERS_CONFIG.vertex.models[0]);
+
   const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState('');
   
@@ -27,12 +32,25 @@ export default function ChatPage() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e?: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+  const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (input.trim()) {
-      sendMessage({ text: input });
+      sendMessage(
+        { text: input },
+        {
+          body: {
+            provider: providerId,
+            model: modelId,
+          },
+        }
+      );
       setInput('');
     }
+  };
+
+  const handleProviderChange = (id: ProviderId) => {
+    setProviderId(id);
+    setModelId(SUPPORTED_PROVIDERS_CONFIG[id].models[0]);
   };
 
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -59,6 +77,13 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
       <AutoScroll ref={autoScrollRef} onScrollPositionChange={handleScrollPositionChange}>
+        <ModelSelector 
+          providerId={providerId}
+          modelId={modelId}
+          onProviderChange={handleProviderChange}
+          onModelChange={setModelId}
+          disabled={isLoading}
+        />
         {messages.length === 0 && (
           <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
             <div className="inline-block">
