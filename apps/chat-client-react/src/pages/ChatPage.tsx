@@ -132,15 +132,15 @@ const ChatPage: React.FC = () => {
         {messages.length > 0 && <ChatList messages={mappedMessages} isLoading={isLoading} />}
       </AutoScroll>
       
-      <div className="fixed bottom-0 w-full max-w-4xl left-1/2 -translate-x-1/2 px-4 pb-8 bg-gradient-to-t from-white via-white/90 to-transparent">
+      <div className="fixed bottom-0 w-full max-w-4xl left-1/2 -translate-x-1/2 px-4 pb-12 bg-gradient-to-t from-white via-white/90 to-transparent">
         <form
-          className="flex flex-col gap-3 p-4 bg-white border border-gray-200 rounded-xl shadow-2xl transition-all focus-within:ring-2 focus-within:ring-blue-100"
+          className="flex flex-col bg-white border border-gray-200 rounded-2xl shadow-2xl transition-all focus-within:ring-2 focus-within:ring-blue-100 overflow-hidden"
           ref={formRef}
           aria-labelledby="chat-form-label"
           onSubmit={handleSubmit}
         >
           {files.length > 0 && (
-            <div className="pt-2 border-b border-gray-50 pb-2">
+            <div className="p-3 border-b border-gray-100 bg-gray-50/30">
               <FileUploader 
                 files={files} 
                 onFileUpload={handleFileUpload} 
@@ -150,19 +150,19 @@ const ChatPage: React.FC = () => {
             </div>
           )}
           
-          <div className="flex flex-row items-end gap-2">
-            {files.length === 0 && (
+          <div className="flex flex-row items-end gap-2 p-2 pl-1 pr-3">
+            <div className="pb-1">
               <FileUploader 
-                files={files} 
+                files={[]} 
                 onFileUpload={handleFileUpload} 
                 onRemoveFile={handleRemoveFile} 
                 disabled={isLoading} 
               />
-            )}
+            </div>
             
             <Textarea
               ref={inputRef}
-              className="flex-1 min-h-[44px] max-h-[200px] border-none focus-visible:ring-0 shadow-none p-2 resize-none text-base"
+              className="flex-1 min-h-[44px] max-h-[200px] border-none focus-visible:ring-0 shadow-none py-3 px-1 resize-none text-base"
               placeholder="Type your message here..."
               tabIndex={0}
               autoFocus
@@ -176,14 +176,16 @@ const ChatPage: React.FC = () => {
               onKeyDown={onKeyDown}
             />
             
-            <Button 
-              type="submit" 
-              size="icon" 
-              className="shrink-0 mb-0.5"
-              disabled={isLoading || (!input.trim() && files.length === 0)}
-            >
-              <Send className="h-5 w-5" />
-            </Button>
+            <div className="pb-1.5">
+              <Button 
+                type="submit" 
+                size="icon" 
+                className="shrink-0 rounded-full"
+                disabled={isLoading || (!input.trim() && files.length === 0)}
+              >
+                <Send className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </form>
       </div>

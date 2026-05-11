@@ -48,20 +48,22 @@ export function FileUploader({ onFileUpload, files, onRemoveFile, disabled }: Fi
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-2">
-        {files.map((file, index) => (
-          <div key={`${file.name}-${index}`} className="relative group w-20 h-20 border rounded-md overflow-hidden bg-gray-100 shadow-sm">
-            <img src={file.data} alt={file.name} className="w-full h-full object-cover" />
-            <button
-              type="button"
-              onClick={() => onRemoveFile(index)}
-              className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
-            >
-              <X className="w-3 h-3" />
-            </button>
-          </div>
-        ))}
-      </div>
+      {files.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {files.map((file, index) => (
+            <div key={`${file.name}-${index}`} className="relative group w-20 h-20 border rounded-md overflow-hidden bg-gray-100 shadow-sm">
+              <img src={file.data} alt={file.name} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => onRemoveFile(index)}
+                className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       <input
         type="file"
         ref={fileInputRef}
@@ -72,12 +74,12 @@ export function FileUploader({ onFileUpload, files, onRemoveFile, disabled }: Fi
       />
       <Button
         type="button"
-        variant="outline"
+        variant="ghost"
         size="icon"
         disabled={disabled}
         onClick={() => fileInputRef.current?.click()}
         title="Upload Image"
-        className="shrink-0"
+        className="shrink-0 text-gray-500 hover:text-gray-900"
       >
         <ImagePlus className="w-5 h-5" />
       </Button>
