@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useCallback, ChangeEvent } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { 
   Textarea, 
   ChatList, 
@@ -10,25 +10,41 @@ import {
 } from '@ai-enhanced-web-apps/chat-ui';
 import { 
   useEnterSubmit, 
-  useFocusOnSlashPress, 
-  useChatFormSubmit 
+  useFocusOnSlashPress 
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
-import { fetchAssistantResponse } from '@ai-enhanced-web-apps/shared-utils';
+import { useChat } from '@ai-sdk/react';
 import { ChevronUp } from 'lucide-react';
-
-const getAssistantResponse = async (text: string): Promise<ChatResponse> => {
-  return fetchAssistantResponse('/api/chat', text);
-};
+import { Message } from '@ai-enhanced-web-apps/shared-types';
 
 export default function ChatPage() {
+  const { messages, sendMessage, status } = useChat();
+  const [input, setInput] = useState('');
+  
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
-  const { messages, isLoading, handleSubmit, inputValue, setInputValue } = useChatFormSubmit(getAssistantResponse);
   
-  const onInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
   };
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (input.trim()) {
+      sendMessage({ text: input });
+      setInput('');
+    }
+  };
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const mappedMessages: Message[] = messages.map(m => ({
+    id: m.id,
+    role: m.role,
+    content: (m as any).content || m.parts
+      .filter((p: any) => p.type === 'text')
+      .map((p: any) => p.text)
+      .join(''),
+  }));
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
   const [isAtTop, setIsAtTop] = useState(true);
@@ -57,7 +73,7 @@ export default function ChatPage() {
             <span className="text-gray-400">Ask me anything you want</span>
           </h1>
         )}
-        {messages.length > 0 && <ChatList messages={messages} isLoading={isLoading} />}
+        {messages.length > 0 && <ChatList messages={mappedMessages} isLoading={isLoading} />}
       </AutoScroll>
       <form
         className="stretch max-w-4xl flex flex-row"
@@ -76,8 +92,8 @@ export default function ChatPage() {
           autoCorrect="off"
           name="message"
           rows={1}
-          value={inputValue}
-          onChange={onInputChange}
+          value={input}
+          onChange={handleInputChange}
           onKeyDown={onKeyDown}
         />
       </form>
