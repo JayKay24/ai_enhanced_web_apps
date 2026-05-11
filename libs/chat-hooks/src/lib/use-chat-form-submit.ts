@@ -1,5 +1,5 @@
 "use client";
-import { useState, FormEvent } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
@@ -18,7 +18,9 @@ function useChatFormSubmit(
    * Handles the submission of the chat form.
    * @param e The form event.
    */
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: SyntheticEvent<HTMLFormElement, SubmitEvent>
+  ) => {
     e.preventDefault();
     const value = inputValue.trim();
     if (!value) return;
