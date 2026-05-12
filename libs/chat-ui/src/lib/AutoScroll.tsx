@@ -49,39 +49,23 @@ export default function AutoScroll({
   ref,
 }: AutoScrollProps) {
   const scrollableRef = useRef<HTMLDivElement>(null);
-  // State to track the user's scroll position within the container.
   const [isAtTop, setIsAtTop] = useState(true);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
-  // Expose scroll helpers to the parent component via ref.
   useImperativeHandle(
     ref,
     () => ({
-      /**
-       * Imperatively scrolls the container to its top.
-       */
       scrollToTop: () => {
         if (scrollableRef.current) {
           scrollableRef.current.scrollTop = 0;
         }
       },
-      /**
-       * Imperatively scrolls the container to its bottom.
-       */
       scrollToBottom: () => {
         if (scrollableRef.current) {
           scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
         }
       },
-      /**
-       * Returns the current `isAtTop` status.
-       * @returns {boolean} True if the user is at the top, false otherwise.
-       */
       getIsAtTop: () => isAtTop,
-      /**
-       * Returns the current `isAtBottom` status.
-       * @returns {boolean} True if the user is at or near the bottom, false otherwise.
-       */
       getIsAtBottom: () => isAtBottom,
     }),
     [isAtBottom, isAtTop]
@@ -95,7 +79,6 @@ export default function AutoScroll({
     if (scrollableRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollableRef.current;
       const atTop = scrollTop <= 0;
-      // Check if user is at or very near the bottom
       const atBottom = scrollHeight - scrollTop <= clientHeight + 10;
       if (atTop !== isAtTop) {
         setIsAtTop(atTop);
@@ -112,13 +95,11 @@ export default function AutoScroll({
     }
   }, [isAtBottom, isAtTop, onScrollPositionChange, onScrollStatusChange]);
 
-  // Attach and detach scroll event listener
   useEffect(() => {
     const scrollElement = scrollableRef.current;
     if (!scrollElement) return;
 
     scrollElement.addEventListener('scroll', handleScroll);
-    // Perform an initial check on mount to set the correct state
     handleScroll();
 
     return () => {
@@ -126,20 +107,17 @@ export default function AutoScroll({
     };
   }, [handleScroll]);
 
-  // Effect to auto-scroll when children (messages) change, but only if the user was already at the bottom.
-  // This prevents disrupting the user if they've scrolled up to read old messages.
   useEffect(() => {
     if (isAtBottom && scrollableRef.current) {
       scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
     }
-  }, [children, isAtBottom]); // `children` here typically represents the messages list changing
+  }, [children, isAtBottom]);
 
   return (
-    // The div itself needs to be scrollable
     <div
       ref={scrollableRef}
-      className="overflow-y-auto flex-grow flex flex-col h-full" // Make it vertically scrollable and fill available height
-      style={{ minHeight: '0' }} // Ensures it can shrink if content is small
+      className="overflow-y-auto flex-grow flex flex-col h-full"
+      style={{ minHeight: '0' }}
     >
       {children}
     </div>
