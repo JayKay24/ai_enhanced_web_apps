@@ -35,7 +35,7 @@ export default function ChatPage() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
     e?.preventDefault();
     if (input.trim() || files.length > 0) {
       sendMessage(
