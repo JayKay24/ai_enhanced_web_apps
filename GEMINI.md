@@ -1,54 +1,38 @@
-# Project Context: AI Enhanced Web Apps
+# Project Context: Astra AI
 
-This project is an Nx-based monorepo designed for building AI-enhanced web applications. It features multiple chat clients (React, Next.js) integrated with Google Gemini 2.5 Flash via Vertex AI, utilizing a shared library architecture.
+This project is an Nx-based monorepo for building AI-enhanced web applications. The core application, **Astra**, is a Next.js-based chat interface integrated with Google Gemini via Vertex AI and the Vercel AI SDK.
 
 ## Project Overview
 
 - **Monorepo Tool:** [Nx](https://nx.dev)
-- **Frontend Frameworks:** React 19 (Astra AI), Next.js 15+ (App Router)
-- **Backend Framework:** NestJS (AI Gateway)
-- **AI Integration:** Google Gen AI SDK (`@google/genai`) - Gemini 2.5 Flash via Vertex AI
+- **Frontend/Backend Framework:** Next.js 15+ (App Router)
+- **AI Integration:** Vercel AI SDK (`ai` and `@ai-sdk/google`)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com), Radix UI, Lucide Icons
-- **Testing:**
-  - Frontend Unit/Component: [Vitest](https://vitest.dev)
-  - Backend Unit/Integration: [Jest](https://jestjs.io)
-  - End-to-End: [Playwright](https://playwright.dev)
 - **Port Mapping:**
-  - `chat-server`: 3000
-  - `chat-client-react`: 4200 (Vite)
-  - `chat-client-next`: 4300 (Next.js)
+  - `astra`: 4300 (Next.js)
 
 ## Directory Structure
 
 ### Applications
-- `apps/chat-client-react/`: React 19 application (Astra AI) built with Vite.
-- `apps/chat-client-next/`: Next.js 15+ implementation with integrated `/api/chat` route.
-- `apps/chat-server/`: NestJS backend integrating with Gemini AI.
-- `apps/chat-client-react-e2e/`: E2E tests for the React application.
-- `apps/chat-server-e2e/`: E2E tests for the backend application.
+- `apps/astra/`: Next.js 15+ implementation with integrated `/api/chat` route.
 
 ### Shared Libraries
 - `libs/chat-ui/`: Shared React UI components (Radix, Tailwind).
-- `libs/chat-hooks/`: Shared React hooks (`useChatFormSubmit`, `useEnterSubmit`, `useFocusOnSlashPress`).
-- `libs/shared-types/`: Shared TypeScript interfaces (`Message`, `ChatResponse`).
-- `libs/shared-utils/`: Shared utilities (`cn`, `generateUniqueId`, `fetchAssistantResponse`).
+- `libs/chat-hooks/`: Shared React hooks for chat functionality.
+- `libs/shared-types/`: Shared TypeScript interfaces.
+- `libs/shared-utils/`: Shared utilities and AI provider configurations.
 
 ## Application Architecture
 
 ### AI Integration
-- **Next.js Client (`chat-client-next`):** Uses the Vercel AI SDK (`ai` and `@ai-sdk/google`).
-  - Uses `generateText` or `streamText` for API responses.
-  - Requires `GOOGLE_GENERATIVE_AI_API_KEY` or Vertex AI ADC.
-- **Backend and React Client:** Use the Google Gen AI SDK (`@google/genai`) with `vertexai: true`.
+- **Astra AI Client (`apps/astra`):** Uses the Vercel AI SDK for streaming chat responses.
+  - API Route: `apps/astra/src/app/(chat)/api/chat/route.ts`
+  - Uses `streamText` for real-time interaction.
+  - Requires Vertex AI Application Default Credentials (ADC).
 - **Architectural Pattern for AI SDKs:**
-  - **Shared Config:** Store non-sensitive metadata (model names, provider IDs) in `libs/shared-utils/src/lib/ai-model-config.ts`. This file is safe for both client and server bundling.
-  - **Server-Only Logic:** Store model factory logic and SDK initializations (e.g., `createVertex`, `createOpenAI`) in `libs/shared-utils/src/lib/ai-providers.ts`. 
-  - **Bundling Protection:** NEVER export `ai-providers.ts` from the main `index.ts` barrel of a shared library that is imported by client components. Use sub-path exports (e.g., `@ai-enhanced-web-apps/shared-utils/ai-providers`) for server-side code only to avoid "Module not found: child_process/fs" errors in the browser.
-
-### Client Parity
-- Both clients use shared components from `@ai-enhanced-web-apps/chat-ui`.
-- Shared components MUST include the `"use client"` directive to support the Next.js App Router.
-- Tailwind configurations are synchronized to maintain visual consistency.
+  - **Shared Config:** Store non-sensitive metadata (model names, provider IDs) in `libs/shared-utils/src/lib/ai-model-config.ts`.
+  - **Server-Only Logic:** Store model factory logic in `libs/shared-utils/src/lib/ai-providers.ts`.
+  - **Bundling Protection:** Use sub-path exports (e.g., `@ai-enhanced-web-apps/shared-utils/ai-providers`) for server-side code to avoid browser bundling errors.
 
 ## Building and Running
 
@@ -57,64 +41,27 @@ Commands are typically executed via Nx.
 ### Development
 
 ```sh
-# Run React client
-npx nx serve chat-client-react
-
-# Run Next.js client
-npx nx serve chat-client-next
-
-# Run backend
-npx nx serve chat-server
+npx nx dev astra
 ```
 
 ### Build
 
 ```sh
-npx nx run-many -t build
-```
-
-### Testing
-
-```sh
-# Run all tests
-npx nx run-many -t test
-
-# Run specific project tests
-npx nx test chat-client-react
-npx nx test chat-server
+npx nx build astra
 ```
 
 ## Development Conventions
 
-- **Module Boundaries:** strictly enforced via `@nx/enforce-module-boundaries`. Prefer shared types and utils over local duplicates.
-- **TypeScript:** Strict mode enabled in `tsconfig.base.json`.
-- **Styling:** Tailwind utility classes are preferred. Shared styles are managed via the `chat-ui` library.
-- **Testing:** New features MUST include corresponding unit or E2E tests.
+- **Module Boundaries:** Strictly enforced via `@nx/enforce-module-boundaries`.
+- **TypeScript:** Strict mode enabled.
+- **Styling:** Tailwind utility classes are preferred.
 
 ### Shared Library Imports
 
-When using components, hooks, or types from shared libraries, always use the workspace-aliased paths.
-
-#### Chat UI Components and Types
+#### Chat UI Components
 Import from `@ai-enhanced-web-apps/chat-ui`:
 ```typescript
-import { 
-  AutoScroll, 
-  AutoScrollHandle, 
-  ChatList, 
-  ChatMessage, 
-  Button 
-} from '@ai-enhanced-web-apps/chat-ui';
-```
-
-#### Chat Hooks and Types
-Import from `@ai-enhanced-web-apps/chat-hooks`:
-```typescript
-import { 
-  useChatFormSubmit, 
-  useEnterSubmit, 
-  useFocusOnSlashPress 
-} from '@ai-enhanced-web-apps/chat-hooks';
+import { AutoScroll, ChatList, Button } from '@ai-enhanced-web-apps/chat-ui';
 ```
 
 #### Shared Types
@@ -125,8 +72,7 @@ import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 
 ## MCP
 
-- **Context7** - Always use Context7 MCP when writing or explaining code that involves external libraries, frameworks, or any npm package.
-  Fetch current docs automatically without me having to ask. If you know the specific library, resolve its Context7 ID directly and skip straight to fetching docs.
+- **Context7** - Always use Context7 MCP when writing or explaining code that involves external libraries or frameworks.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

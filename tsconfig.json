@@ -7,7 +7,7 @@
       "path": "./libs/shared-types"
     },
     {
-      "path": "./apps/chat-client-next"
+      "path": "./apps/astra"
     },
     {
       "path": "./libs/chat-ui"

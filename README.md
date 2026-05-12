@@ -41,17 +41,13 @@ I will be building applications utilizing modern tooling without needing to dive
 ## Project Structure
 
 ### Applications
-- apps/chat-client-react: A React 19 frontend application featuring the "Astra AI" chat interface. Built with Vite. Runs on port 4200.
-- apps/chat-client-next: A Next.js 15+ implementation with a built-in API route (/api/chat). Features parity with the React client. Runs on port 4300.
-- apps/chat-server: A NestJS backend serving as an AI gateway. Integrates with Vertex AI. Runs on port 3000.
-- apps/chat-client-react-e2e: Playwright E2E tests for the React application.
-- apps/chat-server-e2e: Jest E2E tests for the backend.
+- apps/astra: A Next.js 15+ implementation with a built-in API route (/api/chat). Runs on port 4300.
 
 ### Libraries
 - libs/chat-ui: Shared React components (Radix UI, Tailwind CSS).
 - libs/chat-hooks: Shared React hooks for chat logic and keyboard shortcuts.
 - libs/shared-types: Shared TypeScript interfaces and API contracts.
-- libs/shared-utils: Shared utility functions (e.g., cn, fetchAssistantResponse).
+- libs/shared-utils: Shared utility functions (e.g., cn).
 
 ## Screenshots
 
@@ -80,21 +76,10 @@ gcloud auth application-default login
 npm install
 ```
 
-### Running the Applications
+### Running the Application
 
-To run the React frontend:
 ```bash
-npx nx serve chat-client-react
-```
-
-To run the Next.js frontend:
-```bash
-npx nx serve chat-client-next
-```
-
-To run the backend:
-```bash
-npx nx serve chat-server
+npx nx serve astra
 ```
 
 ## Running Tasks
@@ -104,24 +89,19 @@ Nx is used for running all tasks.
 ### Build
 
 ```bash
-npx nx run-many -t build
+npx nx build astra
 ```
 
 ### Test
 
 ```bash
-# Run all tests
-npx nx run-many -t test
-
-# Run specific project tests
-npx nx test chat-client-react
-npx nx test chat-server
+npx nx test astra
 ```
 
 ### Linting
 
 ```bash
-npx nx run-many -t lint
+npx nx lint astra
 ```
 
 ## Documentation

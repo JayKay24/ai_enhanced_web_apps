@@ -28,8 +28,8 @@
     "src/**/*.tsx",
     "src/**/*.js",
     "src/**/*.jsx",
-    "../../apps/chat-client-next/.next/types/**/*.ts",
-    "../../dist/apps/chat-client-next/.next/types/**/*.ts",
+    "../../apps/astra/.next/types/**/*.ts",
+    "../../dist/apps/astra/.next/types/**/*.ts",
     "next-env.d.ts"
   ],
   "exclude": [
