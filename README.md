@@ -41,7 +41,7 @@ I will be building applications utilizing modern tooling without needing to dive
 ## Project Structure
 
 ### Applications
-- apps/astra: A Next.js 15+ implementation with a built-in API route (/api/chat). Runs on port 4300.
+- apps/astra: A Next.js 15+ implementation with a built-in API route (/api/chat). Runs on port 4300. See [apps/astra/README.md](./apps/astra/README.md) for app-specific details.
 
 ### Libraries
 - libs/chat-ui: Shared React components (Radix UI, Tailwind CSS).
