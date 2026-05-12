@@ -1,6 +1,6 @@
 # Learning Journey: Building AI-Enhanced Web Apps
 
-This repository tracks my progress through the concepts and projects found in the book *Build AI-Enhanced Web Apps* by Theo Despoudis. The primary goal of this learning path is to empower web developers to build dynamic, intelligent full-stack applications that leverage Large Language Models (LLMs) and generative AI within the familiar JavaScript ecosystem.
+This repository contains my experiments, projects, and learning notes as I build AI-enhanced full-stack web applications using LLMs and generative AI, inspired by *Building AI-Enhanced Web Apps* by Theo Despoudis.
 
 ## Core Technology Stack
 I will be building applications utilizing modern tooling without needing to dive deep into machine learning theory or Python. The core stack includes:
