@@ -4,18 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/chat-client-react-e2e"
-    },
-    {
-      "path": "./apps/chat-client-react"
-    },
-    {
-      "path": "./apps/chat-server-e2e"
-    },
-    {
-      "path": "./apps/chat-server"
-    },
-    {
       "path": "./libs/shared-types"
     },
     {
