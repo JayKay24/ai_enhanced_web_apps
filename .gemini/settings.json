@@ -1,12 +1,17 @@
 {
   "context": {
-    "fileName": ["AGENTS.md"]
+    "fileName": [
+      "AGENTS.md"
+    ]
   },
   "mcpServers": {
     "nx-mcp": {
       "type": "stdio",
       "command": "npx",
-      "args": ["nx", "mcp"]
+      "args": [
+        "nx",
+        "mcp"
+      ]
     },
     "context7": {
       "httpUrl": "https://mcp.context7.com/mcp",
@@ -14,6 +19,12 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}",
         "Accept": "application/json, text/event-stream"
       }
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "next-devtools-mcp@latest"
+      ]
     }
   }
 }
