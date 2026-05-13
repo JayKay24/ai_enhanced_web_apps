@@ -1,16 +1,53 @@
 'use server';
 
 import React from 'react';
-import { ModelMessage } from 'ai';
+import { ModelMessage, generateText, Output } from 'ai';
 import { createAI, getMutableAIState, streamUI } from '@ai-sdk/rsc';
 import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { ProviderId } from '@ai-enhanced-web-apps/shared-utils';
 import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
+import { z } from 'zod';
+
+const ProductSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  price: z.number(),
+  category: z.string(),
+});
+
+type Product = z.infer<typeof ProductSchema>;
 
 export interface UIStateItem {
   id: string;
-  display: React.ReactNode;
+  display?: React.ReactNode;
+  products?: Product[];
 }
+
+const ProductListSchema = z.array(ProductSchema);
+
+export const generateProductList = async (
+  prompt: string,
+  provider: ProviderId,
+  model: string,
+) => {
+  'use server';
+
+  const modelInstance = getModelInstance(provider, model);
+
+  const {
+    output: { products },
+  } = await generateText({
+    model: modelInstance,
+    output: Output.object({
+      schema: z.object({
+        products: ProductListSchema,
+      }),
+    }),
+    prompt: `Generate a list of 5 products related to: ${prompt}. Provide name, description, price, and category for each product.`,
+  });
+
+  return products;
+};
 
 export const continueConversation = async (
   input: string,
@@ -60,7 +97,7 @@ export const continueConversation = async (
 
 export const AI = createAI<ModelMessage[], UIStateItem[]>({
   actions: {
-    continueConversation,
+    generateProductList,
   },
   initialAIState: [],
   initialUIState: [],

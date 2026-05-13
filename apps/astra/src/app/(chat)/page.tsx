@@ -32,7 +32,7 @@ export default function ChatPage() {
   );
   const [files, setFiles] = useState<FileAttachment[]>([]);
   const [messages, setMessages] = useUIState<typeof AI>();
-  const { continueConversation } = useActions<typeof AI>() as any;
+  const { generateProductList } = useActions<typeof AI>() as any;
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
@@ -48,11 +48,9 @@ export default function ChatPage() {
   ) => {
     e?.preventDefault();
     const value = input.trim();
-    if (!value && files.length === 0) return;
+    if (!value) return;
 
     setInput('');
-    const currentFiles = [...files];
-    setFiles([]);
     setIsLoading(true);
 
     // Optimistic UI update
@@ -65,25 +63,26 @@ export default function ChatPage() {
             role="user"
             text={value}
             className="ml-auto"
-            attachments={currentFiles.map((file) => ({
-              url: file.data,
-              contentType: file.type,
-              name: 'attachment',
-            }))}
           />
         ),
       },
     ]);
 
     try {
-      const response = await continueConversation(
+      const products = await generateProductList(
         value,
-        currentFiles.map((f) => ({ data: f.data, type: f.type })),
         providerId,
         modelId,
       );
 
-      setMessages((currentMessages) => [...currentMessages, response]);
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: generateUniqueId(),
+          role: 'assistant',
+          products,
+        } as any,
+      ]);
     } catch (error) {
       console.error('Error in chat submission:', error);
     } finally {
@@ -180,7 +179,7 @@ export default function ChatPage() {
             <Textarea
               ref={inputRef}
               className="flex-1 min-h-[44px] max-h-[200px] border-none focus-visible:ring-0 shadow-none py-3 px-1 resize-none text-base"
-              placeholder="Type your message here..."
+              placeholder="Enter product category here..."
               tabIndex={0}
               autoFocus
               spellCheck={false}
@@ -198,7 +197,7 @@ export default function ChatPage() {
                 type="submit"
                 size="icon"
                 className="shrink-0 rounded-full"
-                disabled={isLoading || (!input.trim() && files.length === 0)}
+                disabled={isLoading || !input.trim()}
               >
                 <Send className="h-5 w-5" />
               </Button>

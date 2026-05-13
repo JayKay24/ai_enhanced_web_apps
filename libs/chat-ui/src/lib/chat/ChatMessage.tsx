@@ -11,9 +11,10 @@ interface ChatMessageProps {
   }[];
   width?: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ role, text, attachments, width = 'w-fit max-w-md', className = '' }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ role, text, attachments, children, width = 'w-fit max-w-md', className = '' }) => {
   return (
     <Card className={`p-5 flex flex-col gap-3 text-wrap break-words border-none whitespace-pre-wrap ${width} ${className}`}>
       <h5 className="text-lg font-semibold">{role === 'assistant' ? `✴️ Astra` : `👤 ${role}`}</h5>
@@ -32,7 +33,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ role, text, attachments, widt
         </div>
       )}
       
-      <p>{text}</p>
+      {text && <p>{text}</p>}
+      {children}
     </Card>
   );
 };

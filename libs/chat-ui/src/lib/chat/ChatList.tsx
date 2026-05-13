@@ -9,7 +9,13 @@ import { Message } from '@ai-enhanced-web-apps/shared-types';
  */
 export interface UIMessage {
   id: string;
-  display: React.ReactNode;
+  display?: React.ReactNode;
+  products?: {
+    name: string;
+    description: string;
+    price: number;
+    category: string;
+  }[];
 }
 
 /**
@@ -30,15 +36,45 @@ const ChatList: React.FC<ChatListProps> = ({ messages, isLoading }) => {
     <ul className="flex flex-col gap-5">
       {messages.map((message) => (
         <li key={message.id}>
-          {'display' in message ? (
+          {'display' in message && message.display ? (
             message.display
+          ) : 'products' in message && message.products ? (
+            <ChatMessage
+              role="assistant"
+              text="Here are some products related to your query:"
+              width="w-full max-w-3xl"
+              className="mr-auto"
+            >
+              <div className="overflow-x-auto mt-4">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border p-2 text-left">Name</th>
+                      <th className="border p-2 text-left">Description</th>
+                      <th className="border p-2 text-left">Price</th>
+                      <th className="border p-2 text-left">Category</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {message.products.map((product, i) => (
+                      <tr key={i} className="border-b">
+                        <td className="border p-2">{product.name}</td>
+                        <td className="border p-2">{product.description}</td>
+                        <td className="border p-2">${product.price.toFixed(2)}</td>
+                        <td className="border p-2">{product.category}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </ChatMessage>
           ) : (
             <ChatMessage
-              role={message.role}
-              text={message.content}
-              attachments={message.attachments}
+              role={(message as Message).role}
+              text={(message as Message).content}
+              attachments={(message as Message).attachments}
               className={`${
-                message.role === 'assistant' ? 'mr-auto' : 'ml-auto'
+                (message as Message).role === 'assistant' ? 'mr-auto' : 'ml-auto'
               } border-none`}
             />
           )}
