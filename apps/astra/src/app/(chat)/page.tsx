@@ -15,13 +15,15 @@ import {
   useEnterSubmit,
   useFocusOnSlashPress,
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { useChat } from '@ai-sdk/react';
+import { readStreamableValue } from '@ai-sdk/rsc';
 import { ChevronUp, Send } from 'lucide-react';
 import { Message } from '@ai-enhanced-web-apps/shared-types';
 import {
   SUPPORTED_PROVIDERS_CONFIG,
   ProviderId,
 } from '@ai-enhanced-web-apps/shared-utils';
+import { continueConversation } from './actions';
+import { ModelMessage } from 'ai';
 
 export default function ChatPage() {
   const [providerId, setProviderId] = useState<ProviderId>('vertex');
@@ -29,8 +31,8 @@ export default function ChatPage() {
     SUPPORTED_PROVIDERS_CONFIG.vertex.models[0],
   );
   const [files, setFiles] = useState<FileAttachment[]>([]);
-
-  const { messages, sendMessage, status } = useChat();
+  const [messages, setMessages] = useState<ModelMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
   const { formRef, onKeyDown } = useEnterSubmit();
@@ -40,32 +42,51 @@ export default function ChatPage() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     e?: React.SyntheticEvent<HTMLFormElement, SubmitEvent>,
   ) => {
     e?.preventDefault();
-    if (input.trim() || files.length > 0) {
-      sendMessage(
-        {
-          parts: [
-            { type: 'text', text: input },
-            ...files.map((file) => ({
-              type: 'file' as const,
-              url: file.data,
-              mediaType: file.type,
-              name: file.name,
-            })),
-          ],
-        },
-        {
-          body: {
-            provider: providerId,
-            model: modelId,
-          },
-        },
+    const value = input.trim();
+    if (!value && files.length === 0) return;
+
+    setInput('');
+    setFiles([]);
+    setIsLoading(true);
+
+    const userMessage: ModelMessage = {
+      role: 'user',
+      content: [
+        { type: 'text', text: value },
+        ...files.map((file) => ({
+          type: 'image' as const,
+          image: file.data,
+          mimeType: file.type,
+        })),
+      ],
+    };
+
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+
+    try {
+      const { newMessage } = await continueConversation(
+        newMessages,
+        providerId,
+        modelId,
       );
-      setInput('');
-      setFiles([]);
+
+      let textContent = '';
+      for await (const delta of readStreamableValue(newMessage)) {
+        textContent = `${textContent}${delta}`;
+        setMessages([
+          ...newMessages,
+          { role: 'assistant', content: textContent },
+        ]);
+      }
+    } catch (error) {
+      console.error('Error in chat submission:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,22 +103,21 @@ export default function ChatPage() {
     setModelId(SUPPORTED_PROVIDERS_CONFIG[id].models[0]);
   };
 
-  const isLoading = status === 'submitted' || status === 'streaming';
-
-  const mappedMessages: Message[] = messages.map((m) => ({
-    id: m.id,
-    role: m.role,
-    content: m.parts.map((p) => (p.type === 'text' ? p.text : '')).join(''),
-    attachments: m.parts
-      .filter((p) => p.type === 'file')
-      .map((p) => {
-        const filePart = p as any;
-        return {
-          url: filePart.url,
-          contentType: filePart.mediaType || 'image/png',
-          name: filePart.name,
-        };
-      }),
+  const mappedMessages: Message[] = messages.map((m, idx) => ({
+    id: idx.toString(),
+    role: m.role as 'user' | 'assistant' | 'system',
+    content: typeof m.content === 'string' ? m.content : 
+      m.content.filter(p => p.type === 'text').map(p => (p as any).text).join(''),
+    attachments: Array.isArray(m.content) 
+      ? m.content.filter(p => p.type === 'image').map(p => {
+          const imgPart = p as any;
+          return {
+            url: imgPart.image,
+            contentType: imgPart.mimeType || 'image/png',
+            name: 'attachment',
+          };
+        })
+      : [],
   }));
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
