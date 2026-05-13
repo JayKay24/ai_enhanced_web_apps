@@ -2,14 +2,13 @@
 import React from 'react';
 import ChatMessage from './ChatMessage';
 import ChatBubbleLoading from './ChatBubbleLoading';
-import { Message } from '@ai-enhanced-web-apps/shared-types';
 
 /**
  * Props for the ChatList component.
  */
 export interface ChatListProps {
-  /** Array of messages to display. */
-  messages: Message[];
+  /** Array of messages to display (can be Message[] or UIStateItem[]). */
+  messages: any[];
   /** Indicates if a new message is currently being loaded/generated. */
   isLoading: boolean;
 }
@@ -20,16 +19,20 @@ export interface ChatListProps {
 const ChatList: React.FC<ChatListProps> = ({ messages, isLoading }) => {
   return (
     <ul className="flex flex-col gap-5">
-      {messages.map((message) => (
+      {messages.map((message: any) => (
         <li key={message.id}>
-          <ChatMessage
-            role={message.role}
-            text={message.content}
-            attachments={message.attachments}
-            className={`${
-              message.role === 'assistant' ? 'mr-auto' : 'ml-auto'
-            } border-none`}
-          />
+          {message.display ? (
+            message.display
+          ) : (
+            <ChatMessage
+              role={message.role}
+              text={message.content}
+              attachments={message.attachments}
+              className={`${
+                message.role === 'assistant' ? 'mr-auto' : 'ml-auto'
+              } border-none`}
+            />
+          )}
         </li>
       ))}
       {isLoading && (

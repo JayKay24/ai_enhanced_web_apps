@@ -3,27 +3,27 @@
 import React, { useRef, useState, useCallback } from 'react';
 import {
   Textarea,
-  ChatList,
   AutoScroll,
   AutoScrollHandle,
   Button,
   ModelSelector,
   FileUploader,
   FileAttachment,
+  ChatMessage,
+  ChatList,
 } from '@ai-enhanced-web-apps/chat-ui';
 import {
   useEnterSubmit,
   useFocusOnSlashPress,
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { readStreamableValue } from '@ai-sdk/rsc';
+import { useActions, useUIState } from '@ai-sdk/rsc';
 import { ChevronUp, Send } from 'lucide-react';
-import { Message } from '@ai-enhanced-web-apps/shared-types';
 import {
   SUPPORTED_PROVIDERS_CONFIG,
   ProviderId,
+  generateUniqueId,
 } from '@ai-enhanced-web-apps/shared-utils';
-import { continueConversation } from './actions';
-import { ModelMessage } from 'ai';
+import { AI } from './actions';
 
 export default function ChatPage() {
   const [providerId, setProviderId] = useState<ProviderId>('vertex');
@@ -31,7 +31,8 @@ export default function ChatPage() {
     SUPPORTED_PROVIDERS_CONFIG.vertex.models[0],
   );
   const [files, setFiles] = useState<FileAttachment[]>([]);
-  const [messages, setMessages] = useState<ModelMessage[]>([]);
+  const [messages, setMessages] = useUIState<typeof AI>();
+  const { continueConversation } = useActions<typeof AI>() as any;
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
@@ -50,39 +51,39 @@ export default function ChatPage() {
     if (!value && files.length === 0) return;
 
     setInput('');
+    const currentFiles = [...files];
     setFiles([]);
     setIsLoading(true);
 
-    const userMessage: ModelMessage = {
-      role: 'user',
-      content: [
-        { type: 'text', text: value },
-        ...files.map((file) => ({
-          type: 'image' as const,
-          image: file.data,
-          mimeType: file.type,
-        })),
-      ],
-    };
-
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    // Optimistic UI update
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        id: generateUniqueId(),
+        display: (
+          <ChatMessage
+            role="user"
+            text={value}
+            className="ml-auto"
+            attachments={currentFiles.map((file) => ({
+              url: file.data,
+              contentType: file.type,
+              name: 'attachment',
+            }))}
+          />
+        ),
+      },
+    ]);
 
     try {
-      const { newMessage } = await continueConversation(
-        newMessages,
+      const response = await continueConversation(
+        value,
+        currentFiles.map((f) => ({ data: f.data, type: f.type })),
         providerId,
         modelId,
       );
 
-      let textContent = '';
-      for await (const delta of readStreamableValue(newMessage)) {
-        textContent = `${textContent}${delta}`;
-        setMessages([
-          ...newMessages,
-          { role: 'assistant', content: textContent },
-        ]);
-      }
+      setMessages((currentMessages) => [...currentMessages, response]);
     } catch (error) {
       console.error('Error in chat submission:', error);
     } finally {
@@ -102,23 +103,6 @@ export default function ChatPage() {
     setProviderId(id);
     setModelId(SUPPORTED_PROVIDERS_CONFIG[id].models[0]);
   };
-
-  const mappedMessages: Message[] = messages.map((m, idx) => ({
-    id: idx.toString(),
-    role: m.role as 'user' | 'assistant' | 'system',
-    content: typeof m.content === 'string' ? m.content : 
-      m.content.filter(p => p.type === 'text').map(p => (p as any).text).join(''),
-    attachments: Array.isArray(m.content) 
-      ? m.content.filter(p => p.type === 'image').map(p => {
-          const imgPart = p as any;
-          return {
-            url: imgPart.image,
-            contentType: imgPart.mimeType || 'image/png',
-            name: 'attachment',
-          };
-        })
-      : [],
-  }));
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
   const [isAtTop, setIsAtTop] = useState(true);
@@ -161,7 +145,7 @@ export default function ChatPage() {
           </h1>
         )}
         {messages.length > 0 && (
-          <ChatList messages={mappedMessages} isLoading={isLoading} />
+          <ChatList messages={messages} isLoading={isLoading} />
         )}
       </AutoScroll>
 
