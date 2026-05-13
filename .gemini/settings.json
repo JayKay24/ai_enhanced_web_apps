@@ -1,4 +1,7 @@
 {
+  "context": {
+    "fileName": ["AGENTS.md"]
+  },
   "mcpServers": {
     "nx-mcp": {
       "type": "stdio",
