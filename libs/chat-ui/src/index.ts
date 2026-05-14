@@ -11,6 +11,7 @@ export { default as ChatMessage } from './lib/chat/ChatMessage';
 export * from './lib/chat/ChatMessage';
 export { default as ChatBubbleLoading } from './lib/chat/ChatBubbleLoading';
 export * from './lib/chat/ChatBubbleLoading';
+export * from './lib/chat/Weather';
 export { default as AutoScroll } from './lib/AutoScroll';
 export * from './lib/AutoScroll';
 export { default as Navbar } from './lib/Navbar';

@@ -32,7 +32,7 @@ export default function ChatPage() {
   );
   const [files, setFiles] = useState<FileAttachment[]>([]);
   const [messages, setMessages] = useUIState<typeof AI>();
-  const { generateProductList } = useActions<typeof AI>() as any;
+  const { continueConversation } = useActions<typeof AI>() as any;
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
@@ -69,20 +69,18 @@ export default function ChatPage() {
     ]);
 
     try {
-      const products = await generateProductList(
+      const response = await continueConversation(
         value,
+        files.map(f => ({ data: f.data, type: f.type })),
         providerId,
         modelId,
       );
 
       setMessages((currentMessages) => [
         ...currentMessages,
-        {
-          id: generateUniqueId(),
-          role: 'assistant',
-          products,
-        } as any,
+        response,
       ]);
+      setFiles([]);
     } catch (error) {
       console.error('Error in chat submission:', error);
     } finally {
