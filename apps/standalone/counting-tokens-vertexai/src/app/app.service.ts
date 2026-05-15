@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Content } from '@google/genai';
 
 @Injectable()
 export class AppService {
-  private ai: any;
+  private ai: GoogleGenAI;
 
   constructor() {
     const project = process.env.VERTEX_AI_PROJECT_ID;
@@ -14,17 +14,16 @@ export class AppService {
     }
 
     this.ai = new GoogleGenAI({
-      vertexai: {
-        project,
-        location,
-      },
+      vertexai: true,
+      project,
+      location,
     });
   }
 
   async countTextTokens(text: string) {
     try {
       const response = await this.ai.models.countTokens({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
         contents: [
           {
             parts: [{ text: text }],
@@ -37,10 +36,10 @@ export class AppService {
     }
   }
 
-  async countChatTokens(history: any[]) {
+  async countChatTokens(history: Content[]) {
     try {
       const response = await this.ai.models.countTokens({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
         contents: history,
       });
       console.log('Chat history token count:', response.totalTokens);
@@ -53,11 +52,9 @@ export class AppService {
     try {
       const response = await this.ai.models.embedContent({
         model: 'gemini-embedding-001',
-        contents: {
-          parts: [{ text: text }],
-        },
+        contents: [text],
       });
-      return response.embedding;
+      return response.embeddings?.[0];
     } catch (error) {
       console.error('Error getting embedding:', error);
       return null;
@@ -95,8 +92,8 @@ export class AppService {
       await this.countTextTokens(question);
 
       const embedding = await this.getEmbedding(question);
-      if (embedding) {
-        embeddingDB[question] = embedding.values; // @google/genai returns { values: number[] }
+      if (embedding && embedding.values) {
+        embeddingDB[question] = embedding.values;
       }
     }
 
@@ -104,7 +101,7 @@ export class AppService {
     await this.countTextTokens(userQuery);
     const queryEmbedding = await this.getEmbedding(userQuery);
 
-    if (queryEmbedding) {
+    if (queryEmbedding && queryEmbedding.values) {
       let maxSimilarity = -1;
       let mostRelevantQuestion = '';
 
@@ -122,7 +119,7 @@ export class AppService {
       console.log('Most relevant question:', mostRelevantQuestion);
     }
 
-    const history = [
+    const history: Content[] = [
       { role: 'user', parts: [{ text: 'Hi my name is Bob' }] },
       { role: 'model', parts: [{ text: 'Hi Bob!' }] },
     ];
@@ -130,7 +127,7 @@ export class AppService {
     await this.countChatTokens(history);
 
     const chat = this.ai.chats.create({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       history: history,
     });
 
@@ -140,7 +137,7 @@ export class AppService {
     console.log('Chat response usage metadata:', chatResponse.usageMetadata);
 
     const combinedHistory = chat.getHistory();
-    const extraMessage = {
+    const extraMessage: Content = {
       role: 'user',
       parts: [{ text: 'What is the meaning of life?' }],
     };
