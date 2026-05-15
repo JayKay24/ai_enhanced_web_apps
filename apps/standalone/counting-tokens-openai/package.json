@@ -75,6 +75,25 @@
             "buildTarget": "standalone-counting-tokens-openai:build:production"
           }
         }
+      },
+      "execute": {
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "standalone-counting-tokens-openai:build",
+          "watch": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "standalone-counting-tokens-openai:build:development"
+          },
+          "production": {
+            "buildTarget": "standalone-counting-tokens-openai:build:production"
+          }
+        }
       }
     }
   },
