@@ -10,13 +10,18 @@
     "@ai-sdk/openai": "^3.0.63",
     "@ai-sdk/react": "^3.0.179",
     "@ai-sdk/rsc": "^2.0.180",
+    "@dqbd/tiktoken": "^1.0.22",
     "@google-cloud/vertexai": "^1.12.0",
     "@google/genai": "^1.50.1",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.4",
     "ai": "^6.0.177",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.4.2",
     "lucide-react": "^1.8.0",
     "next": "~16.1.6",
     "openai": "^6.34.0",
@@ -24,6 +29,8 @@
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^10.0.3",
     "react-resizable-panels": "^4.10.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.4.3"
@@ -32,11 +39,18 @@
     "@babel/core": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "@eslint/js": "^9.8.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.0",
     "@nx/devkit": "22.6.5",
     "@nx/eslint": "22.6.5",
     "@nx/eslint-plugin": "22.6.5",
-    "@nx/js": "22.6.5",
+    "@nx/jest": "^22.6.5",
+    "@nx/js": "22.7.2",
+    "@nx/nest": "^22.6.5",
     "@nx/next": "^22.6.5",
+    "@nx/node": "22.7.2",
+    "@nx/web": "^22.6.5",
+    "@nx/webpack": "^22.6.5",
     "@nx/workspace": "22.6.5",
     "@swc-node/register": "~1.11.1",
     "@swc/cli": "~0.8.0",
@@ -60,10 +74,12 @@
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
-    "typescript-eslint": "^8.40.0"
+    "typescript-eslint": "^8.40.0",
+    "webpack-cli": "^5.1.4"
   },
   "workspaces": [
     "apps/*",
-    "libs/*"
+    "libs/*",
+    "apps/standalone/*"
   ]
 }
