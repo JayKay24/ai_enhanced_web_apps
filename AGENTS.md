@@ -77,6 +77,7 @@ This project utilizes Model Context Protocol (MCP) to enhance development workfl
 - **Context7** - Always use Context7 MCP (`https://mcp.context7.com/mcp`) when writing or explaining code that involves external libraries or frameworks.
 - **Nx MCP** - Always use for understanding workspace architecture, project dependencies, and configuration (`npx nx mcp`).
 - **Next DevTools** - Always use for Next.js-specific development tools, diagnostics, and upgrades (`npx next-devtools-mcp@latest`).
+- **GitHub MCP** - Always Use for GitHub repository queries e.g. reading code files from the given GitHub link.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
