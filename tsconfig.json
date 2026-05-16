@@ -29,6 +29,9 @@
     },
     {
       "path": "./apps/standalone/few-shot-learning"
+    },
+    {
+      "path": "./apps/standalone/few-shot-learning-e2e"
     }
   ]
 }

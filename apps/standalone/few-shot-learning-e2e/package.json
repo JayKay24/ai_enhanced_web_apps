@@ -1,0 +1,27 @@
+{
+  "name": "@ai-enhanced-web-apps/few-shot-learning-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "few-shot-learning-e2e",
+    "implicitDependencies": [
+      "few-shot-learning"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/standalone/few-shot-learning-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "few-shot-learning:build",
+          "few-shot-learning:serve"
+        ]
+      }
+    }
+  }
+}

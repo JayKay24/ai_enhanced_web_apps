@@ -3,41 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "name": "few-shot-learning",
     "targets": {
       "build": {
-        "executor": "@nx/esbuild:esbuild",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "defaultConfiguration": "production",
+        "executor": "nx:run-commands",
         "options": {
-          "platform": "node",
-          "outputPath": "apps/standalone/few-shot-learning/dist",
-          "format": [
-            "cjs"
+          "command": "webpack-cli build",
+          "args": [
+            "--node-env=production"
           ],
-          "bundle": false,
-          "main": "apps/standalone/few-shot-learning/src/main.ts",
-          "tsConfig": "apps/standalone/few-shot-learning/tsconfig.app.json",
-          "assets": [
-            "apps/standalone/few-shot-learning/src/assets"
-          ],
-          "esbuildOptions": {
-            "sourcemap": true,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
+          "cwd": "apps/standalone/few-shot-learning"
         },
         "configurations": {
-          "development": {},
-          "production": {
-            "esbuildOptions": {
-              "sourcemap": false,
-              "outExtension": {
-                ".js": ".js"
-              }
-            }
+          "development": {
+            "args": [
+              "--node-env=development"
+            ]
           }
         }
       },
@@ -83,19 +64,48 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/few-shot-learning:build",
+          "buildTarget": "few-shot-learning:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/few-shot-learning:build:development"
+            "buildTarget": "few-shot-learning:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/few-shot-learning:build:production"
+            "buildTarget": "few-shot-learning:build:production"
+          }
+        }
+      },
+      "execute": {
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "few-shot-learning:build",
+          "watch": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "few-shot-learning:build:development"
+          },
+          "production": {
+            "buildTarget": "few-shot-learning:build:production"
           }
         }
       }
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0"
+  }
 }

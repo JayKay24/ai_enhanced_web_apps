@@ -1,70 +1,18 @@
-import 'dotenv/config';
-import { generateText } from 'ai';
-import { vertex } from '@ai-sdk/google-vertex';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app/app.module';
+import { AppService } from './app/app.service';
 
-async function generateProgrammingLanguages(): Promise<void> {
-  const prompt = `
-List some popular programming languages along with a brief description of each:
+async function bootstrap() {
+  const app = await NestFactory.createApplicationContext(AppModule);
+  const appService = app.get(AppService);
 
-1. JavaScript: A versatile language primarily used for web development.
-2. Python: Known for its readability and used in data science and web development.
-3. Java: A widely-used language for building enterprise-level applications.
-
-4.`;
-
-  const response = await generateText({
-    model: vertex('gemini-2.5-flash'), // Using Vertex AI model
-    prompt: prompt,
-    maxTokens: 512,
-  });
-
-  console.log("Generated Programming Languages:\n", response.text, "\n");
+  try {
+    await appService.run();
+  } catch (error) {
+    console.error('Execution failed:', error);
+  } finally {
+    await app.close();
+  }
 }
 
-// Ensure the message parameter is statically typed
-async function supportCustomerIssue(message: string): Promise<void> {
-  const system = `
-You are a customer support chatbot. Adapt your tone and sentiment based on the following example interactions for each supported use case:
-
-**Use Case 1: Technical Support**
-
-**User:** My internet connection is really slow. Can you help me?
-
-**Chatbot:** I'm sorry to hear that you're experiencing slow internet speeds. Let's troubleshoot this together. Can you please provide me with your current speed test results?
-
-**Use Case 2: Billing Inquiry**
-
-**User:** I was charged twice for my subscription this month. What happened?
-
-**Chatbot:** I understand how concerning double charges can be. Let me check your account details and resolve this issue for you right away.
-
-**Use Case 3: General Inquiry**
-
-**User:** What are your customer support hours?
-
-**Chatbot:** Our customer support team is available 24/7 to assist you with any questions you may have.
-`;
-
-  const response = await generateText({
-    model: vertex('gemini-2.0-flash'), // Using Vertex AI model
-    prompt: message,
-    system: system,
-    maxTokens: 512,
-  });
-
-  console.log(`User: ${message}`);
-  console.log("Chatbot Response:", response.text, "\n");
-}
-
-async function main() {
-  console.log("--- Generating Programming Languages (Few-Shot) ---");
-  // await generateProgrammingLanguages();
-
-  console.log("--- Customer Support Chatbot (Few-Shot System Prompt) ---");
-  await supportCustomerIssue("My Wi-Fi keeps disconnecting every few minutes. What should I do?");
-  // await supportCustomerIssue("I was charged for a service I didn't use. Can you help?");
-  // await supportCustomerIssue("Can I change my shipping address after placing an order?");
-  // await supportCustomerIssue("I'm locked out of my account. How can I regain access?");
-}
-
-main().catch(console.error);
+bootstrap();
