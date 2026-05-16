@@ -23,6 +23,9 @@
     },
     {
       "path": "./apps/standalone/counting-tokens-vertexai"
+    },
+    {
+      "path": "./apps/standalone/unit-prompt-tests"
     }
   ]
 }
