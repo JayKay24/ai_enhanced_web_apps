@@ -72,10 +72,7 @@
     "@nx/esbuild:esbuild": {
       "cache": true,
       "dependsOn": ["^build"],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "inputs": ["production", "^production"]
     }
   },
   "generators": {

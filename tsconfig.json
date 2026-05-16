@@ -26,6 +26,9 @@
     },
     {
       "path": "./apps/standalone/unit-prompt-tests"
+    },
+    {
+      "path": "./apps/standalone/few-shot-learning"
     }
   ]
 }

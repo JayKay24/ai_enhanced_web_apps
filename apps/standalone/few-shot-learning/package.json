@@ -1,0 +1,101 @@
+{
+  "name": "@ai-enhanced-web-apps/few-shot-learning",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/standalone/few-shot-learning/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "apps/standalone/few-shot-learning/src/main.ts",
+          "tsConfig": "apps/standalone/few-shot-learning/tsconfig.app.json",
+          "assets": [
+            "apps/standalone/few-shot-learning/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "prune-lockfile": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "executor": "@nx/js:prune-lockfile",
+        "outputs": [
+          "{workspaceRoot}/apps/standalone/few-shot-learning/dist/package.json",
+          "{workspaceRoot}/apps/standalone/few-shot-learning/dist/package-lock.json"
+        ],
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "copy-workspace-modules": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "outputs": [
+          "{workspaceRoot}/apps/standalone/few-shot-learning/dist/workspace_modules"
+        ],
+        "executor": "@nx/js:copy-workspace-modules",
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "prune": {
+        "dependsOn": [
+          "prune-lockfile",
+          "copy-workspace-modules"
+        ],
+        "executor": "nx:noop"
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@ai-enhanced-web-apps/few-shot-learning:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@ai-enhanced-web-apps/few-shot-learning:build:development"
+          },
+          "production": {
+            "buildTarget": "@ai-enhanced-web-apps/few-shot-learning:build:production"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {}
+}
