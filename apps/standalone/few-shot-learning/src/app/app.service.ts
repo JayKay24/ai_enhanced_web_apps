@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { generateText } from 'ai';
-import { vertex } from '@ai-sdk/google-vertex';
+import { createVertex } from '@ai-sdk/google-vertex';
 
 @Injectable()
 export class AppService {
+  private vertex = createVertex({
+    project: process.env['VERTEX_AI_PROJECT_ID'],
+    location: process.env['VERTEX_AI_LOCATION'],
+  });
+
   async generateProgrammingLanguages(): Promise<void> {
     const prompt = `
 List some popular programming languages along with a brief description of each:
@@ -15,12 +20,9 @@ List some popular programming languages along with a brief description of each:
 4.`;
 
     const response = await generateText({
-      model: vertex('gemini-2.5-flash', {
-        project: process.env['VERTEX_AI_PROJECT_ID'],
-        location: process.env['VERTEX_AI_LOCATION'],
-      }),
+      model: this.vertex('gemini-2.5-flash'),
       prompt: prompt,
-      maxTokens: 512,
+      maxOutputTokens: 512,
     });
 
     console.log("Generated Programming Languages:\n", response.text, "\n");
@@ -50,13 +52,10 @@ You are a customer support chatbot. Adapt your tone and sentiment based on the f
 `;
 
     const response = await generateText({
-      model: vertex('gemini-2.5-flash', {
-        project: process.env['VERTEX_AI_PROJECT_ID'],
-        location: process.env['VERTEX_AI_LOCATION'],
-      }),
+      model: this.vertex('gemini-2.5-flash'),
       prompt: message,
       system: system,
-      maxTokens: 512,
+      maxOutputTokens: 512,
     });
 
     console.log(`User: ${message}`);
