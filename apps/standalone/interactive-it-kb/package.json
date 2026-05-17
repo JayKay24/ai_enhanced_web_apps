@@ -75,6 +75,25 @@
           }
         }
       },
+      "execute": {
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build",
+          "watch": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build:development"
+          },
+          "production": {
+            "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build:production"
+          }
+        }
+      },
       "test": {
         "options": {
           "passWithNoTests": true

@@ -1,6 +1,7 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module.js';
-import { AppService } from './app/app.service.js';
+import { AppModule } from './app/app.module';
+import { AppService } from './app/app.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
@@ -12,9 +13,11 @@ async function bootstrap() {
   try {
     await appService.executeInteractiveQuery();
   } catch (error) {
-    console.error('An error occurred during execution:', error);
+    console.error('Execution failed:', error);
+    process.exit(1);
   } finally {
     await app.close();
+    process.exit(0);
   }
 }
 
