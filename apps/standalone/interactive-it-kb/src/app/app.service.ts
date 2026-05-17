@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { embed, embedMany, cosineSimilarity } from 'ai';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createVertex } from '@ai-sdk/google-vertex';
 import 'dotenv/config';
 
 @Injectable()
 export class AppService {
+  private vertex = createVertex({
+    project: process.env['VERTEX_AI_PROJECT_ID'],
+    location: process.env['VERTEX_AI_LOCATION'],
+  });
+
   private readonly questions = [
     'How do I reset my password?',
     'What should I do if my computer won\'t start?',
@@ -24,11 +29,7 @@ export class AppService {
   ];
 
   async executeInteractiveQuery(): Promise<void> {
-    const google = createGoogleGenerativeAI({
-      apiKey: process.env['GEMINI_API_KEY'],
-    });
-
-    const model = google.textEmbeddingModel('text-embedding-004');
+    const model = this.vertex.textEmbeddingModel('text-embedding-004');
 
     console.log('--- IT Knowledge Base Initializing ---');
     console.log('Generating embeddings for knowledge base...');
