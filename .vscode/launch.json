@@ -148,6 +148,24 @@
         "${workspaceFolder}/apps/standalone/embeddings-vertexai/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug @ai-enhanced-web-apps/interactive-it-kb with Nx",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/interactive-it-kb"],
+      "env": {
+        "NODE_OPTIONS": "--inspect=9237"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/apps/standalone/interactive-it-kb/dist/**/*.(m|c|)js",
+        "!**/node_modules/**"
+      ]
     }
   ]
 }
