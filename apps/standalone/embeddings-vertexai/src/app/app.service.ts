@@ -18,7 +18,7 @@ export class AppService {
       location: location,
     });
 
-    const model = vertex.textEmbeddingModel('text-embedding-004');
+    const model = vertex.embeddingModel('text-embedding-004');
 
     const inputText = `
 List some popular programming languages along with a brief description of each:
