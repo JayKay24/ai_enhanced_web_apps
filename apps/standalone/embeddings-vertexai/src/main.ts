@@ -11,8 +11,10 @@ async function bootstrap() {
     await appService.run();
   } catch (error) {
     console.error('Execution failed:', error);
+    process.exit(1);
   } finally {
     await app.close();
+    process.exit(0);
   }
 }
 
