@@ -126,6 +126,28 @@
         "${workspaceFolder}/apps/standalone/few-shot-learning/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug @ai-enhanced-web-apps/embeddings-vertexai with Nx",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "nx",
+        "serve",
+        "@ai-enhanced-web-apps/embeddings-vertexai"
+      ],
+      "env": {
+        "NODE_OPTIONS": "--inspect=9236"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/apps/standalone/embeddings-vertexai/dist/**/*.(m|c|)js",
+        "!**/node_modules/**"
+      ]
     }
   ]
 }
