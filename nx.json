@@ -62,8 +62,7 @@
       "plugin": "@nx/jest/plugin",
       "options": {
         "targetName": "test"
-      },
-      "exclude": ["apps/standalone/few-shot-learning-e2e/**/*"]
+      }
     }
   ],
   "targetDefaults": {
