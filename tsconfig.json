@@ -38,6 +38,9 @@
     },
     {
       "path": "./apps/standalone/langchain-simple-chain"
+    },
+    {
+      "path": "./apps/standalone/few-shot-chain"
     }
   ]
 }

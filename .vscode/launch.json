@@ -6,19 +6,13 @@
       "request": "launch",
       "name": "Debug @ai-enhanced-web-apps/chat-server with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/chat-server"
-      ],
+      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/chat-server"],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/chat-server/dist/**/*.(m|c|)js",
@@ -30,19 +24,13 @@
       "request": "launch",
       "name": "Debug standalone-counting-tokens-openai with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "standalone-counting-tokens-openai"
-      ],
+      "runtimeArgs": ["nx", "serve", "standalone-counting-tokens-openai"],
       "env": {
         "NODE_OPTIONS": "--inspect=9230"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/counting-tokens-openai/dist/**/*.(m|c|)js",
@@ -54,19 +42,13 @@
       "request": "launch",
       "name": "Debug standalone-counting-tokens-vertexai with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "standalone-counting-tokens-vertexai"
-      ],
+      "runtimeArgs": ["nx", "serve", "standalone-counting-tokens-vertexai"],
       "env": {
         "NODE_OPTIONS": "--inspect=9231"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/counting-tokens-vertexai/dist/**/*.(m|c|)js",
@@ -78,19 +60,13 @@
       "request": "launch",
       "name": "Debug standalone-counting-tokens-vertexai with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "standalone-counting-tokens-vertexai"
-      ],
+      "runtimeArgs": ["nx", "serve", "standalone-counting-tokens-vertexai"],
       "env": {
         "NODE_OPTIONS": "--inspect=9232"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/counting-tokens-vertexai/dist/**/*.(m|c|)js",
@@ -102,19 +78,13 @@
       "request": "launch",
       "name": "Debug @ai-enhanced-web-apps/unit-prompt-tests with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/unit-prompt-tests"
-      ],
+      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/unit-prompt-tests"],
       "env": {
         "NODE_OPTIONS": "--inspect=9233"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/unit-prompt-tests/dist/**/*.(m|c|)js",
@@ -126,19 +96,13 @@
       "request": "launch",
       "name": "Debug @ai-enhanced-web-apps/few-shot-learning with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/few-shot-learning"
-      ],
+      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/few-shot-learning"],
       "env": {
         "NODE_OPTIONS": "--inspect=9234"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/few-shot-learning/dist/**/*.(m|c|)js",
@@ -150,19 +114,13 @@
       "request": "launch",
       "name": "Debug few-shot-learning with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "few-shot-learning"
-      ],
+      "runtimeArgs": ["nx", "serve", "few-shot-learning"],
       "env": {
         "NODE_OPTIONS": "--inspect=9235"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/few-shot-learning/dist/**/*.(m|c|)js",
@@ -184,9 +142,7 @@
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/embeddings-vertexai/dist/**/*.(m|c|)js",
@@ -198,19 +154,13 @@
       "request": "launch",
       "name": "Debug @ai-enhanced-web-apps/interactive-it-kb with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/interactive-it-kb"
-      ],
+      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/interactive-it-kb"],
       "env": {
         "NODE_OPTIONS": "--inspect=9237"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/interactive-it-kb/dist/**/*.(m|c|)js",
@@ -232,12 +182,28 @@
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/langchain-simple-chain/dist/**/*.(m|c|)js",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug @ai-enhanced-web-apps/few-shot-chain with Nx",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/few-shot-chain"],
+      "env": {
+        "NODE_OPTIONS": "--inspect=9239"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/apps/standalone/few-shot-chain/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }
