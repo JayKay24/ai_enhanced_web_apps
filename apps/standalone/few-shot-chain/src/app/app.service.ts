@@ -9,44 +9,58 @@ export class AppService {
   private readonly logger = new Logger(AppService.name);
 
   async demonstrateFewShotPrompting(): Promise<void> {
-    this.logger.log('--- LangChain Few-Shot Prompt Formatting ---');
+    this.logger.log('--- LangChain Few-Shot Prompt Formatting (Original Example) ---');
 
-    // 1. Define your examples
+    // 1. Define the examples from the original few-shot-chain.js
     const examples = [
       {
-        input: 'My internet connection is really slow. Can you help me?',
-        output:
-          "I'm sorry to hear that you're experiencing slow internet speeds. Let's troubleshoot this together. Can you please provide me with your current speed test results?",
+        question: "What is the primary ingredient in sushi?",
+        answer: `\nAre follow-up questions needed here: No.\nSo the final answer is: Rice.`,
       },
       {
-        input: 'I was charged twice for my subscription this month. What happened?',
-        output:
-          'I understand how concerning double charges can be. Let me check your account details and resolve this issue for you right away.',
+        question: "Who was the first person to walk on the moon?",
+        answer: `\nAre follow-up questions needed here: No.\nSo the final answer is: Neil Armstrong.`,
+      },
+      {
+        question: "What is the fastest land animal?",
+        answer: `\nAre follow-up questions needed here: No.\nSo the final answer is: Cheetah.`,
+      },
+      {
+        question: "What gas do plants primarily use for photosynthesis?",
+        answer: `\nAre follow-up questions needed here: Yes.\nFollow-up: What process do plants perform?\nIntermediate answer: Plants primarily use carbon dioxide for photosynthesis.\nSo the final answer is: Carbon dioxide.`,
       },
     ];
 
-    // 2. Define how each example should be formatted
+    // 2. Define how each example should be formatted for a chat model
     const examplePrompt = ChatPromptTemplate.fromMessages([
-      ['human', '{input}'],
-      ['ai', '{output}'],
+      ['human', '{question}'],
+      ['ai', '{answer}'],
     ]);
 
     // 3. Create the few-shot prompt template
     const fewShotPrompt = new FewShotChatMessagePromptTemplate({
       examplePrompt,
       examples,
-      inputVariables: ['input'],
+      inputVariables: [], // The examples use 'question' and 'answer' internally
     });
 
-    // 4. Assemble the final prompt
+    // 4. Assemble the final prompt using the original prefix as the system message
     const finalPrompt = ChatPromptTemplate.fromMessages([
-      ['system', 'You are a helpful customer support assistant.'],
+      [
+        'system',
+        `You are an intelligent assistant designed to answer questions accurately and concisely. Below are some examples of how to approach different types of questions. Pay attention to whether follow-up questions are needed and how the final answer is presented. After reviewing these examples, please answer the user's question in a similar format.
+
+Remember:
+1. Determine if follow-up questions are needed.
+2. If yes, ask the follow-up and provide an intermediate answer.
+3. Always conclude with a final answer.`,
+      ],
       fewShotPrompt,
       ['human', '{input}'],
     ]);
 
-    // 5. Format the prompt with a test input
-    const testInput = 'My Wi-Fi keeps disconnecting every few minutes. What should I do?';
+    // 5. Format the prompt with the capital of Canada (original test case)
+    const testInput = 'What is the capital of Canada?';
     this.logger.log(`Formatting prompt for input: "${testInput}"`);
 
     try {
