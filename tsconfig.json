@@ -35,6 +35,9 @@
     },
     {
       "path": "./apps/standalone/interactive-it-kb"
+    },
+    {
+      "path": "./apps/standalone/langchain-simple-chain"
     }
   ]
 }
