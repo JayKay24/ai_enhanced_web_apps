@@ -2,7 +2,7 @@ import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
 
-const PROVIDER_FACTORIES = {
+const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
   vertex: () =>
     createVertex({
       project: process.env.VERTEX_AI_PROJECT_ID,
@@ -12,7 +12,7 @@ const PROVIDER_FACTORIES = {
     createOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     }),
-} as const;
+};
 
 export function getModelInstance(providerId: string, modelId: string): any {
   const config = SUPPORTED_PROVIDERS_CONFIG[providerId as ProviderId];
