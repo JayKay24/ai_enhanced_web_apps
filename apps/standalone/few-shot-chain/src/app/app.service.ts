@@ -55,7 +55,7 @@ Remember:
 2. If yes, ask the follow-up and provide an intermediate answer.
 3. Always conclude with a final answer.`,
       ],
-      fewShotPrompt,
+      fewShotPrompt as any,
       ['human', '{input}'],
     ]);
 
