@@ -4,6 +4,7 @@ import React from 'react';
 import { ModelMessage } from 'ai';
 import { createAI, getMutableAIState, streamUI } from '@ai-sdk/rsc';
 import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
+import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
 import { 
   ProviderId, 
   getReasoningPromptCoreMessages 
@@ -51,7 +52,7 @@ export const continueConversation = async (
         ]);
       }
 
-      return <div>{content}</div>;
+      return <ChatMessage role="assistant" text={content} />;
     },
     onFinish: (result) => {
       console.log('[streamUI] FINISH. Reason:', result.finishReason);

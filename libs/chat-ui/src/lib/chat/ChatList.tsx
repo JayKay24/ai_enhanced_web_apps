@@ -31,18 +31,11 @@ const ChatList: React.FC<ChatListProps> = ({ messages, isLoading }) => {
     <ul className="flex flex-col gap-5">
       {messages.map((message) => {
         const isUIMessage = 'display' in message;
-        const role = 'role' in message ? message.role : (message as Message).role;
 
         return (
           <li key={message.id}>
             {isUIMessage && message.display ? (
-              role === 'assistant' ? (
-                <ChatMessage role="assistant" text="" className="mr-auto">
-                  {message.display}
-                </ChatMessage>
-              ) : (
-                message.display
-              )
+              message.display
             ) : (
               <ChatMessage
                 role={(message as Message).role}
