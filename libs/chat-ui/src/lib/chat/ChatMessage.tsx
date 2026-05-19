@@ -1,8 +1,9 @@
 "use client";
+import { MessageRole } from "@ai-enhanced-web-apps/shared-types";
 import { Card } from "../ui/card";
 
 interface ChatMessageProps {
-  role: string;
+  role: MessageRole;
   text: string;
   attachments?: {
     url: string;
