@@ -1,6 +1,6 @@
 import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
-import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config.js';
+import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
 
 const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
   vertex: () =>

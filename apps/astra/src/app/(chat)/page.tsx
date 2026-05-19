@@ -177,7 +177,7 @@ export default function ChatPage() {
             <Textarea
               ref={inputRef}
               className="flex-1 min-h-[44px] max-h-[200px] border-none focus-visible:ring-0 shadow-none py-3 px-1 resize-none text-base"
-              placeholder="Enter product category here..."
+              placeholder="Ask me anything..."
               tabIndex={0}
               autoFocus
               spellCheck={false}
