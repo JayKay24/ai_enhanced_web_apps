@@ -1,11 +1,16 @@
 /**
+ * The allowed roles for a message in the chat.
+ */
+export type MessageRole = 'system' | 'user' | 'assistant';
+
+/**
  * Represents a single message in the chat.
  */
 export interface Message {
   /** Unique identifier for the message. */
   id: string;
   /** The role of the message sender (e.g., 'user', 'assistant'). */
-  role: string;
+  role: MessageRole;
   /** The text content of the message. */
   content: string;
   /** Optional timestamp when the message was created. */

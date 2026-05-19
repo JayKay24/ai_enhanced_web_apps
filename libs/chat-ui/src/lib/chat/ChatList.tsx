@@ -2,7 +2,7 @@
 import React from 'react';
 import ChatMessage from './ChatMessage';
 import ChatBubbleLoading from './ChatBubbleLoading';
-import { Message } from '@ai-enhanced-web-apps/shared-types';
+import { Message, MessageRole } from '@ai-enhanced-web-apps/shared-types';
 
 /**
  * Represents a message that contains a pre-rendered UI component (RSC pattern).
@@ -10,7 +10,7 @@ import { Message } from '@ai-enhanced-web-apps/shared-types';
 export interface UIMessage {
   id: string;
   display?: React.ReactNode;
-  role?: 'user' | 'assistant';
+  role?: MessageRole;
 }
 
 /**

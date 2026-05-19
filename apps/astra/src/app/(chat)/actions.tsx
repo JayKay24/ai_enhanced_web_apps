@@ -9,11 +9,12 @@ import {
   ProviderId, 
   getReasoningPromptCoreMessages 
 } from '@ai-enhanced-web-apps/shared-utils';
+import { MessageRole } from '@ai-enhanced-web-apps/shared-types';
 
 export interface UIStateItem {
   id: string;
   display?: React.ReactNode;
-  role?: 'user' | 'assistant';
+  role?: MessageRole;
 }
 
 export const continueConversation = async (

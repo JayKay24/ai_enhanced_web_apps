@@ -2,6 +2,8 @@ import {
   ChatPromptTemplate,
   FewShotChatMessagePromptTemplate,
 } from '@langchain/core/prompts';
+import { BaseMessage } from '@langchain/core/messages';
+import { MessageRole } from '@ai-enhanced-web-apps/shared-types';
 
 // 1. Define the examples from the original few-shot-chain.js
 const examples = [
@@ -55,7 +57,7 @@ Remember:
  * Formats the reasoning prompt with the given input.
  * Returns an array of message objects compatible with LangChain.
  */
-export async function getReasoningPromptMessages(input: string) {
+export async function getReasoningPromptMessages(input: string): Promise<BaseMessage[]> {
   return await reasoningPromptTemplate.formatMessages({ input });
 }
 
@@ -72,7 +74,7 @@ export async function getReasoningPromptString(input: string) {
 export async function getReasoningPromptCoreMessages(input: string) {
   const messages = await getReasoningPromptMessages(input);
   return messages.map((m) => {
-    let role: 'system' | 'user' | 'assistant' = 'user';
+    let role: MessageRole = 'user';
     if (m._getType() === 'system') role = 'system';
     else if (m._getType() === 'ai') role = 'assistant';
     else if (m._getType() === 'human') role = 'user';
