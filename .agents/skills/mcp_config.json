@@ -19,16 +19,6 @@
       "args": [
         "next-devtools-mcp@latest"
       ]
-    },
-    "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_MCP_PAT}"
-      }
     }
   }
 }
