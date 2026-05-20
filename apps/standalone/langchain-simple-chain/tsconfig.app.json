@@ -6,6 +6,7 @@
     "types": [
       "node"
     ],
+    "rootDir": "src",
     "moduleResolution": "nodenext",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
@@ -15,5 +16,5 @@
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": []
+  "exclude": ["node_modules", "dist"]
 }
