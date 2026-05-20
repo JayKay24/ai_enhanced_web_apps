@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "nx-mcp": {
+      "command": "npx",
+      "args": [
+        "nx",
+        "mcp"
+      ]
+    },
+    "context7": {
+      "serverUrl": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}",
+        "Accept": "application/json, text/event-stream"
+      }
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "next-devtools-mcp@latest"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_MCP_PAT}"
+      }
+    }
+  }
+}
