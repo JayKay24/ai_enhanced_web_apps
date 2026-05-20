@@ -3,6 +3,7 @@ import React from 'react';
 import ChatMessage from './ChatMessage';
 import ChatBubbleLoading from './ChatBubbleLoading';
 import { Message, MessageRole } from '@ai-enhanced-web-apps/shared-types';
+import { cn } from '@ai-enhanced-web-apps/shared-utils';
 
 /**
  * Represents a message that contains a pre-rendered UI component (RSC pattern).
@@ -41,9 +42,10 @@ const ChatList: React.FC<ChatListProps> = ({ messages, isLoading }) => {
                 role={(message as Message).role}
                 text={(message as Message).content}
                 attachments={(message as Message).attachments}
-                className={`${
-                  (message as Message).role === 'assistant' ? 'mr-auto' : 'ml-auto'
-                } border-none`}
+                className={cn(
+                  (message as Message).role === 'assistant' ? 'mr-auto' : 'ml-auto',
+                  'border-none'
+                )}
               />
             )}
           </li>

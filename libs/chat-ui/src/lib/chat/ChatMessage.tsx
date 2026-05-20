@@ -1,6 +1,7 @@
 "use client";
 import { MessageRole } from "@ai-enhanced-web-apps/shared-types";
 import { Card } from "../ui/card";
+import { cn } from "@ai-enhanced-web-apps/shared-utils";
 
 interface ChatMessageProps {
   role: MessageRole;
@@ -17,7 +18,7 @@ interface ChatMessageProps {
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ role, text, attachments, children, width = 'w-fit max-w-md', className = '' }) => {
   return (
-    <Card className={`p-5 flex flex-col gap-3 text-wrap break-words border-none whitespace-pre-wrap ${width} ${className}`}>
+    <Card className={cn("p-5 flex flex-col gap-3 text-wrap break-words border-none whitespace-pre-wrap", width, className)}>
       <h5 className="text-lg font-semibold">{role === 'assistant' ? `✴️ Astra` : `👤 ${role}`}</h5>
       
       {attachments && attachments.length > 0 && (
