@@ -41,6 +41,9 @@
     },
     {
       "path": "./apps/standalone/few-shot-chain"
+    },
+    {
+      "path": "./apps/standalone/document-retrieval-flow"
     }
   ]
 }
