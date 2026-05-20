@@ -14,9 +14,12 @@ This project is an Nx-based monorepo for building AI-enhanced web applications. 
 ## Directory Structure
 
 ### Applications
+
 - `apps/astra/`: Next.js 15+ implementation with integrated `/api/chat` route.
+- `apps/standalone/`: CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`).
 
 ### Shared Libraries
+
 - `libs/chat-ui/`: Shared React UI components (Radix, Tailwind).
 - `libs/chat-hooks/`: Shared React hooks for chat functionality.
 - `libs/shared-types/`: Shared TypeScript interfaces.
@@ -25,6 +28,7 @@ This project is an Nx-based monorepo for building AI-enhanced web applications. 
 ## Application Architecture
 
 ### AI Integration
+
 - **Astra AI Client (`apps/astra`):** Uses the Vercel AI SDK for streaming chat responses.
   - API Route: `apps/astra/src/app/(chat)/api/chat/route.ts`
   - Uses `streamText` for real-time interaction.
@@ -33,6 +37,25 @@ This project is an Nx-based monorepo for building AI-enhanced web applications. 
   - **Shared Config:** Store non-sensitive metadata (model names, provider IDs) in `libs/shared-utils/src/lib/ai-model-config.ts`.
   - **Server-Only Logic:** Store model factory logic in `libs/shared-utils/src/lib/ai-providers.ts`.
   - **Bundling Protection:** Use sub-path exports (e.g., `@ai-enhanced-web-apps/shared-utils/ai-providers`) for server-side code to avoid browser bundling errors.
+
+### Standalone CLI Applications
+
+- **CLI Bootstrapping Pattern:** Standalone CLI applications (found in `apps/standalone/`) should not run a persistent HTTP server. Instead:
+  - Boot using `NestFactory.createApplicationContext` as configured in [main.ts](./apps/standalone/document-retrieval-flow/src/main.ts).
+  - Execute their main services within a `try-catch-finally` block.
+  - Call `await app.close()` and immediately exit the process (e.g., `process.exit(0)` for success, `process.exit(1)` on failure).
+- **Execution Target:** Standalone apps must define an `execute` target in their `package.json` with `"watch": false` to run the script once to completion, for example:
+  ```json
+  "execute": {
+    "executor": "@nx/js:node",
+    "defaultConfiguration": "development",
+    "dependsOn": ["build"],
+    "options": {
+      "buildTarget": "project-name:build",
+      "watch": false
+    }
+  }
+  ```
 
 ## Building and Running
 
@@ -59,13 +82,17 @@ npx nx build astra
 ### Shared Library Imports
 
 #### Chat UI Components
+
 Import from `@ai-enhanced-web-apps/chat-ui`:
+
 ```typescript
 import { AutoScroll, ChatList, Button } from '@ai-enhanced-web-apps/chat-ui';
 ```
 
 #### Shared Types
+
 Import from `@ai-enhanced-web-apps/shared-types`:
+
 ```typescript
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 ```
