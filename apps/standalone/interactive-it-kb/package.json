@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "name": "interactive-it-kb",
     "targets": {
       "build": {
         "executor": "nx:run-commands",
@@ -63,15 +64,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build",
+          "buildTarget": "interactive-it-kb:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build:development"
+            "buildTarget": "interactive-it-kb:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build:production"
+            "buildTarget": "interactive-it-kb:build:production"
           }
         }
       },
@@ -82,15 +83,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build",
+          "buildTarget": "interactive-it-kb:build",
           "watch": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build:development"
+            "buildTarget": "interactive-it-kb:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/interactive-it-kb:build:production"
+            "buildTarget": "interactive-it-kb:build:production"
           }
         }
       },

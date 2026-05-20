@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "name": "unit-prompt-tests",
     "targets": {
       "build": {
         "executor": "@nx/esbuild:esbuild",
@@ -83,15 +84,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/unit-prompt-tests:build",
+          "buildTarget": "unit-prompt-tests:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/unit-prompt-tests:build:development"
+            "buildTarget": "unit-prompt-tests:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/unit-prompt-tests:build:production"
+            "buildTarget": "unit-prompt-tests:build:production"
           }
         }
       },

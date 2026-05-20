@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "name": "langchain-simple-chain",
     "targets": {
       "build": {
         "executor": "nx:run-commands",
@@ -63,15 +64,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/langchain-simple-chain:build",
+          "buildTarget": "langchain-simple-chain:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/langchain-simple-chain:build:development"
+            "buildTarget": "langchain-simple-chain:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/langchain-simple-chain:build:production"
+            "buildTarget": "langchain-simple-chain:build:production"
           }
         }
       },
@@ -82,15 +83,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/langchain-simple-chain:build",
+          "buildTarget": "langchain-simple-chain:build",
           "watch": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/langchain-simple-chain:build:development"
+            "buildTarget": "langchain-simple-chain:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/langchain-simple-chain:build:production"
+            "buildTarget": "langchain-simple-chain:build:production"
           }
         }
       }

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "name": "document-retrieval-flow",
     "targets": {
       "build": {
         "executor": "nx:run-commands",
@@ -63,15 +64,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/document-retrieval-flow:build",
+          "buildTarget": "document-retrieval-flow:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/document-retrieval-flow:build:development"
+            "buildTarget": "document-retrieval-flow:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/document-retrieval-flow:build:production"
+            "buildTarget": "document-retrieval-flow:build:production"
           }
         }
       },
@@ -82,15 +83,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/document-retrieval-flow:build",
+          "buildTarget": "document-retrieval-flow:build",
           "watch": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/document-retrieval-flow:build:development"
+            "buildTarget": "document-retrieval-flow:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/document-retrieval-flow:build:production"
+            "buildTarget": "document-retrieval-flow:build:production"
           }
         }
       }

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
+    "name": "embeddings-vertexai",
     "targets": {
       "build": {
         "executor": "nx:run-commands",
@@ -63,15 +64,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/embeddings-vertexai:build",
+          "buildTarget": "embeddings-vertexai:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/embeddings-vertexai:build:development"
+            "buildTarget": "embeddings-vertexai:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/embeddings-vertexai:build:production"
+            "buildTarget": "embeddings-vertexai:build:production"
           }
         }
       },
@@ -82,15 +83,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ai-enhanced-web-apps/embeddings-vertexai:build",
+          "buildTarget": "embeddings-vertexai:build",
           "watch": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ai-enhanced-web-apps/embeddings-vertexai:build:development"
+            "buildTarget": "embeddings-vertexai:build:development"
           },
           "production": {
-            "buildTarget": "@ai-enhanced-web-apps/embeddings-vertexai:build:production"
+            "buildTarget": "embeddings-vertexai:build:production"
           }
         }
       }
