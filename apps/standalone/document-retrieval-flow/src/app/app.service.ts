@@ -60,7 +60,9 @@ AI applications include advanced web search engines, recommendation systems, und
     this.logger.log('Initializing Vertex AI Embeddings (text-embedding-004)...');
     const embeddings = new VertexAIEmbeddings({
       model: 'text-embedding-004',
-      project: projectId,
+      authOptions: {
+        projectId: projectId,
+      },
       location: location,
     });
 
@@ -84,7 +86,9 @@ AI applications include advanced web search engines, recommendation systems, und
     this.logger.log('Initializing ChatVertexAI (gemini-2.5-flash)...');
     const model = new ChatVertexAI({
       model: 'gemini-2.5-flash',
-      project: projectId,
+      authOptions: {
+        projectId: projectId,
+      },
       location: location,
       temperature: 0,
     });

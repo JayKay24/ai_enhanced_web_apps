@@ -26,7 +26,9 @@ export class AppService {
     // 1. Initialize the Vertex AI model
     const model = new ChatVertexAI({
       model: "gemini-2.5-flash", // Updated to latest stable model
-      project: process.env.VERTEX_AI_PROJECT_ID,
+      authOptions: {
+        projectId: process.env.VERTEX_AI_PROJECT_ID,
+      },
       location: process.env.VERTEX_AI_LOCATION,
       temperature: 0,
     });
