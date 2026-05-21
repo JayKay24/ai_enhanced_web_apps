@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ChatVertexAI, VertexAIEmbeddings } from '@langchain/google-vertexai';
 import { MemoryVectorStore } from '@langchain/classic/vectorstores/memory';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { createAgent } from 'langchain';
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 
@@ -86,9 +86,9 @@ AI applications include advanced web search engines, recommendation systems, und
     });
 
     // 7. Create the ReAct agent
-    this.logger.log('Creating ReAct agent using createReactAgent...');
-    const agent = createReactAgent({
-      llm: model,
+    this.logger.log('Creating ReAct agent using createAgent...');
+    const agent = createAgent({
+      model: model,
       tools: [retrieverTool],
     });
 
