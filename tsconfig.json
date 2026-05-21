@@ -47,6 +47,9 @@
     },
     {
       "path": "./apps/standalone/langchain-message-history"
+    },
+    {
+      "path": "./apps/standalone/langchain-agent"
     }
   ]
 }
