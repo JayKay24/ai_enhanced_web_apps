@@ -44,6 +44,9 @@
     },
     {
       "path": "./apps/standalone/document-retrieval-flow"
+    },
+    {
+      "path": "./apps/standalone/langchain-message-history"
     }
   ]
 }
