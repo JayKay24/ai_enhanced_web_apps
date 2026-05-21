@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ChatVertexAI } from "@langchain/google-vertexai";
 import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
-import { RunnableWithMessageHistory } from "@langchain/core/runnables";
 import { InMemoryChatMessageHistory } from "@langchain/core/chat_history";
 import { StringOutputParser } from "@langchain/core/output_parsers";
+import { HumanMessage, AIMessage } from "@langchain/core/messages";
 
 @Injectable()
 export class AppService {
@@ -45,32 +45,41 @@ export class AppService {
     // 3. Create the main chain (prompt | model | output parser)
     const chain = prompt.pipe(model).pipe(new StringOutputParser());
 
-    // 4. Wrap the chain in RunnableWithMessageHistory to automatically handle state/history
-    const chainWithHistory = new RunnableWithMessageHistory({
-      runnable: chain,
-      getMessageHistory: async (sessionId: string) => {
-        if (!this.messageHistories[sessionId]) {
-          this.logger.log(`Creating new chat history store for session: ${sessionId}`);
-          this.messageHistories[sessionId] = new InMemoryChatMessageHistory();
-        }
-        return this.messageHistories[sessionId];
-      },
-      inputMessagesKey: "input",
-      historyMessagesKey: "history",
-    });
+    // 4. Setup message history helper
+    const getMessageHistory = (sessionId: string): InMemoryChatMessageHistory => {
+      if (!this.messageHistories[sessionId]) {
+        this.logger.log(`Creating new chat history store for session: ${sessionId}`);
+        this.messageHistories[sessionId] = new InMemoryChatMessageHistory();
+      }
+      return this.messageHistories[sessionId];
+    };
+
+    // Helper to run a conversation turn explicitly
+    const handleConversationTurn = async (input: string, sessionId: string): Promise<string> => {
+      const historyStore = getMessageHistory(sessionId);
+      const history = await historyStore.getMessages();
+
+      // Invoke the chain explicitly with the history messages and the new user input
+      const response = await chain.invoke({
+        input: input,
+        history: history,
+      });
+
+      // Persist the user message and AI response back to the history store
+      await historyStore.addMessage(new HumanMessage(input));
+      await historyStore.addMessage(new AIMessage(response));
+
+      return response;
+    };
 
     const sessionId = "demo-session-123";
-    const config = { configurable: { sessionId } };
 
     // --- Turn 1 ---
     const input1 = "Hi! My name is Jim. Remember that name.";
     this.logger.log(`\n=== Turn 1 ===\nUser: ${input1}`);
 
     try {
-      const response1 = await chainWithHistory.invoke(
-        { input: input1 },
-        config
-      );
+      const response1 = await handleConversationTurn(input1, sessionId);
       this.logger.log(`Assistant: ${response1}`);
     } catch (error) {
       this.logger.error('Error invoking Turn 1', error);
@@ -82,10 +91,7 @@ export class AppService {
     this.logger.log(`\n=== Turn 2 ===\nUser: ${input2}`);
 
     try {
-      const response2 = await chainWithHistory.invoke(
-        { input: input2 },
-        config
-      );
+      const response2 = await handleConversationTurn(input2, sessionId);
       this.logger.log(`Assistant: ${response2}`);
     } catch (error) {
       this.logger.error('Error invoking Turn 2', error);
@@ -94,7 +100,8 @@ export class AppService {
 
     // --- Retrieve and Print Final History ---
     this.logger.log('\n=== In-Memory Message History Dump ===');
-    const history = await this.messageHistories[sessionId].getMessages();
+    const historyStore = getMessageHistory(sessionId);
+    const history = await historyStore.getMessages();
     history.forEach((message, idx) => {
       this.logger.log(`[Message ${idx + 1}] Role: ${message.type} | Content: ${message.content}`);
     });
