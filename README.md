@@ -8,6 +8,25 @@ I will be building applications utilizing modern tooling without needing to dive
 *   AI Integration: The Vercel AI SDK (for connecting the UI to AI providers and handling real-time streaming) and LangChain.js (for building sophisticated workflows, document retrieval, and autonomous agents).
 *   LLMs & Data: Utilizing external AI providers like OpenAI and Google Gemini, alongside vector databases and tools like Upstash Redis.
 
+## Major Libraries & Use Cases
+Below is a list of the major libraries used in the workspace and their primary use cases:
+*   **`ai` (Vercel AI SDK Core)**: Provides a unified, provider-agnostic interface for executing AI workflows. It is used to generate text (`generateText`), stream text (`streamText`), generate embeddings (`embed`, `embedMany`), calculate cosine similarity, and manage tool/function calling. Used in the `astra` chat client and standalone projects like `embeddings-vertexai`, `few-shot-learning`, `interactive-it-kb`, and `unit-prompt-tests`.
+*   **`@ai-sdk/google`**: Integration adapter for Google Gemini models (e.g., `gemini-2.5-flash`, `gemini-1.5-pro`) via the Vercel AI SDK interface.
+*   **`@ai-sdk/google-vertex`**: Direct Vercel AI SDK adapter for Google Cloud Vertex AI services, allowing enterprise deployments authenticated via application default credentials (ADC). Used in `embeddings-vertexai`, `few-shot-learning`, and `interactive-it-kb`.
+*   **`@ai-sdk/openai`**: Provider adapter for OpenAI models (e.g., `gpt-4o`) within the Vercel AI SDK ecosystem.
+*   **`@ai-sdk/react` & `@ai-sdk/rsc`**: Frontend hook packages supporting real-time streaming, chat state management (`useChat`, `useCompletion`), and React Server Components/Server Actions UI streaming integrations (e.g., `createAI`, `createStreamableUI`, `useActions`, `useUIState`) in `apps/astra`.
+*   **`@langchain/core`**: The underlying abstraction layer for LangChain workflows. It provides prompt templates (`ChatPromptTemplate`), output parsers (`StringOutputParser`), base message definitions (`BaseMessage`), and runnables/pipelining helpers (`RunnableLambda`, `RunnableSequence`). Used in `document-retrieval-flow`, `langchain-simple-chain`, and shared utilities.
+*   **`@langchain/google-vertexai`**: Integrates Google Vertex AI chat models (`ChatVertexAI`) and text/document embeddings (`VertexAIEmbeddings`) with standard LangChain interfaces. Used in `document-retrieval-flow` and `langchain-simple-chain`.
+*   **`@langchain/textsplitters`**: Semantic and character-based document splitters (like `RecursiveCharacterTextSplitter`) to chunk document text before embedding. Used in `document-retrieval-flow`.
+*   **`@langchain/classic`**: Contains classic vector storage implementations, specifically `MemoryVectorStore`, which is used in `document-retrieval-flow` for temporary, in-memory document retrieval and similarity search.
+*   **`@google/genai`**: Official Google Gen AI Node.js SDK used directly in standalone projects like `counting-tokens-vertexai` to count text/multimodal tokens and invoke Gemini models outside the Vercel AI SDK or LangChain abstractions.
+*   **`@dqbd/tiktoken`**: A high-performance BPE tokenizer used in `counting-tokens-openai` to accurately calculate and count token lengths for OpenAI models.
+*   **`zod`**: TypeScript-first schema declaration and validation library, used for structured data extraction and tool definition schemas.
+*   **`string-comparison`**: String similarity and comparison library used in `unit-prompt-tests` to run cosine similarity evaluations for prompt outputs.
+*   **`@nestjs/core` & `@nestjs/common`**: Standard framework containers and injection utilities used to structure standalone CLI projects, managing their lifecycles and executing services sequentially before exiting.
+*   **`next`**: React framework for the full-stack web application (`apps/astra`), supporting Server-Side Rendering (SSR), Server Components, and secure API route handlers (`/api/chat`).
+*   **`tailwindcss` & `@radix-ui/react-*`**: Utility CSS styling and accessible, headless Radix UI components used to construct premium, responsive React components in `libs/chat-ui`.
+
 ## Key Concepts & Skills Acquired
 
 ### 1. Fundamentals of Generative AI in Web Apps
