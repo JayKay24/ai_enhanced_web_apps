@@ -12,7 +12,7 @@ import {
 import { MessageRole } from '@ai-enhanced-web-apps/shared-types';
 import { HumanMessage, AIMessage, SystemMessage } from '@langchain/core/messages';
 import { WikipediaQueryRun } from '@langchain/community/tools/wikipedia_query_run';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { createAgent } from 'langchain';
 
 export interface UIStateItem {
   id: string;
@@ -57,11 +57,11 @@ export const continueConversation = async (
     throw new Error('Could not initialize LangChain AI model.');
   }
 
-  // 2. Instantiate the ReAct Agent
-  const agent = createReactAgent({
-    llm,
+  // 2. Instantiate the ReAct Agent using the new createAgent API
+  const agent = createAgent({
+    model: llm,
     tools,
-    prompt: AGENT_SYSTEM_TEMPLATE,
+    systemPrompt: AGENT_SYSTEM_TEMPLATE,
   });
 
   // Helper to extract string content from Vercel AI SDK content format
