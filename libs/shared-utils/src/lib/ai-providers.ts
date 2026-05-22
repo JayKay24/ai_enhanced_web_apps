@@ -1,8 +1,6 @@
 import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
 import { ChatVertexAI } from '@langchain/google-vertexai';
-// Note: @langchain/openai might need to be installed for full functionality
-// import { ChatOpenAI } from '@langchain/openai';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
 
 const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
@@ -46,20 +44,6 @@ export function getLangChainModelInstance(providerId: string, modelId: string): 
       temperature: 0.7,
     });
   }
-
-  // if (providerId === 'openai') {
-  //   // Dynamically require to avoid bundling issues if not installed
-  //   try {
-  //     // eslint-disable-next-line @typescript-eslint/no-var-requires
-  //     const { ChatOpenAI } = require('@langchain/openai');
-  //     return new ChatOpenAI({
-  //       modelName: modelId,
-  //       temperature: 0.7,
-  //     });
-  //   } catch (e) {
-  //     throw new Error('@langchain/openai is not installed. Please install it to use OpenAI with LangChain.');
-  //   }
-  // }
 
   throw new Error(`LangChain provider ${providerId} not yet implemented.`);
 }
