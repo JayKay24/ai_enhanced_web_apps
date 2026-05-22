@@ -5,6 +5,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { createAgent } from 'langchain';
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
+import { BaseMessage, AIMessage } from '@langchain/core/messages';
 
 @Injectable()
 export class AppService {
@@ -102,10 +103,20 @@ AI applications include advanced web search engines, recommendation systems, und
 
     this.logger.log('--- Agent Execution Flow ---');
     if (result.messages && result.messages.length > 0) {
-      result.messages.forEach((msg: any, idx: number) => {
-        const role = msg.additional_kwargs?.tool_calls ? 'agent (tool_call)' : msg.type || msg.role;
+      result.messages.forEach((msg: BaseMessage, idx: number) => {
+        let role = msg._getType();
+        let toolCallsContent = '';
+
+        if (msg instanceof AIMessage) {
+          if (msg.tool_calls && msg.tool_calls.length > 0) {
+            role = 'agent (tool_call)';
+            toolCallsContent = JSON.stringify(msg.tool_calls);
+          }
+        }
+
         const toolName = msg.name ? ` [Tool: ${msg.name}]` : '';
-        this.logger.log(`Message [${idx + 1}] | Role: ${role}${toolName} | Content: ${msg.content || JSON.stringify(msg.tool_calls || '')}`);
+        const content = msg.content || toolCallsContent;
+        this.logger.log(`Message [${idx + 1}] | Role: ${role}${toolName} | Content: ${content}`);
       });
     }
 
