@@ -16,8 +16,8 @@ const REDUCE_PROMPT = PromptTemplate.fromTemplate(
 
 export async function summarizeDocs(
   docs: Document[],
-  providerId: string = 'vertex',
-  modelId: string = 'gemini-2.5-flash'
+  providerId = 'vertex',
+  modelId = 'gemini-2.5-flash'
 ): Promise<string> {
   const llm = getLangChainModelInstance(providerId, modelId);
   if (!llm) {
@@ -58,8 +58,8 @@ export async function summarizeDocs(
 
 export async function summarizeText(
   text: string,
-  providerId: string = 'vertex',
-  modelId: string = 'gemini-2.5-flash'
+  providerId = 'vertex',
+  modelId = 'gemini-2.5-flash'
 ): Promise<string> {
   const doc = new Document({ pageContent: text });
   return summarizeDocs([doc], providerId, modelId);
@@ -68,8 +68,8 @@ export async function summarizeText(
 export async function processFile(
   fileBlob: Blob,
   fileType: string,
-  providerId: string = 'vertex',
-  modelId: string = 'gemini-2.5-flash'
+  providerId = 'vertex',
+  modelId = 'gemini-2.5-flash'
 ): Promise<string> {
   let loader;
   if (fileType === 'application/pdf') {
