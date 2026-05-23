@@ -6,9 +6,6 @@ import {
   AutoScroll,
   AutoScrollHandle,
   Button,
-  ModelSelector,
-  FileUploader,
-  FileAttachment,
   ChatMessage,
   ChatList,
 } from '@ai-enhanced-web-apps/chat-ui';
@@ -17,20 +14,12 @@ import {
   useFocusOnSlashPress,
 } from '@ai-enhanced-web-apps/chat-hooks';
 import { useActions, useUIState } from '@ai-sdk/rsc';
-import { ChevronUp, Send } from 'lucide-react';
-import {
-  SUPPORTED_PROVIDERS_CONFIG,
-  ProviderId,
-  generateUniqueId,
-} from '@ai-enhanced-web-apps/shared-utils';
+import { ChevronUp, Send, Paperclip, X, FileText } from 'lucide-react';
+import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { AI } from './actions';
 
 export default function ChatPage() {
-  const [providerId, setProviderId] = useState<ProviderId>('vertex');
-  const [modelId, setModelId] = useState<string>(
-    SUPPORTED_PROVIDERS_CONFIG.vertex.models[0],
-  );
-  const [files, setFiles] = useState<FileAttachment[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [messages, setMessages] = useUIState<typeof AI>();
   const { continueConversation } = useActions<typeof AI>() as any;
   const [isLoading, setIsLoading] = useState(false);
@@ -38,20 +27,41 @@ export default function ChatPage() {
 
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (
+      file.type === 'application/pdf' ||
+      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
+      setSelectedFile(file);
+      setInput(''); // Clear text when file is selected
+    } else {
+      alert('Please upload only PDF or DOCX files');
+      setSelectedFile(null);
+    }
   };
 
   const handleSubmit = async (
     e?: React.SyntheticEvent<HTMLFormElement, SubmitEvent>,
   ) => {
     e?.preventDefault();
-    const value = input.trim();
-    if (!value) return;
+    if (!selectedFile && !input.trim()) return;
 
+    const value = input.trim();
     setInput('');
     setIsLoading(true);
+
+    const userMessageText = selectedFile
+      ? `Uploaded file: ${selectedFile.name}`
+      : value;
 
     // Optimistic UI update
     setMessages((currentMessages) => [
@@ -61,7 +71,7 @@ export default function ChatPage() {
         display: (
           <ChatMessage
             role="user"
-            text={value}
+            text={userMessageText}
             className="ml-auto"
           />
         ),
@@ -69,36 +79,31 @@ export default function ChatPage() {
     ]);
 
     try {
-      const response = await continueConversation(
-        value,
-        files.map(f => ({ data: f.data, type: f.type })),
-        providerId,
-        modelId,
-      );
+      let response;
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('fileType', selectedFile.type);
+        formData.append('fileName', selectedFile.name);
+        
+        setSelectedFile(null);
+        response = await continueConversation(formData);
+      } else {
+        response = await continueConversation(value);
+      }
 
       setMessages((currentMessages) => [
         ...currentMessages,
         response,
       ]);
-      setFiles([]);
     } catch (error) {
       console.error('Error in chat submission:', error);
     } finally {
       setIsLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
-  };
-
-  const handleFileUpload = (newFiles: FileAttachment[]) => {
-    setFiles((prev) => [...prev, ...newFiles]);
-  };
-
-  const handleRemoveFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleProviderChange = (id: ProviderId) => {
-    setProviderId(id);
-    setModelId(SUPPORTED_PROVIDERS_CONFIG[id].models[0]);
   };
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
@@ -121,13 +126,6 @@ export default function ChatPage() {
         ref={autoScrollRef}
         onScrollPositionChange={handleScrollPositionChange}
       >
-        <ModelSelector
-          providerId={providerId}
-          modelId={modelId}
-          onProviderChange={handleProviderChange}
-          onModelChange={setModelId}
-          disabled={isLoading}
-        />
         {messages.length === 0 && (
           <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
             <div className="inline-block">
@@ -138,7 +136,7 @@ export default function ChatPage() {
               Astra
             </div>
             <br />
-            <span className="text-gray-400">Ask me anything you want</span>
+            <span className="text-gray-400">Upload a document or paste text to summarize</span>
           </h1>
         )}
         {messages.length > 0 && (
@@ -153,31 +151,54 @@ export default function ChatPage() {
           aria-labelledby="chat-form-label"
           onSubmit={handleSubmit}
         >
-          {files.length > 0 && (
-            <div className="p-3 border-b border-gray-100 bg-gray-50/30">
-              <FileUploader
-                files={files}
-                onFileUpload={handleFileUpload}
-                onRemoveFile={handleRemoveFile}
+          {selectedFile && (
+            <div className="p-3 border-b border-gray-100 bg-gray-50/30 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-sm text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200">
+                <FileText className="w-4 h-4 text-blue-500 shrink-0" />
+                <span className="font-medium truncate max-w-[240px]">{selectedFile.name}</span>
+                <span className="text-gray-400 text-xs shrink-0">({(selectedFile.size / 1024).toFixed(1)} KB)</span>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-400 hover:text-gray-600 rounded-full shrink-0"
+                onClick={() => setSelectedFile(null)}
                 disabled={isLoading}
-              />
+              >
+                <X className="w-4 h-4" />
+              </Button>
             </div>
           )}
 
-          <div className="flex flex-row items-end gap-2 p-2 pl-1 pr-3">
-            <div className="pb-1">
-              <FileUploader
-                files={[]}
-                onFileUpload={handleFileUpload}
-                onRemoveFile={handleRemoveFile}
+          <div className="flex flex-row items-end gap-2 p-2 pl-2 pr-3">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".pdf,.docx"
+              className="hidden"
+              disabled={isLoading}
+            />
+
+            <div className="pb-1.5">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0 text-gray-500 hover:text-gray-900 rounded-full"
                 disabled={isLoading}
-              />
+                onClick={() => fileInputRef.current?.click()}
+                title="Upload PDF or DOCX"
+              >
+                <Paperclip className="w-5 h-5" />
+              </Button>
             </div>
 
             <Textarea
               ref={inputRef}
               className="flex-1 min-h-[44px] max-h-[200px] border-none focus-visible:ring-0 shadow-none py-3 px-1 resize-none text-base"
-              placeholder="Ask me anything..."
+              placeholder={selectedFile ? `Selected file: ${selectedFile.name}` : "Paste your text here or upload a document..."}
               tabIndex={0}
               autoFocus
               spellCheck={false}
@@ -188,6 +209,7 @@ export default function ChatPage() {
               value={input}
               onChange={handleInputChange}
               onKeyDown={onKeyDown}
+              disabled={isLoading || !!selectedFile}
             />
 
             <div className="pb-1.5">
@@ -195,7 +217,7 @@ export default function ChatPage() {
                 type="submit"
                 size="icon"
                 className="shrink-0 rounded-full"
-                disabled={isLoading || !input.trim()}
+                disabled={isLoading || (!input.trim() && !selectedFile)}
               >
                 <Send className="h-5 w-5" />
               </Button>

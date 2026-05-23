@@ -3,152 +3,82 @@
 import React from 'react';
 import { ModelMessage } from 'ai';
 import { createAI, getMutableAIState, createStreamableUI } from '@ai-sdk/rsc';
-import { getLangChainModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
-import { 
-  ProviderId, 
-  generateUniqueId
-} from '@ai-enhanced-web-apps/shared-utils';
-import { MessageRole } from '@ai-enhanced-web-apps/shared-types';
-import { HumanMessage, AIMessage, SystemMessage } from '@langchain/core/messages';
-import { WikipediaQueryRun } from '@langchain/community/tools/wikipedia_query_run';
-import { createAgent } from 'langchain';
+import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
+import { processFile, summarizeText } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 
 export interface UIStateItem {
   id: string;
   display?: React.ReactNode;
-  role?: MessageRole;
+  role?: 'user' | 'assistant' | 'system';
 }
 
-const tools = [
-  new WikipediaQueryRun({
-    topKResults: 3,
-    maxDocContentLength: 4000,
-  }),
-];
-
-const AGENT_SYSTEM_TEMPLATE = `You are a helpful AI assistant specializing in technical queries and web technologies.
-When using WikipediaQueryRun for searches:
-1. Prioritize authoritative sources and official specifications.
-2. Cross-reference information from multiple sources.
-3. Format code examples using markdown.
-
-Example interaction:
-User: Irish Times
-Action: WikipediaQueryRun(search="Irish Times")
-Response: The Irish Times is an Irish daily broadsheet... [ details]`;
-
 export const continueConversation = async (
-  input: string,
-  files: { data: string; type: string }[],
-  provider: ProviderId,
-  model: string,
+  input: string | FormData
 ): Promise<UIStateItem> => {
   'use server';
 
-  console.log('[continueConversation] START (LangGraph Wikipedia Agent)');
+  console.log('[continueConversation] START (Document Summarization)');
 
   const history = getMutableAIState<typeof AI>();
   const stream = createStreamableUI();
 
-  // 1. Instantiate the LangChain model
-  const llm = getLangChainModelInstance(provider, model);
-  if (!llm) {
-    throw new Error('Could not initialize LangChain AI model.');
-  }
-
-  // 2. Instantiate the ReAct Agent using the new createAgent API
-  const agent = createAgent({
-    model: llm,
-    tools,
-    systemPrompt: AGENT_SYSTEM_TEMPLATE,
-  });
-
-  // Helper to extract string content from Vercel AI SDK content format
-  const getMessageContent = (content: any): string => {
-    if (typeof content === 'string') return content;
-    if (Array.isArray(content)) {
-      return content
-        .map((part) => (part.type === 'text' ? part.text : ''))
-        .join('');
-    }
-    return '';
-  };
-
-  // 3. Map history messages to LangChain types
-  const messages = history.get().map((msg) => {
-    const textContent = getMessageContent(msg.content);
-    if (msg.role === 'user') {
-      return new HumanMessage(textContent);
-    } else if (msg.role === 'assistant') {
-      return new AIMessage(textContent);
-    } else if (msg.role === 'system') {
-      return new SystemMessage(textContent);
-    }
-    return new HumanMessage(textContent);
-  });
-
-  // Append current user input
-  messages.push(new HumanMessage(input));
-
-  // 4. Process the stream in the background
+  // Run the summarization asynchronously so we can return the stream immediately
   (async () => {
     try {
-      stream.update(<ChatMessage role="assistant" text="Processing your request..." />);
-
-      const eventStream = agent.streamEvents(
-        { messages },
-        { version: 'v2' }
+      stream.update(
+        <ChatMessage role="assistant" text="Reading and analyzing..." />
       );
 
-      let textContent = '';
-      let statusText = '';
+      let summary: string;
+      let userPromptDescription: string;
 
-      for await (const event of eventStream) {
-        const eventType = event.event;
+      if (input instanceof FormData) {
+        const file = input.get('file') as Blob;
+        const fileType = input.get('fileType') as string;
+        const fileName = input.get('fileName') as string;
 
-        if (eventType === 'on_tool_start') {
-          const toolInput = event.data?.input?.input || event.data?.input?.query || JSON.stringify(event.data?.input) || '';
-          const prefix = textContent ? '\n\n' : '';
-          statusText = `${prefix}*(🔍 Searching Wikipedia for "${toolInput}"...)*`;
-          stream.update(
-            <ChatMessage
-              role="assistant"
-              text={textContent + statusText}
-            />
-          );
-        } else if (eventType === 'on_tool_end') {
-          statusText = '';
-          stream.update(
-            <ChatMessage
-              role="assistant"
-              text={textContent}
-            />
-          );
-        } else if (eventType === 'on_chat_model_stream') {
-          const chunk = event.data?.chunk;
-          if (chunk?.content) {
-            textContent += chunk.content;
-            stream.update(<ChatMessage role="assistant" text={textContent + statusText} />);
-          }
+        if (!file || !fileType) {
+          throw new Error('No file uploaded or file type is missing.');
         }
+
+        stream.update(
+          <ChatMessage role="assistant" text={`Reading ${fileName} and extracting text...`} />
+        );
+        userPromptDescription = `Uploaded file: ${fileName}`;
+        summary = await processFile(file, fileType);
+      } else {
+        stream.update(
+          <ChatMessage role="assistant" text="Summarizing text content..." />
+        );
+        userPromptDescription = input;
+        summary = await summarizeText(input);
       }
 
+      stream.update(
+        <ChatMessage role="assistant" text={summary} />
+      );
       stream.done();
 
-      // Update history for persistence
+      // Persist the interaction in the AI State history
       history.done([
         ...history.get(),
-        { role: 'user', content: input },
-        { role: 'assistant', content: textContent },
+        { role: 'user', content: userPromptDescription },
+        { role: 'assistant', content: summary },
       ]);
     } catch (error: any) {
       console.error('[continueConversation] Error:', error);
-      stream.error(error);
+      stream.update(
+        <ChatMessage
+          role="assistant"
+          text={`An error occurred: ${error.message || 'Unknown error'}`}
+          className="text-red-500"
+        />
+      );
+      stream.done();
     }
   })();
 
-  // 5. Return the streamable UI immediately
   return {
     id: generateUniqueId(),
     display: stream.value,

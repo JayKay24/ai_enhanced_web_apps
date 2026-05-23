@@ -47,3 +47,6 @@ export function getLangChainModelInstance(providerId: string, modelId: string): 
 
   throw new Error(`LangChain provider ${providerId} not yet implemented.`);
 }
+
+export * from './summarizer';
+
