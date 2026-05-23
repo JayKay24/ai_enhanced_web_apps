@@ -14,7 +14,8 @@ export interface UIStateItem {
 }
 
 export const continueConversation = async (
-  input: string | FormData
+  textInput: string,
+  fileInput?: { name: string; type: string; data: string } | null
 ): Promise<UIStateItem> => {
   'use server';
 
@@ -33,32 +34,30 @@ export const continueConversation = async (
       let summary: string;
       let userPromptDescription: string;
 
-      if (input instanceof FormData) {
-        const file = input.get('file') as Blob;
-        const fileType = input.get('fileType') as string;
-        const fileName = input.get('fileName') as string;
-
-        if (!file || !fileType) {
-          throw new Error('No file uploaded or file type is missing.');
+      if (fileInput) {
+        const base64Data = fileInput.data.split(',')[1];
+        if (!base64Data) {
+          throw new Error('Invalid file data received.');
         }
+        const fileBuffer = Buffer.from(base64Data, 'base64');
+        const fileBlob = new Blob([fileBuffer], { type: fileInput.type });
 
         stream.update(
-          <ChatMessage role="assistant" text={`Reading ${fileName} and extracting text...`} />
+          <ChatMessage role="assistant" text={`Reading ${fileInput.name} and extracting text...`} />
         );
-        userPromptDescription = `Uploaded file: ${fileName}`;
-        summary = await processFile(file, fileType);
+        userPromptDescription = `Uploaded file: ${fileInput.name}`;
+        summary = await processFile(fileBlob, fileInput.type);
       } else {
         stream.update(
           <ChatMessage role="assistant" text="Summarizing text content..." />
         );
-        userPromptDescription = input;
-        summary = await summarizeText(input);
+        userPromptDescription = textInput;
+        summary = await summarizeText(textInput);
       }
 
       stream.update(
         <ChatMessage role="assistant" text={summary} />
       );
-      stream.done();
 
       // Persist the interaction in the AI State history
       history.done([
@@ -75,6 +74,7 @@ export const continueConversation = async (
           className="text-red-500"
         />
       );
+    } finally {
       stream.done();
     }
   })();

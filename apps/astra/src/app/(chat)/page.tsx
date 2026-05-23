@@ -18,8 +18,15 @@ import { ChevronUp, Send, Paperclip, X, FileText } from 'lucide-react';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { AI } from './actions';
 
+interface UploadedFile {
+  name: string;
+  type: string;
+  data: string;
+  size: number;
+}
+
 export default function ChatPage() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
   const [messages, setMessages] = useUIState<typeof AI>();
   const { continueConversation } = useActions<typeof AI>() as any;
   const [isLoading, setIsLoading] = useState(false);
@@ -41,8 +48,17 @@ export default function ChatPage() {
       file.type === 'application/pdf' ||
       file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ) {
-      setSelectedFile(file);
-      setInput(''); // Clear text when file is selected
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedFile({
+          name: file.name,
+          type: file.type,
+          data: reader.result as string,
+          size: file.size,
+        });
+        setInput(''); // Clear text when file is selected
+      };
+      reader.readAsDataURL(file);
     } else {
       alert('Please upload only PDF or DOCX files');
       setSelectedFile(null);
@@ -81,15 +97,15 @@ export default function ChatPage() {
     try {
       let response;
       if (selectedFile) {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('fileType', selectedFile.type);
-        formData.append('fileName', selectedFile.name);
-        
+        const payload = {
+          name: selectedFile.name,
+          type: selectedFile.type,
+          data: selectedFile.data,
+        };
         setSelectedFile(null);
-        response = await continueConversation(formData);
+        response = await continueConversation('', payload);
       } else {
-        response = await continueConversation(value);
+        response = await continueConversation(value, null);
       }
 
       setMessages((currentMessages) => [
