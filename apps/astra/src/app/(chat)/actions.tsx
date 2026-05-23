@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ModelMessage } from 'ai';
-import { createAI, getMutableAIState, createStreamableUI } from '@ai-sdk/rsc';
+import { createAI, getMutableAIState } from '@ai-sdk/rsc';
 import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { processFile, summarizeText } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
@@ -14,76 +14,62 @@ export interface UIStateItem {
 }
 
 export const continueConversation = async (
-  textInput: string,
-  fileInput?: { name: string; type: string; data: string } | null
+  input: string | FormData
 ): Promise<UIStateItem> => {
   'use server';
 
-  console.log('[continueConversation] START (Document Summarization)');
+  console.log('[continueConversation] START (Document Summarization - FormData Synchronous)');
 
   const history = getMutableAIState<typeof AI>();
-  const stream = createStreamableUI();
 
-  // Run the summarization asynchronously so we can return the stream immediately
-  (async () => {
-    try {
-      stream.update(
-        <ChatMessage role="assistant" text="Reading and analyzing..." />
-      );
+  try {
+    let summary: string;
+    let userPromptDescription: string;
 
-      let summary: string;
-      let userPromptDescription: string;
+    if (input instanceof FormData) {
+      const file = input.get('file') as File;
 
-      if (fileInput) {
-        const base64Data = fileInput.data.split(',')[1];
-        if (!base64Data) {
-          throw new Error('Invalid file data received.');
-        }
-        const fileBuffer = Buffer.from(base64Data, 'base64');
-        const fileBlob = new Blob([fileBuffer], { type: fileInput.type });
-
-        stream.update(
-          <ChatMessage role="assistant" text={`Reading ${fileInput.name} and extracting text...`} />
-        );
-        userPromptDescription = `Uploaded file: ${fileInput.name}`;
-        summary = await processFile(fileBlob, fileInput.type);
-      } else {
-        stream.update(
-          <ChatMessage role="assistant" text="Summarizing text content..." />
-        );
-        userPromptDescription = textInput;
-        summary = await summarizeText(textInput);
+      if (!file) {
+        throw new Error('No file uploaded.');
       }
 
-      stream.update(
-        <ChatMessage role="assistant" text={summary} />
-      );
+      const fileType = file.type;
+      const fileName = file.name;
 
-      // Persist the interaction in the AI State history
-      history.done([
-        ...history.get(),
-        { role: 'user', content: userPromptDescription },
-        { role: 'assistant', content: summary },
-      ]);
-    } catch (error: any) {
-      console.error('[continueConversation] Error:', error);
-      stream.update(
+      userPromptDescription = `Uploaded file: ${fileName}`;
+      summary = await processFile(file, fileType);
+    } else {
+      userPromptDescription = input;
+      summary = await summarizeText(input);
+    }
+
+    // Persist the interaction in the AI State history
+    history.done([
+      ...history.get(),
+      { role: 'user', content: userPromptDescription },
+      { role: 'assistant', content: summary },
+    ]);
+
+    return {
+      id: generateUniqueId(),
+      display: <ChatMessage role="assistant" text={summary} />,
+      role: 'assistant',
+    };
+  } catch (error: any) {
+    console.error('[continueConversation] Error:', error);
+    
+    return {
+      id: generateUniqueId(),
+      display: (
         <ChatMessage
           role="assistant"
           text={`An error occurred: ${error.message || 'Unknown error'}`}
           className="text-red-500"
         />
-      );
-    } finally {
-      stream.done();
-    }
-  })();
-
-  return {
-    id: generateUniqueId(),
-    display: stream.value,
-    role: 'assistant',
-  };
+      ),
+      role: 'assistant',
+    };
+  }
 };
 
 export const AI = createAI<ModelMessage[], UIStateItem[]>({
