@@ -67,7 +67,7 @@ Below is a list of the major libraries used in the workspace and their primary u
 ## Project Structure
 
 ### Applications
-- apps/astra: A Next.js 15+ implementation with a built-in API route (/api/chat). Runs on port 4300. See [apps/astra/README.md](./apps/astra/README.md) for app-specific details.
+- [apps/astra](apps/astra): The core Next.js 15+ conversational AI web assistant, featuring streaming chat, multimodal image analysis, and document summarization. Runs on port 4300. See [apps/astra/README.md](./apps/astra/README.md) for app-specific details.
 
 ### Libraries
 - libs/chat-ui: Shared React components (Radix UI, Tailwind CSS).
