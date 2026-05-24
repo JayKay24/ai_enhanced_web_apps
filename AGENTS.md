@@ -1,6 +1,6 @@
 # Project Context: Astra AI
 
-This project is an Nx-based monorepo for building AI-enhanced web applications. The core application, **Astra**, is a Next.js-based chat interface integrated with Google Gemini via Vertex AI and the Vercel AI SDK.
+This project is an Nx-based monorepo for building AI-enhanced web applications. The core application, **Astra**, is a Next.js-based conversational AI interface integrated with Google Gemini via Vertex AI and the Vercel AI SDK. It supports real-time streaming, multimodal image inputs, and document upload & summarization.
 
 ## Project Overview
 
@@ -40,7 +40,7 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 ### Applications
 
-- `apps/astra/`: Next.js 15+ implementation with integrated `/api/chat` route.
+- `apps/astra/`: Next.js 15+ conversational AI web assistant featuring streaming, multimodal inputs, and document summarization.
 - `apps/standalone/`: CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`).
 
 ### Shared Libraries

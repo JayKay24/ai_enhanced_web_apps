@@ -2,6 +2,8 @@
 
 This repository contains my experiments, projects, and learning notes as I build AI-enhanced full-stack web applications using LLMs and generative AI, inspired by *Building AI-Enhanced Web Apps* by Theo Despoudis.
 
+The central application in this monorepo is **Astra**, a Next.js-based conversational web assistant integrated with Google Gemini via Vertex AI and the Vercel AI SDK. It supports real-time chat streaming, multimodal image input, and document upload & summarization (.pdf, .docx).
+
 ## Core Technology Stack
 I will be building applications utilizing modern tooling without needing to dive deep into machine learning theory or Python. The core stack includes:
 *   Frontend & Backend: React (for reusable UI components) and Next.js (for full-stack file-based routing and API handlers).
