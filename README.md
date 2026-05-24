@@ -2,7 +2,7 @@
 
 This repository contains my experiments, projects, and learning notes as I build AI-enhanced full-stack web applications using LLMs and generative AI, inspired by *Building AI-Enhanced Web Apps* by Theo Despoudis.
 
-The central application in this monorepo is **Astra**, a Next.js-based conversational web assistant integrated with Google Gemini via Vertex AI and the Vercel AI SDK. It supports real-time chat streaming, multimodal image input, and document upload & summarization (.pdf, .docx).
+The central application in this monorepo is **Astra Document Summary** (`astra-document-summary`), a Next.js-based conversational AI web assistant designed for document parsing and text summarization. Powered by Google Gemini (via Vertex AI and the Vercel AI SDK), it supports uploading files (PDF, DOCX) or pasting raw text to generate cohesive, structured summaries.
 
 ## Core Technology Stack
 I will be building applications utilizing modern tooling without needing to dive deep into machine learning theory or Python. The core stack includes:
@@ -15,17 +15,17 @@ Below is a list of the major libraries used in the workspace and their primary u
 
 | Library | Description & Use Case |
 | :--- | :--- |
-| **`ai` (Vercel AI SDK Core)** | Provides a unified, provider-agnostic interface for executing AI workflows. Used to generate text (`generateText`), stream text (`streamText`), generate embeddings (`embed`, `embedMany`), calculate cosine similarity, and manage tool/function calling in the `astra` chat client and standalone CLI projects. |
+| **`ai` (Vercel AI SDK Core)** | Provides a unified, provider-agnostic interface for executing AI workflows. Used to generate text (`generateText`), stream text (`streamText`), generate embeddings (`embed`, `embedMany`), calculate cosine similarity, and manage tool/function calling in the `astra-document-summary` chat client and standalone CLI projects. |
 | **`@ai-sdk/google`** | Integration adapter for Google Gemini models (e.g., `gemini-2.5-flash`, `gemini-1.5-pro`) via the Vercel AI SDK. |
 | **`@ai-sdk/google-vertex`** | Direct Vercel AI SDK adapter for Google Cloud Vertex AI services, allowing enterprise deployments authenticated via Application Default Credentials (ADC). |
 | **`@ai-sdk/openai`** | Provider adapter for OpenAI models (e.g., `gpt-4o`) within the Vercel AI SDK ecosystem. |
-| **`@ai-sdk/react` & `@ai-sdk/rsc`** | Frontend hook packages supporting real-time streaming, chat state management (`useChat`, `useCompletion`), and React Server Components/Server Actions UI streaming integrations in `apps/astra`. |
+| **`@ai-sdk/react` & `@ai-sdk/rsc`** | Frontend hook packages supporting real-time streaming, chat state management (`useChat`, `useCompletion`), and React Server Components/Server Actions UI streaming integrations in `apps/astra-document-summary`. |
 | **`@langchain/core`** | Abstraction layer for LangChain workflows, providing prompts, output parsers, message definitions, and runnables. |
 | **`@langchain/google-vertexai`** | Integrates Google Vertex AI chat models (`ChatVertexAI`) and text/document embeddings (`VertexAIEmbeddings`) with LangChain. |
 | **`@langchain/textsplitters`** | Semantic and character-based document splitters (like `RecursiveCharacterTextSplitter`) to chunk document text. |
 | **`@langchain/classic`** | Contains classic vector storage implementations, specifically `MemoryVectorStore`, for temporary, in-memory document retrieval and similarity search. |
-| **`@langchain/langgraph`** | Library for building stateful, multi-actor applications with LLMs, used to orchestrate the ReAct agent runtime in the `astra` application. |
-| **`langchain`** | Core LangChain package, used for the updated non-deprecated `createAgent` orchestration API in `apps/astra`. |
+| **`@langchain/langgraph`** | Library for building stateful, multi-actor applications with LLMs, used to orchestrate the ReAct agent runtime in the `astra-document-summary` application. |
+| **`langchain`** | Core LangChain package, used for the updated non-deprecated `createAgent` orchestration API in `apps/astra-document-summary`. |
 | **`@google/genai`** | Official Google Gen AI Node.js SDK, used directly in standalone projects like `counting-tokens-vertexai` to count text/multimodal tokens and invoke Gemini models outside standard abstractions. |
 | **`@dqbd/tiktoken`** | High-performance BPE tokenizer used to accurately calculate token lengths for OpenAI models. |
 | **`zod`** | TypeScript-first schema declaration and validation library, used for structured data extraction and tool definition schemas. |
@@ -67,7 +67,7 @@ Below is a list of the major libraries used in the workspace and their primary u
 ## Project Structure
 
 ### Applications
-- [apps/astra](apps/astra): The core Next.js 15+ conversational AI web assistant, featuring streaming chat, multimodal image analysis, and document summarization. Runs on port 4300. See [apps/astra/README.md](./apps/astra/README.md) for app-specific details.
+- [apps/astra-document-summary](apps/astra-document-summary): The core Next.js 15+ conversational AI web assistant, designed for document parsing and summarization. Runs on port 4300. See [apps/astra-document-summary/README.md](./apps/astra-document-summary/README.md) for app-specific details.
 
 ### Libraries
 - libs/chat-ui: Shared React components (Radix UI, Tailwind CSS).
@@ -79,7 +79,7 @@ Below is a list of the major libraries used in the workspace and their primary u
 
 | ![Screenshot 1](./docs/Screenshot%202026-05-08%20at%2018.11.51%20(2).png) | ![Screenshot 2](./docs/Screenshot%202026-05-08%20at%2018.13.14%20(2).png) | ![Screenshot 3](./docs/Screenshot%202026-05-08%20at%2018.13.45%20(2).png) |
 |:---:|:---:|:---:|
-| Initial View | Chatting with Astra | Full Conversation |
+| Initial View | Chatting with Astra Document Summary | Full Conversation |
 
 ## Getting Started
 
@@ -105,7 +105,7 @@ npm install
 ### Running the Application
 
 ```bash
-npx nx serve astra
+npx nx serve astra-document-summary
 ```
 
 ## Running Tasks
@@ -115,19 +115,19 @@ Nx is used for running all tasks.
 ### Build
 
 ```bash
-npx nx build astra
+npx nx build astra-document-summary
 ```
 
 ### Test
 
 ```bash
-npx nx test astra
+npx nx test astra-document-summary
 ```
 
 ### Linting
 
 ```bash
-npx nx lint astra
+npx nx lint astra-document-summary
 ```
 
 ## Documentation

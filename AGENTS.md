@@ -1,6 +1,6 @@
-# Project Context: Astra AI
+# Project Context: Astra Document Summary
 
-This project is an Nx-based monorepo for building AI-enhanced web applications. The core application, **Astra**, is a Next.js-based conversational AI interface integrated with Google Gemini via Vertex AI and the Vercel AI SDK. It supports real-time streaming, multimodal image inputs, and document upload & summarization.
+This project is an Nx-based monorepo for building AI-enhanced web applications. The core application, **Astra Document Summary** (`astra-document-summary`), is a Next.js-based conversational AI web assistant designed for document parsing and summarization. It is integrated with Google Gemini via Vertex AI and the Vercel AI SDK, and supports real-time streaming, text/document uploads (.pdf, .docx), and text summarization.
 
 ## Project Overview
 
@@ -9,7 +9,7 @@ This project is an Nx-based monorepo for building AI-enhanced web applications. 
 - **AI Integration:** Vercel AI SDK (`ai` and `@ai-sdk/google`)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com), Radix UI, Lucide Icons
 - **Port Mapping:**
-  - `astra`: 4300 (Next.js)
+  - `astra-document-summary`: 4300 (Next.js)
 
 ### Key Libraries & Tech Stack
 
@@ -17,17 +17,17 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 | Library | Description & Use Case |
 | :--- | :--- |
-| **`ai` (Vercel AI SDK Core)** | Provides a unified, provider-agnostic interface for executing AI workflows. Used to generate text (`generateText`), stream text (`streamText`), generate embeddings (`embed`, `embedMany`), calculate cosine similarity, and manage tool/function calling in the `astra` chat client and standalone CLI projects. |
+| **`ai` (Vercel AI SDK Core)** | Provides a unified, provider-agnostic interface for executing AI workflows. Used to generate text (`generateText`), stream text (`streamText`), generate embeddings (`embed`, `embedMany`), calculate cosine similarity, and manage tool/function calling in the `astra-document-summary` chat client and standalone CLI projects. |
 | **`@ai-sdk/google`** | Integration adapter for Google Gemini models (e.g., `gemini-2.5-flash`, `gemini-1.5-pro`) via the Vercel AI SDK. |
 | **`@ai-sdk/google-vertex`** | Direct Vercel AI SDK adapter for Google Cloud Vertex AI services, allowing enterprise deployments authenticated via Application Default Credentials (ADC). |
 | **`@ai-sdk/openai`** | Provider adapter for OpenAI models (e.g., `gpt-4o`) within the Vercel AI SDK ecosystem. |
-| **`@ai-sdk/react` & `@ai-sdk/rsc`** | Frontend hook packages supporting real-time streaming, chat state management (`useChat`, `useCompletion`), and React Server Components/Server Actions UI streaming integrations in `apps/astra`. |
+| **`@ai-sdk/react` & `@ai-sdk/rsc`** | Frontend hook packages supporting real-time streaming, chat state management (`useChat`, `useCompletion`), and React Server Components/Server Actions UI streaming integrations in `apps/astra-document-summary`. |
 | **`@langchain/core`** | Abstraction layer for LangChain workflows, providing prompts, output parsers, message definitions, and runnables. |
 | **`@langchain/google-vertexai`** | Integrates Google Vertex AI chat models (`ChatVertexAI`) and text/document embeddings (`VertexAIEmbeddings`) with LangChain. |
 | **`@langchain/textsplitters`** | Semantic and character-based document splitters (like `RecursiveCharacterTextSplitter`) to chunk document text. |
 | **`@langchain/classic`** | Contains classic vector storage implementations, specifically `MemoryVectorStore`, for temporary, in-memory document retrieval and similarity search. |
-| **`@langchain/langgraph`** | Library for building stateful, multi-actor applications with LLMs, used to orchestrate the ReAct agent runtime in the `astra` application. |
-| **`langchain`** | Core LangChain package, used for the updated non-deprecated `createAgent` orchestration API in `apps/astra`. |
+| **`@langchain/langgraph`** | Library for building stateful, multi-actor applications with LLMs, used to orchestrate the ReAct agent runtime in the `astra-document-summary` application. |
+| **`langchain`** | Core LangChain package, used for the updated non-deprecated `createAgent` orchestration API in `apps/astra-document-summary`. |
 | **`@google/genai`** | Official Google Gen AI Node.js SDK, used directly in standalone projects like `counting-tokens-vertexai` to count text/multimodal tokens and invoke Gemini models outside standard abstractions. |
 | **`@dqbd/tiktoken`** | High-performance BPE tokenizer used to accurately calculate token lengths for OpenAI models. |
 | **`zod`** | TypeScript-first schema declaration and validation library, used for structured data extraction and tool definition schemas. |
@@ -40,7 +40,7 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 ### Applications
 
-- `apps/astra/`: Next.js 15+ conversational AI web assistant featuring streaming, multimodal inputs, and document summarization.
+- `apps/astra-document-summary/`: Next.js 15+ conversational AI web assistant featuring streaming, file upload support, and document summarization.
 - `apps/standalone/`: CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`).
 
 ### Shared Libraries
@@ -54,8 +54,8 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 ### AI Integration
 
-- **Astra AI Client (`apps/astra`):** Uses the Vercel AI SDK for streaming chat responses.
-  - API Route: `apps/astra/src/app/(chat)/api/chat/route.ts`
+- **Astra Document Summary Client (`apps/astra-document-summary`):** Uses the Vercel AI SDK for streaming chat responses.
+  - API Route: `apps/astra-document-summary/src/app/(chat)/api/chat/route.ts`
   - Uses `streamText` for real-time interaction.
   - Requires Vertex AI Application Default Credentials (ADC).
 - **Architectural Pattern for AI SDKs:**
@@ -89,13 +89,13 @@ Commands are typically executed via Nx.
 ### Development
 
 ```sh
-npx nx dev astra
+npx nx dev astra-document-summary
 ```
 
 ### Build
 
 ```sh
-npx nx build astra
+npx nx build astra-document-summary
 ```
 
 ## Development Conventions

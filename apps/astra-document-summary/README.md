@@ -1,6 +1,6 @@
-# Astra AI: Conversational Web Assistant
+# Astra Document Summary: Conversational AI Summarizer
 
-**Astra** is a foundational conversational AI web application designed to act as an intelligent, interactive chatbot persona. The primary goal of this project is to provide a seamless user interface where users can ask questions in natural language, view their entire conversation history, and receive intelligent responses powered by Large Language Models (LLMs).
+**Astra Document Summary** is a conversational AI web application designed specifically for document upload, parsing, and text summarization. The application allows users to upload documents (PDF and DOCX formats) or paste raw text to receive cohesive, structured summaries powered by Google Gemini (via Vertex AI and the Vercel AI SDK).
 
 ### ✨ Key Features
 *   **Interactive Chat Interface**: Built as a single-page application featuring a welcome message, an input box for natural language queries, and a dedicated, scrollable area for conversation history.
