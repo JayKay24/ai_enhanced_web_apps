@@ -30,3 +30,12 @@ export interface ChatResponse {
   /** The message object returned by the assistant. */
   message: Message;
 }
+
+/**
+ * Represents a single UI item in the AI SDK's UI state.
+ */
+export interface UIStateItem<T = any> {
+  id: string;
+  display?: T;
+  role?: MessageRole;
+}

@@ -7,11 +7,9 @@ import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { processFile, summarizeText } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 
-export interface UIStateItem {
-  id: string;
-  display?: React.ReactNode;
-  role?: 'user' | 'assistant' | 'system';
-}
+import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
+
+export type UIStateItem = BaseUIStateItem<React.ReactNode>;
 
 export const continueConversation = async (
   input: string | FormData
