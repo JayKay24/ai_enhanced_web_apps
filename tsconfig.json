@@ -50,6 +50,9 @@
     },
     {
       "path": "./apps/standalone/langchain-agent"
+    },
+    {
+      "path": "./apps/standalone/kmeans-summarization"
     }
   ]
 }
