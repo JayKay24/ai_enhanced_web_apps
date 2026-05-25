@@ -8,6 +8,7 @@ import {
   Button,
   ChatMessage,
   ChatList,
+  WelcomeHeader,
 } from '@ai-enhanced-web-apps/chat-ui';
 import {
   useEnterSubmit,
@@ -91,17 +92,12 @@ export default function ChatPage() {
         onScrollPositionChange={handleScrollPositionChange}
       >
         {messages.length === 0 && (
-          <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
-            <div className="inline-block">
-              Astra{' '}
-              <span role="img" aria-label="airplane">
-                ✈️
-              </span>{' '}
-              Aviation RAG
-            </div>
-            <br />
-            <span className="text-gray-400">Search and analyze NTSB incident reports</span>
-          </h1>
+          <WelcomeHeader
+            emoji="✈️"
+            emojiLabel="airplane"
+            title="Astra"
+            subtitle="Search and analyze NTSB aviation safety reports"
+          />
         )}
         {messages.length > 0 && (
           <ChatList messages={messages} isLoading={isLoading} />

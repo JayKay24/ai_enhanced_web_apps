@@ -16,3 +16,6 @@ export { default as AutoScroll } from './lib/AutoScroll';
 export * from './lib/AutoScroll';
 export { default as Navbar } from './lib/Navbar';
 export { default as Footer } from './lib/Footer';
+export { default as WelcomeHeader } from './lib/chat/WelcomeHeader';
+export * from './lib/chat/WelcomeHeader';
+
