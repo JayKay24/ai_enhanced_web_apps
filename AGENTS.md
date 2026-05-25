@@ -63,6 +63,13 @@ This project leverages the following core libraries for various AI-enhanced and 
   - **Server-Only Logic:** Store model factory logic in `libs/shared-utils/src/lib/ai-providers.ts`.
   - **Bundling Protection:** Use sub-path exports (e.g., `@ai-enhanced-web-apps/shared-utils/ai-providers`) for server-side code to avoid browser bundling errors.
 
+- **Vertex AI vs Google Gen AI SDK Guidelines:**
+  - **Preferred Provider**: Always prefer building features using **Vertex AI** (e.g., `@ai-sdk/google-vertex` or `@langchain/google-vertexai`) over the standalone `@google/genai` (Google Gen AI SDK).
+  - **Authentication**: Reuse the active Google Cloud session authenticated via Application Default Credentials (ADC) by running `gcloud auth application-default login`.
+  - **Environment Variables**: Ensure Vertex AI is configured with the following active environment variables:
+    - `VERTEX_AI_PROJECT_ID`: The Google Cloud Project ID.
+    - `VERTEX_AI_LOCATION`: The Google Cloud Region/Location (e.g., `us-central1`).
+
 ### Standalone CLI Applications
 
 - **CLI Bootstrapping Pattern:** Standalone CLI applications (found in `apps/standalone/`) should not run a persistent HTTP server. Instead:
