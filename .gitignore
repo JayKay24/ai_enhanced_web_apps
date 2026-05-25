@@ -71,3 +71,5 @@ test-output
 .next
 out
 next-env.d.ts
+
+__MACOSX

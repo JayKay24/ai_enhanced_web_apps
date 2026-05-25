@@ -53,6 +53,15 @@
     },
     {
       "path": "./apps/standalone/kmeans-summarization"
+    },
+    {
+      "path": "./libs/rag"
+    },
+    {
+      "path": "./apps/standalone/rag-indexer"
+    },
+    {
+      "path": "./apps/astra-aviation-rag"
     }
   ]
 }

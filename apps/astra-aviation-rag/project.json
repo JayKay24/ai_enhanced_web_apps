@@ -1,0 +1,24 @@
+{
+  "name": "astra-aviation-rag",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/astra-aviation-rag/src",
+  "tags": [],
+  "targets": {
+    "dev": {
+      "options": {
+        "command": "next dev -p 4400"
+      }
+    },
+    "start": {
+      "options": {
+        "command": "next start -p 4400"
+      }
+    },
+    "serve-static": {
+      "options": {
+        "command": "next start -p 4400"
+      }
+    }
+  }
+}
