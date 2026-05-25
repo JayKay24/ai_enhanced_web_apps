@@ -1,6 +1,8 @@
-# Project Context: Astra Document Summary
+# Project Context: Astra Monorepo (Document Summary & Aviation RAG)
 
-This project is an Nx-based monorepo for building AI-enhanced web applications. The core application, **Astra Document Summary** (`astra-document-summary`), is a Next.js-based conversational AI web assistant designed for document parsing and summarization. It is integrated with Google Gemini via Vertex AI and the Vercel AI SDK, and supports real-time streaming, text/document uploads (.pdf, .docx), and text summarization.
+This project is an Nx-based monorepo for building AI-enhanced web applications. The core applications are:
+- **Astra Document Summary** (`astra-document-summary`): A Next.js-based conversational AI web assistant designed for document parsing and summarization. It is integrated with Google Gemini via Vertex AI and the Vercel AI SDK, supporting real-time streaming, text/document uploads (.pdf, .docx), and text summarization.
+- **Astra Aviation RAG** (`astra-aviation-rag`): A Next.js-based conversational AI web assistant designed to search and analyze NTSB safety incident reports using Retrieval-Augmented Generation (RAG) and local hierarchical navigable small world (HNSW) vector indexing.
 
 ## Project Overview
 
@@ -10,6 +12,7 @@ This project is an Nx-based monorepo for building AI-enhanced web applications. 
 - **Styling:** [Tailwind CSS](https://tailwindcss.com), Radix UI, Lucide Icons
 - **Port Mapping:**
   - `astra-document-summary`: 4300 (Next.js)
+  - `astra-aviation-rag`: 4400 (Next.js)
 
 ### Key Libraries & Tech Stack
 
@@ -41,7 +44,8 @@ This project leverages the following core libraries for various AI-enhanced and 
 ### Applications
 
 - `apps/astra-document-summary/`: Next.js 15+ conversational AI web assistant featuring streaming, file upload support, and document summarization.
-- `apps/standalone/`: CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`).
+- `apps/astra-aviation-rag/`: Next.js 15+ conversational AI safety assistant utilizing local HNSWLib RAG and Gemini via Vertex AI.
+- `apps/standalone/`: CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`, `rag-indexer`).
 
 ### Shared Libraries
 
@@ -49,6 +53,7 @@ This project leverages the following core libraries for various AI-enhanced and 
 - `libs/chat-hooks/`: Shared React hooks for chat functionality.
 - `libs/shared-types/`: Shared TypeScript interfaces.
 - `libs/shared-utils/`: Shared utilities and AI provider configurations.
+- `libs/rag/`: Shared RAG library containing index builder and LCEL query chain using Google Vertex AI.
 
 ## Application Architecture
 
@@ -96,13 +101,21 @@ Commands are typically executed via Nx.
 ### Development
 
 ```sh
-npx nx dev astra-document-summary
+npm exec nx dev astra-document-summary
+```
+
+```sh
+npm exec nx dev astra-aviation-rag
 ```
 
 ### Build
 
 ```sh
-npx nx build astra-document-summary
+npm exec nx build astra-document-summary
+```
+
+```sh
+npm exec nx build astra-aviation-rag
 ```
 
 ## Development Conventions

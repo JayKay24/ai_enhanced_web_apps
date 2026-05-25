@@ -2,7 +2,9 @@
 
 This repository contains my experiments, projects, and learning notes as I build AI-enhanced full-stack web applications using LLMs and generative AI, inspired by *Building AI-Enhanced Web Apps* by Theo Despoudis.
 
-The central application in this monorepo is **Astra Document Summary** (`astra-document-summary`), a Next.js-based conversational AI web assistant designed for document parsing and text summarization. Powered by Google Gemini (via Vertex AI and the Vercel AI SDK), it supports uploading files (PDF, DOCX) or pasting raw text to generate cohesive, structured summaries.
+The central applications in this monorepo are:
+*   **Astra Document Summary** (`astra-document-summary`): A Next.js-based conversational AI web assistant designed for document parsing and text summarization. Powered by Google Gemini (via Vertex AI and the Vercel AI SDK), it supports uploading files (PDF, DOCX) or pasting raw text to generate cohesive, structured summaries.
+*   **Astra Aviation RAG** (`astra-aviation-rag`): A Next.js-based conversational AI web assistant designed to search and analyze NTSB safety incident reports using Retrieval-Augmented Generation (RAG) and local hierarchical navigable small world (HNSW) vector indexing.
 
 ## Core Technology Stack
 I will be building applications utilizing modern tooling without needing to dive deep into machine learning theory or Python. The core stack includes:
@@ -68,12 +70,15 @@ Below is a list of the major libraries used in the workspace and their primary u
 
 ### Applications
 - [apps/astra-document-summary](apps/astra-document-summary): The core Next.js 15+ conversational AI web assistant, designed for document parsing and summarization. Runs on port 4300. See [apps/astra-document-summary/README.md](./apps/astra-document-summary/README.md) for app-specific details.
+- [apps/astra-aviation-rag](apps/astra-aviation-rag): The Next.js 15+ conversational AI assistant utilizing RAG to analyze NTSB incident reports. Runs on port 4400. See [apps/astra-aviation-rag/README.md](./apps/astra-aviation-rag/README.md) for app-specific details.
+- [apps/standalone/rag-indexer](apps/standalone/rag-indexer): A NestJS CLI application designed to co-locate and compile PDF incident reports into a serialized HNSW vector database.
 
 ### Libraries
 - libs/chat-ui: Shared React components (Radix UI, Tailwind CSS).
 - libs/chat-hooks: Shared React hooks for chat logic and keyboard shortcuts.
 - libs/shared-types: Shared TypeScript interfaces and API contracts.
 - libs/shared-utils: Shared utility functions (e.g., cn).
+- [libs/rag](libs/rag): Shared RAG library containing HNSWLib index builder and LCEL query chain using Google Vertex AI.
 
 ## Screenshots
 
@@ -104,8 +109,14 @@ npm install
 
 ### Running the Application
 
+To run the Document Summary application:
 ```bash
-npx nx serve astra-document-summary
+npm exec nx dev astra-document-summary
+```
+
+To run the Aviation RAG application:
+```bash
+npm exec nx dev astra-aviation-rag
 ```
 
 ## Running Tasks
