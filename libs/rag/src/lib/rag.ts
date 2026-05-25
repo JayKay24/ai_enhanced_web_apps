@@ -6,6 +6,7 @@ import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { RunnableSequence, RunnablePassthrough } from '@langchain/core/runnables';
+import { Document } from '@langchain/core/documents';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -113,7 +114,7 @@ export class AviationRAG {
       ['human', '{question}'],
     ]);
 
-    const formatDocs = (docs: any[]) =>
+    const formatDocs = (docs: Document[]) =>
       docs
         .map(
           (d) =>
