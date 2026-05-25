@@ -8,6 +8,7 @@ import { AviationRAG } from '@ai-enhanced-web-apps/rag';
 import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
 import { ModelMessage } from 'ai';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export type UIStateItem = BaseUIStateItem<React.ReactNode>;
 
@@ -36,10 +37,16 @@ export const continueConversation = async (
     }
 
     // Resolve RAG index path with default fallback
-    const defaultIndexPath = path.join(
+    let defaultIndexPath = path.join(
       process.cwd(),
-      'apps/astra-aviation-rag/src/assets/hnswlib-index'
+      'src/assets/hnswlib-index'
     );
+    if (!fs.existsSync(defaultIndexPath)) {
+      defaultIndexPath = path.join(
+        process.cwd(),
+        'apps/astra-aviation-rag/src/assets/hnswlib-index'
+      );
+    }
     const indexPath = process.env.RAG_INDEX_PATH || defaultIndexPath;
 
     console.log(`[continueConversation] Using index path: "${indexPath}"`);
