@@ -18,8 +18,17 @@
       "serverReadyAction": {
         "pattern": "Local:\\s*(https?://.+)",
         "uriFormat": "%s",
-        "action": "debugWithChrome"
+        "action": "startDebugging",
+        "name": "Launch Chrome: astra-aviation-rag"
       }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome: astra-aviation-rag",
+      "url": "http://localhost:4400",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "webRoot": "${workspaceFolder}/apps/astra-aviation-rag"
     },
     {
       "type": "node-terminal",
@@ -38,8 +47,17 @@
       "serverReadyAction": {
         "pattern": "Local:\\s*(https?://.+)",
         "uriFormat": "%s",
-        "action": "debugWithChrome"
+        "action": "startDebugging",
+        "name": "Launch Chrome: astra-document-summary"
       }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome: astra-document-summary",
+      "url": "http://localhost:4300",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "webRoot": "${workspaceFolder}/apps/astra-document-summary"
     },
     {
       "type": "node",
