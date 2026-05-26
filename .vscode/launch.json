@@ -35,36 +35,6 @@
     },
     {
       "type": "node",
-      "request": "attach",
-      "name": "Attach to astra-aviation-rag",
-      "port": 9229,
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "autoAttachChildProcesses": true,
-      "sourceMapPathOverrides": {
-        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
-        "turbopack:///./*": "${workspaceFolder}/apps/astra-aviation-rag/*",
-        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
-        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*"
-      }
-    },
-    {
-      "type": "node",
-      "request": "attach",
-      "name": "Attach to astra-document-summary",
-      "port": 9228,
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "autoAttachChildProcesses": true,
-      "sourceMapPathOverrides": {
-        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-document-summary/*",
-        "turbopack:///./*": "${workspaceFolder}/apps/astra-document-summary/*",
-        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*",
-        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*"
-      }
-    },
-    {
-      "type": "node",
       "request": "launch",
       "name": "Debug standalone-counting-tokens-openai with Nx",
       "runtimeExecutable": "npx",
