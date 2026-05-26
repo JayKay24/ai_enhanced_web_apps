@@ -3,6 +3,22 @@
   "configurations": [
     {
       "type": "node",
+      "request": "attach",
+      "name": "Attach to astra-aviation-rag",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to astra-document-summary",
+      "port": 9228,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true
+    },
+    {
+      "type": "node",
       "request": "launch",
       "name": "Debug standalone-counting-tokens-openai with Nx",
       "runtimeExecutable": "npx",
