@@ -19,14 +19,15 @@
         "pattern": "Local:\\s*(https?://.+)",
         "uriFormat": "%s",
         "action": "startDebugging",
-        "name": "Launch Chrome: astra-aviation-rag"
+        "name": "Launch Brave: astra-aviation-rag"
       }
     },
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome: astra-aviation-rag",
+      "name": "Launch Brave: astra-aviation-rag",
       "url": "http://localhost:4400",
+      "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
       "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
       "webRoot": "${workspaceFolder}/apps/astra-aviation-rag"
     },
@@ -48,14 +49,15 @@
         "pattern": "Local:\\s*(https?://.+)",
         "uriFormat": "%s",
         "action": "startDebugging",
-        "name": "Launch Chrome: astra-document-summary"
+        "name": "Launch Brave: astra-document-summary"
       }
     },
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome: astra-document-summary",
+      "name": "Launch Brave: astra-document-summary",
       "url": "http://localhost:4300",
+      "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
       "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
       "webRoot": "${workspaceFolder}/apps/astra-document-summary"
     },
