@@ -2,35 +2,43 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "type": "node-terminal",
       "request": "launch",
       "name": "Launch & Debug astra-aviation-rag",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "run", "astra-aviation-rag:dev:debug"],
+      "command": "npx nx run astra-aviation-rag:dev:debug",
+      "envFile": "${workspaceFolder}/.env",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
-      "autoAttachChildProcesses": true,
       "sourceMapPathOverrides": {
         "turbopack://[project]/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
         "turbopack:///./*": "${workspaceFolder}/apps/astra-aviation-rag/*",
         "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
         "webpack://_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*"
+      },
+      "serverReadyAction": {
+        "pattern": "Local:\\s*(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
       }
     },
     {
-      "type": "node",
+      "type": "node-terminal",
       "request": "launch",
       "name": "Launch & Debug astra-document-summary",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "run", "astra-document-summary:dev:debug"],
+      "command": "npx nx run astra-document-summary:dev:debug",
+      "envFile": "${workspaceFolder}/.env",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
-      "autoAttachChildProcesses": true,
       "sourceMapPathOverrides": {
         "turbopack://[project]/*": "${workspaceFolder}/apps/astra-document-summary/*",
         "turbopack:///./*": "${workspaceFolder}/apps/astra-document-summary/*",
         "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*",
         "webpack://_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*"
+      },
+      "serverReadyAction": {
+        "pattern": "Local:\\s*(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
       }
     },
     {
