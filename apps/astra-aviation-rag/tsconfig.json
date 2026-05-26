@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "sourceMap": true,
     "jsx": "preserve",
     "noEmit": true,
     "emitDeclarationOnly": false,

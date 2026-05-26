@@ -3,6 +3,38 @@
   "configurations": [
     {
       "type": "node",
+      "request": "launch",
+      "name": "Launch & Debug astra-aviation-rag",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "run", "astra-aviation-rag:dev:debug"],
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "autoAttachChildProcesses": true,
+      "sourceMapPathOverrides": {
+        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack:///./*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch & Debug astra-document-summary",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "run", "astra-document-summary:dev:debug"],
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "autoAttachChildProcesses": true,
+      "sourceMapPathOverrides": {
+        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack:///./*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*"
+      }
+    },
+    {
+      "type": "node",
       "request": "attach",
       "name": "Attach to astra-aviation-rag",
       "port": 9229,
@@ -11,6 +43,8 @@
       "autoAttachChildProcesses": true,
       "sourceMapPathOverrides": {
         "turbopack://[project]/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack:///./*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
         "webpack://_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*"
       }
     },
@@ -24,6 +58,8 @@
       "autoAttachChildProcesses": true,
       "sourceMapPathOverrides": {
         "turbopack://[project]/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack:///./*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*",
         "webpack://_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*"
       }
     },
