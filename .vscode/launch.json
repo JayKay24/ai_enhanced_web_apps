@@ -4,27 +4,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/chat-server with Nx",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/chat-server"],
-      "env": {
-        "NODE_OPTIONS": "--inspect=9229"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/apps/chat-server/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "Debug standalone-counting-tokens-openai with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "standalone-counting-tokens-openai"],
+      "runtimeArgs": ["nx", "execute", "standalone-counting-tokens-openai"],
       "env": {
         "NODE_OPTIONS": "--inspect=9230"
       },
@@ -42,7 +24,7 @@
       "request": "launch",
       "name": "Debug standalone-counting-tokens-vertexai with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "standalone-counting-tokens-vertexai"],
+      "runtimeArgs": ["nx", "execute", "standalone-counting-tokens-vertexai"],
       "env": {
         "NODE_OPTIONS": "--inspect=9231"
       },
@@ -58,29 +40,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug standalone-counting-tokens-vertexai with Nx",
+      "name": "Debug unit-prompt-tests with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "standalone-counting-tokens-vertexai"],
+      "runtimeArgs": ["nx", "execute", "unit-prompt-tests"],
       "env": {
         "NODE_OPTIONS": "--inspect=9232"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/apps/standalone/counting-tokens-vertexai/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/unit-prompt-tests with Nx",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/unit-prompt-tests"],
-      "env": {
-        "NODE_OPTIONS": "--inspect=9233"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -94,29 +58,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/few-shot-learning with Nx",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/few-shot-learning"],
-      "env": {
-        "NODE_OPTIONS": "--inspect=9234"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/apps/standalone/few-shot-learning/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "Debug few-shot-learning with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "few-shot-learning"],
+      "runtimeArgs": ["nx", "execute", "few-shot-learning"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9235"
+        "NODE_OPTIONS": "--inspect=9233"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -130,15 +76,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/embeddings-vertexai with Nx",
+      "name": "Debug embeddings-vertexai with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/embeddings-vertexai"
-      ],
+      "runtimeArgs": ["nx", "execute", "embeddings-vertexai"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9236"
+        "NODE_OPTIONS": "--inspect=9234"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -152,11 +94,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/interactive-it-kb with Nx",
+      "name": "Debug interactive-it-kb with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/interactive-it-kb"],
+      "runtimeArgs": ["nx", "execute", "interactive-it-kb"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9237"
+        "NODE_OPTIONS": "--inspect=9235"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -170,15 +112,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/langchain-simple-chain with Nx",
+      "name": "Debug langchain-simple-chain with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/langchain-simple-chain"
-      ],
+      "runtimeArgs": ["nx", "execute", "langchain-simple-chain"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9238"
+        "NODE_OPTIONS": "--inspect=9236"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -192,11 +130,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/few-shot-chain with Nx",
+      "name": "Debug few-shot-chain with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/few-shot-chain"],
+      "runtimeArgs": ["nx", "execute", "few-shot-chain"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9239"
+        "NODE_OPTIONS": "--inspect=9237"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -210,15 +148,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/document-retrieval-flow with Nx",
+      "name": "Debug document-retrieval-flow with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/document-retrieval-flow"
-      ],
+      "runtimeArgs": ["nx", "execute", "document-retrieval-flow"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9240"
+        "NODE_OPTIONS": "--inspect=9238"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -232,15 +166,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/langchain-message-history with Nx",
+      "name": "Debug langchain-message-history with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx",
-        "serve",
-        "@ai-enhanced-web-apps/langchain-message-history"
-      ],
+      "runtimeArgs": ["nx", "execute", "langchain-message-history"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9241"
+        "NODE_OPTIONS": "--inspect=9239"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -254,11 +184,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @ai-enhanced-web-apps/langchain-agent with Nx",
+      "name": "Debug langchain-agent with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/langchain-agent"],
+      "runtimeArgs": ["nx", "execute", "langchain-agent"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9242"
+        "NODE_OPTIONS": "--inspect=9240"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -274,9 +204,9 @@
       "request": "launch",
       "name": "Debug @ai-enhanced-web-apps/rag-indexer with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@ai-enhanced-web-apps/rag-indexer"],
+      "runtimeArgs": ["nx", "execute", "@ai-enhanced-web-apps/rag-indexer"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9243"
+        "NODE_OPTIONS": "--inspect=9241"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -284,6 +214,24 @@
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/apps/standalone/rag-indexer/dist/**/*.(m|c|)js",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug kmeans-summarization with Nx",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "execute", "kmeans-summarization"],
+      "env": {
+        "NODE_OPTIONS": "--inspect=9242"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/apps/standalone/kmeans-summarization/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }
