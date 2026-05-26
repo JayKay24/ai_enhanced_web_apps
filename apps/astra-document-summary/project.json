@@ -6,18 +6,29 @@
   "tags": [],
   "targets": {
     "dev": {
+      "executor": "nx:run-commands",
       "options": {
-        "command": "next dev -p 4300"
+        "command": "next dev -p 4300",
+        "cwd": "apps/astra-document-summary"
+      },
+      "configurations": {
+        "debug": {
+          "command": "NODE_OPTIONS=\"--inspect=9228\" next dev -p 4300"
+        }
       }
     },
     "start": {
+      "executor": "nx:run-commands",
       "options": {
-        "command": "next start -p 4300"
+        "command": "next start -p 4300",
+        "cwd": "apps/astra-document-summary"
       }
     },
     "serve-static": {
+      "executor": "nx:run-commands",
       "options": {
-        "command": "next start -p 4300"
+        "command": "next start -p 4300",
+        "cwd": "apps/astra-document-summary"
       }
     }
   }
