@@ -42,6 +42,8 @@ The application will run on port `4400`. Open [http://localhost:4400](http://loc
 
 ## Project Structure
 
-- `src/app/actions.tsx`: Vercel AI SDK Server Action (`continueConversation`) implementing the query execution chain and index path resolution.
-- `src/app/page.tsx`: Chat interface utilizing the shared components (AutoScroll, ChatList, WelcomeHeader) and hooks (useEnterSubmit).
+- `src/app/(chat)/layout.tsx`: Chat layout containing the navigation header, main content wrapper, and footer.
+- `src/app/(chat)/actions.tsx`: Vercel AI SDK Server Action (`continueConversation`) implementing the query execution chain and index path resolution.
+- `src/app/(chat)/page.tsx`: Chat interface utilizing the shared components (AutoScroll, ChatList, WelcomeHeader) and hooks (useEnterSubmit).
+- `src/app/layout.tsx`: Root HTML and Body shell container.
 - `src/app/global.css`: Connects Tailwind CSS base styles and HSL color variables mapping.
