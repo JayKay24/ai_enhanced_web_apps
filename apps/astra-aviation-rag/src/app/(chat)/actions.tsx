@@ -3,7 +3,7 @@
 import React from 'react';
 import { createAI, getMutableAIState } from '@ai-sdk/rsc';
 import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
-import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
+import { generateUniqueId, AIErrorTracker } from '@ai-enhanced-web-apps/shared-utils';
 import { AviationRAG } from '@ai-enhanced-web-apps/rag';
 import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
 import { logger } from '@ai-enhanced-web-apps/logger';
@@ -71,14 +71,19 @@ export const continueConversation = async (
       role: 'assistant',
     };
   } catch (error: any) {
-    logger.error({ err: error }, '[continueConversation] RAG Error');
+    const errorData = await AIErrorTracker.trackError(error, {
+      provider: 'Google Vertex AI',
+      model: 'gemini-2.5-flash',
+      input: input,
+    });
+    const userError = AIErrorTracker.createUserFacingError(errorData);
     
     return {
-      id: generateUniqueId(),
+      id: userError.requestId,
       display: (
         <ChatMessage
           role="assistant"
-          text={`An error occurred while querying the aviation incident database: ${error.message || 'Unknown error'}`}
+          text={`${userError.message} (Request ID: ${userError.requestId})`}
           className="text-red-500"
         />
       ),
