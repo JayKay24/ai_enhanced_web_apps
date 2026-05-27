@@ -68,9 +68,9 @@ export class AppService {
 
     try {
       const output = await chain.invoke({ text: inputString });
-      console.log('\n--- Final Output ---');
-      console.log(output);
-      console.log('--------------------\n');
+      this.logger.log('\n--- Final Output ---');
+      this.logger.log(output);
+      this.logger.log('--------------------\n');
     } catch (error) {
       this.logger.error('Error executing chain', error);
       throw error;

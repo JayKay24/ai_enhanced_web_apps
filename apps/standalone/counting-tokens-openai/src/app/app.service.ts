@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { encoding_for_model, TiktokenModel } from '@dqbd/tiktoken';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
   countTokens(text: string, model: TiktokenModel = 'gpt-3.5-turbo'): number {
     const enc = encoding_for_model(model);
     const tokens = enc.encode(text);
@@ -20,13 +21,13 @@ export class AppService {
     const systemTokens = this.countTokens(systemMessage);
     const totalTokens = promptTokens + systemTokens;
 
-    console.log(`Prompt tokens: ${promptTokens}`);
-    console.log(`System message tokens: ${systemTokens}`);
-    console.log(`Total tokens: ${totalTokens}`);
+    this.logger.log(`Prompt tokens: ${promptTokens}`);
+    this.logger.log(`System message tokens: ${systemTokens}`);
+    this.logger.log(`Total tokens: ${totalTokens}`);
 
     // Calculate remaining tokens for response (assuming a 4096 token limit)
     const maxTokens = 4096;
     const remainingTokens = maxTokens - totalTokens;
-    console.log(`Remaining tokens for response: ${remainingTokens}`);
+    this.logger.log(`Remaining tokens for response: ${remainingTokens}`);
   }
 }

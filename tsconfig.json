@@ -62,6 +62,9 @@
     },
     {
       "path": "./apps/astra-aviation-rag"
+    },
+    {
+      "path": "./libs/logger"
     }
   ]
 }

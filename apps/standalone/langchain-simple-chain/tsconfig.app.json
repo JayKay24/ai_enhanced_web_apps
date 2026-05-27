@@ -3,18 +3,18 @@
   "compilerOptions": {
     "outDir": "dist",
     "module": "nodenext",
-    "types": [
-      "node"
-    ],
-    "rootDir": "src",
-    "moduleResolution": "nodenext",
+    "types": ["node"],
+        "moduleResolution": "nodenext",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es2021"
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    {
+      "path": "../../../libs/logger/tsconfig.lib.json"
+    }
+  ]
 }

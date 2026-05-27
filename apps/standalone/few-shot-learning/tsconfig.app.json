@@ -4,7 +4,6 @@
     "outDir": "dist",
     "module": "nodenext",
     "types": ["node"],
-    "rootDir": "src",
     "moduleResolution": "nodenext",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
@@ -12,5 +11,10 @@
     "target": "es2021"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    {
+      "path": "../../../libs/logger/tsconfig.lib.json"
+    }
+  ]
 }

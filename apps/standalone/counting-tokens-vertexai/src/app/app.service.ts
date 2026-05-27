@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { GoogleGenAI, Content } from '@google/genai';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
   private ai: GoogleGenAI;
 
   constructor() {
@@ -30,9 +31,9 @@ export class AppService {
           },
         ],
       });
-      console.log(`Token count for "${text}":`, response.totalTokens);
+      this.logger.log(`Token count for "${text}":`, response.totalTokens);
     } catch (error) {
-      console.error('Error counting tokens:', error);
+      this.logger.error('Error counting tokens:', error);
     }
   }
 
@@ -42,9 +43,9 @@ export class AppService {
         model: 'gemini-2.5-flash',
         contents: history,
       });
-      console.log('Chat history token count:', response.totalTokens);
+      this.logger.log('Chat history token count:', response.totalTokens);
     } catch (error) {
-      console.error('Error counting chat tokens:', error);
+      this.logger.error('Error counting chat tokens:', error);
     }
   }
 
@@ -56,7 +57,7 @@ export class AppService {
       });
       return response.embeddings?.[0];
     } catch (error) {
-      console.error('Error getting embedding:', error);
+      this.logger.error('Error getting embedding:', error);
       return null;
     }
   }
@@ -116,7 +117,7 @@ export class AppService {
         }
       }
 
-      console.log('Most relevant question:', mostRelevantQuestion);
+      this.logger.log('Most relevant question:', mostRelevantQuestion);
     }
 
     const history: Content[] = [
@@ -134,7 +135,7 @@ export class AppService {
     const chatResponse = await chat.sendMessage({
       message: 'In one sentence, explain how a computer works to a young child.',
     });
-    console.log('Chat response usage metadata:', chatResponse.usageMetadata);
+    this.logger.log('Chat response usage metadata:', chatResponse.usageMetadata);
 
     const combinedHistory = chat.getHistory();
     const extraMessage: Content = {

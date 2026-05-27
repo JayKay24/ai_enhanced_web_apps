@@ -76,11 +76,11 @@ AI applications include advanced web search engines, recommendation systems, und
     this.logger.log(`Testing similarity search for: "${searchQuery}"`);
     const searchResults = await vectorStore.similaritySearch(searchQuery, 1);
     
-    console.log('\n--- Direct Similarity Search Results ---');
+    this.logger.log('\n--- Direct Similarity Search Results ---');
     searchResults.forEach((doc, idx) => {
-      console.log(`Match ${idx + 1}: "${doc.pageContent}"`);
+      this.logger.log(`Match ${idx + 1}: "${doc.pageContent}"`);
     });
-    console.log('----------------------------------------\n');
+    this.logger.log('----------------------------------------\n');
 
     // 6. Set up Chat Model and RAG Retrieval Chain
     this.logger.log('Initializing ChatVertexAI (gemini-2.5-flash)...');
@@ -145,10 +145,10 @@ AI applications include advanced web search engines, recommendation systems, und
     this.logger.log(`Invoking RAG chain for query 1: "${query1}"`);
     try {
       const answer1 = await ragChain.invoke({ question: query1 });
-      console.log('\n--- RAG Chain Output (Query 1) ---');
-      console.log(`Question: ${query1}`);
-      console.log(`Answer:\n${answer1}`);
-      console.log('----------------------------------\n');
+      this.logger.log('\n--- RAG Chain Output (Query 1) ---');
+      this.logger.log(`Question: ${query1}`);
+      this.logger.log(`Answer:\n${answer1}`);
+      this.logger.log('----------------------------------\n');
     } catch (err) {
       this.logger.error('Failed to run Query 1', err);
     }
@@ -157,10 +157,10 @@ AI applications include advanced web search engines, recommendation systems, und
     this.logger.log(`Invoking RAG chain for query 2 (out-of-context): "${query2}"`);
     try {
       const answer2 = await ragChain.invoke({ question: query2 });
-      console.log('\n--- RAG Chain Output (Query 2) ---');
-      console.log(`Question: ${query2}`);
-      console.log(`Answer:\n${answer2}`);
-      console.log('----------------------------------\n');
+      this.logger.log('\n--- RAG Chain Output (Query 2) ---');
+      this.logger.log(`Question: ${query2}`);
+      this.logger.log(`Answer:\n${answer2}`);
+      this.logger.log('----------------------------------\n');
     } catch (err) {
       this.logger.error('Failed to run Query 2', err);
     }

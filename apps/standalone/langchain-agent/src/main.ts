@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 // Hot-patch a packaging bug in @langchain/core where v4 is exported as an object instead of a function in CommonJS environment.
 try {
   const uuidPkg = require('@langchain/core/utils/uuid');
@@ -10,12 +11,13 @@ try {
 
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
+import { NestLoggerService } from '@ai-enhanced-web-apps/logger';
 import { AppModule } from './app/app.module';
 import { AppService } from './app/app.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
-    logger: ['error', 'warn', 'log'], // Include 'log' to see our steps
+    logger: new NestLoggerService(), // Include 'log' to see our steps
   });
 
   const appService = app.get(AppService);
@@ -23,7 +25,7 @@ async function bootstrap() {
   try {
     await appService.executeChain();
   } catch (error) {
-    console.error('Execution failed:', error);
+    Logger.error('Execution failed:', error);
     process.exit(1);
   } finally {
     await app.close();

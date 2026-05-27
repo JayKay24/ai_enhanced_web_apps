@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { embed } from 'ai';
 import { createVertex } from '@ai-sdk/google-vertex';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
   async run() {
     const projectId = process.env.VERTEX_AI_PROJECT_ID;
     const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
 
     if (!projectId) {
-      console.error('Error: VERTEX_AI_PROJECT_ID is not set.');
+      this.logger.error('Error: VERTEX_AI_PROJECT_ID is not set.');
       return;
     }
 
@@ -30,7 +31,7 @@ List some popular programming languages along with a brief description of each:
 4.
 `;
 
-    console.log('Generating embedding for text...');
+    this.logger.log('Generating embedding for text...');
 
     try {
       const { embedding } = await embed({
@@ -38,10 +39,10 @@ List some popular programming languages along with a brief description of each:
         value: inputText,
       });
 
-      console.log('Embedding vector length:', embedding.length);
-      console.log('First 10 embedding values:', embedding.slice(0, 10));
+      this.logger.log('Embedding vector length:', embedding.length);
+      this.logger.log('First 10 embedding values:', embedding.slice(0, 10));
     } catch (error) {
-      console.error('Error generating embedding:', error);
+      this.logger.error('Error generating embedding:', error);
     }
   }
 }

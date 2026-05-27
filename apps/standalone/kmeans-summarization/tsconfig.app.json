@@ -14,6 +14,9 @@
   "exclude": ["node_modules", "dist"],
   "references": [
     {
+      "path": "../../../libs/logger/tsconfig.lib.json"
+    },
+    {
       "path": "../../../libs/shared-utils/tsconfig.lib.json"
     }
   ]

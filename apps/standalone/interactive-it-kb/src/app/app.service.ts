@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { embed, embedMany, cosineSimilarity } from 'ai';
@@ -7,6 +7,7 @@ import 'dotenv/config';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
   private vertex = createVertex({
     project: process.env['VERTEX_AI_PROJECT_ID'],
     location: process.env['VERTEX_AI_LOCATION'],
@@ -31,8 +32,8 @@ export class AppService {
   async executeInteractiveQuery(): Promise<void> {
     const model = this.vertex.textEmbeddingModel('text-embedding-004');
 
-    console.log('--- IT Knowledge Base Initializing ---');
-    console.log('Generating embeddings for knowledge base...');
+    this.logger.log('--- IT Knowledge Base Initializing ---');
+    this.logger.log('Generating embeddings for knowledge base...');
 
     // 1. Batch embed the questions
     const { embeddings: questionEmbeddings } = await embedMany({
@@ -46,11 +47,11 @@ export class AppService {
       const userQuery = await rl.question('\nEnter your IT query: ');
 
       if (!userQuery.trim()) {
-        console.log('No query entered. Exiting.');
+        this.logger.log('No query entered. Exiting.');
         return;
       }
 
-      console.log(`Searching for: "${userQuery}"...`);
+      this.logger.log(`Searching for: "${userQuery}"...`);
 
       // 2. Embed the user query
       const { embedding: queryEmbedding } = await embed({
@@ -70,13 +71,13 @@ export class AppService {
         }
       }
 
-      console.log('\n--- Result ---');
+      this.logger.log('\n--- Result ---');
       if (bestIndex !== -1 && maxSimilarity > 0.7) {
-        console.log(`Matched Question: ${this.questions[bestIndex]}`);
-        console.log(`Similarity Score: ${maxSimilarity.toFixed(3)}`);
-        console.log(`\nAnswer: ${this.answers[bestIndex]}`);
+        this.logger.log(`Matched Question: ${this.questions[bestIndex]}`);
+        this.logger.log(`Similarity Score: ${maxSimilarity.toFixed(3)}`);
+        this.logger.log(`\nAnswer: ${this.answers[bestIndex]}`);
       } else {
-        console.log('No highly relevant answer found in the knowledge base.');
+        this.logger.log('No highly relevant answer found in the knowledge base.');
       }
     } finally {
       rl.close();

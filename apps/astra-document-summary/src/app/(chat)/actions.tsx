@@ -8,6 +8,7 @@ import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { processFile, summarizeText } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 
 import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
+import { logger } from '@ai-enhanced-web-apps/logger';
 
 export type UIStateItem = BaseUIStateItem<React.ReactNode>;
 
@@ -16,7 +17,7 @@ export const continueConversation = async (
 ): Promise<UIStateItem> => {
   'use server';
 
-  console.log('[continueConversation] START (Document Summarization - FormData Synchronous)');
+  logger.info('[continueConversation] START (Document Summarization - FormData Synchronous)');
 
   const history = getMutableAIState<typeof AI>();
 
@@ -54,7 +55,7 @@ export const continueConversation = async (
       role: 'assistant',
     };
   } catch (error: any) {
-    console.error('[continueConversation] Error:', error);
+    logger.error({ err: error }, '[continueConversation] Error');
     
     return {
       id: generateUniqueId(),

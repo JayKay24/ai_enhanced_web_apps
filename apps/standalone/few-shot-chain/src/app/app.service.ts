@@ -18,15 +18,15 @@ export class AppService {
     try {
       const formattedMessages = await getReasoningPromptMessages(testInput);
 
-      console.log('\n--- Formatted Few-Shot Prompt (Message Objects) ---');
-      console.log(JSON.stringify(formattedMessages, null, 2));
-      console.log('--------------------------------------------------\n');
+      this.logger.log('\n--- Formatted Few-Shot Prompt (Message Objects) ---');
+      this.logger.log(JSON.stringify(formattedMessages, null, 2));
+      this.logger.log('--------------------------------------------------\n');
 
       const formattedString = await getReasoningPromptString(testInput);
 
-      console.log('--- Formatted Few-Shot Prompt (String Representation) ---');
-      console.log(formattedString);
-      console.log('--------------------------------------------------------\n');
+      this.logger.log('--- Formatted Few-Shot Prompt (String Representation) ---');
+      this.logger.log(formattedString);
+      this.logger.log('--------------------------------------------------------\n');
     } catch (error) {
       this.logger.error('Error formatting few-shot prompt', error);
       throw error;

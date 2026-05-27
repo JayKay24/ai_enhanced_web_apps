@@ -98,12 +98,12 @@ export class AppService {
     // 7. Sort Selected Chunks by Original Reading Order
     representativeChunks.sort((a, b) => a.metadata.originalIndex - b.metadata.originalIndex);
     
-    console.log('\n--- Selected Representative Chunks ---');
+    this.logger.log('\n--- Selected Representative Chunks ---');
     representativeChunks.forEach((chunk, index) => {
-      console.log(`\n[Representative Chunk #${index + 1} | Cluster #${chunk.metadata.clusterIndex} | Original Chunk #${chunk.metadata.originalIndex}]:`);
-      console.log(`"${chunk.pageContent.substring(0, 300)}..."`);
+      this.logger.log(`\n[Representative Chunk #${index + 1} | Cluster #${chunk.metadata.clusterIndex} | Original Chunk #${chunk.metadata.originalIndex}]:`);
+      this.logger.log(`"${chunk.pageContent.substring(0, 300)}..."`);
     });
-    console.log('-------------------------------------\n');
+    this.logger.log('-------------------------------------\n');
 
     // 8. Synthesize Final Summary using LLM (Gemini 2.5 Flash via Vertex AI)
     this.logger.log('Synthesizing final cohesive summary using Gemini 2.5 Flash...');
@@ -120,10 +120,10 @@ export class AppService {
     const combinedTexts = representativeChunks.map((doc) => doc.pageContent).join('\n\n---\n\n');
     const finalSummary = await chain.invoke({ text: combinedTexts });
 
-    console.log('\n======================================================================');
-    console.log('                        FINAL SYNTHESIZED SUMMARY');
-    console.log('======================================================================');
-    console.log(finalSummary);
-    console.log('======================================================================\n');
+    this.logger.log('\n======================================================================');
+    this.logger.log('                        FINAL SYNTHESIZED SUMMARY');
+    this.logger.log('======================================================================');
+    this.logger.log(finalSummary);
+    this.logger.log('======================================================================\n');
   }
 }

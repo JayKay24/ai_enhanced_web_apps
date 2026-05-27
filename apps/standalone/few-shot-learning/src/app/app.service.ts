@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { generateText } from 'ai';
 import { createVertex } from '@ai-sdk/google-vertex';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
   private vertex = createVertex({
     project: process.env['VERTEX_AI_PROJECT_ID'],
     location: process.env['VERTEX_AI_LOCATION'],
@@ -25,7 +26,7 @@ List some popular programming languages along with a brief description of each:
       maxOutputTokens: 512,
     });
 
-    console.log("Generated Programming Languages:\n", response.text, "\n");
+    this.logger.log("Generated Programming Languages:\n", response.text, "\n");
   }
 
   async supportCustomerIssue(message: string): Promise<void> {
@@ -58,15 +59,15 @@ You are a customer support chatbot. Adapt your tone and sentiment based on the f
       maxOutputTokens: 512,
     });
 
-    console.log(`User: ${message}`);
-    console.log("Chatbot Response:", response.text, "\n");
+    this.logger.log(`User: ${message}`);
+    this.logger.log("Chatbot Response:", response.text, "\n");
   }
 
   async run() {
-    console.log("--- Generating Programming Languages (Few-Shot) ---");
+    this.logger.log("--- Generating Programming Languages (Few-Shot) ---");
     // await this.generateProgrammingLanguages();
 
-    console.log("--- Customer Support Chatbot (Few-Shot System Prompt) ---");
+    this.logger.log("--- Customer Support Chatbot (Few-Shot System Prompt) ---");
     await this.supportCustomerIssue("My Wi-Fi keeps disconnecting every few minutes. What should I do?");
     // await this.supportCustomerIssue("I was charged for a service I didn't use. Can you help?");
     // await this.supportCustomerIssue("Can I change my shipping address after placing an order?");

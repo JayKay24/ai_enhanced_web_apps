@@ -4,8 +4,7 @@
     "outDir": "dist",
     "module": "nodenext",
     "types": ["node"],
-    "rootDir": "src",
-    "moduleResolution": "nodenext",
+        "moduleResolution": "nodenext",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -14,6 +13,9 @@
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"],
   "references": [
+    {
+      "path": "../../../libs/logger/tsconfig.lib.json"
+    },
     {
       "path": "../../../libs/shared-utils/tsconfig.lib.json"
     }

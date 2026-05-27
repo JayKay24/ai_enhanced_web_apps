@@ -6,6 +6,7 @@ import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { AviationRAG } from '@ai-enhanced-web-apps/rag';
 import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
+import { logger } from '@ai-enhanced-web-apps/logger';
 import { ModelMessage } from 'ai';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -26,7 +27,7 @@ export const continueConversation = async (
 ): Promise<UIStateItem> => {
   'use server';
 
-  console.log('[continueConversation] START (Aviation Incident RAG)');
+  logger.info('[continueConversation] START (Aviation Incident RAG)');
 
   const history = getMutableAIState<typeof AI>();
 
@@ -49,7 +50,7 @@ export const continueConversation = async (
     }
     const indexPath = process.env.RAG_INDEX_PATH || defaultIndexPath;
 
-    console.log(`[continueConversation] Using index path: "${indexPath}"`);
+    logger.info(`[continueConversation] Using index path: "${indexPath}"`);
 
     // Initialize RAG from shared library
     const rag = getRAGInstance();
@@ -70,7 +71,7 @@ export const continueConversation = async (
       role: 'assistant',
     };
   } catch (error: any) {
-    console.error('[continueConversation] RAG Error:', error);
+    logger.error({ err: error }, '[continueConversation] RAG Error');
     
     return {
       id: generateUniqueId(),
