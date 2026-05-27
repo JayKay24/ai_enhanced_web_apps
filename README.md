@@ -32,9 +32,10 @@ Below is a list of the major libraries used in the workspace and their primary u
 | **`@dqbd/tiktoken`** | High-performance BPE tokenizer used to accurately calculate token lengths for OpenAI models. |
 | **`zod`** | TypeScript-first schema declaration and validation library, used for structured data extraction and tool definition schemas. |
 | **`string-comparison`** | String similarity and comparison library used in evaluations (e.g., cosine similarity). |
-| **`@nestjs/core` & `@nestjs/common`** | Framework containers and injection utilities used to structure standalone CLI applications and manage their lifecycles. |
-| **`next`** | React framework for full-stack web applications supporting Server-Side Rendering (SSR), Server Components, and secure API route handlers. |
-| **`tailwindcss` & `@radix-ui/react-*`** | CSS utility styling and accessible, headless Radix UI components used to construct premium, responsive UI components. |
+| `@nestjs/core` & `@nestjs/common` | Framework containers and injection utilities used to structure standalone CLI applications and manage their lifecycles. |
+| `@ai-enhanced-web-apps/logger` | A shared, performance-oriented logging library built on top of Pino. It provides colorized console logs via `pino-pretty` in development and integrates with NestJS applications. |
+| `next` | React framework for full-stack web applications supporting Server-Side Rendering (SSR), Server Components, and secure API route handlers. |
+| `tailwindcss` & `@radix-ui/react-*` | CSS utility styling and accessible, headless Radix UI components used to construct premium, responsive UI components. |
 
 ## Key Concepts & Skills Acquired
 
@@ -79,6 +80,56 @@ Below is a list of the major libraries used in the workspace and their primary u
 - libs/shared-types: Shared TypeScript interfaces and API contracts.
 - libs/shared-utils: Shared utility functions (e.g., cn).
 - [libs/rag](libs/rag): Shared RAG library containing HNSWLib index builder and LCEL query chain using Google Vertex AI.
+- [libs/logger](libs/logger): Shared logging library wrapping Pino, with custom pretty printing in development and NestJS integration.
+
+## Logging Architecture
+
+The monorepo uses a unified, structured logging architecture powered by [Pino](https://github.com/pinojs/pino) through the shared `@ai-enhanced-web-apps/logger` library.
+
+### Development vs. Production
+* **Development (`NODE_ENV !== 'production'`)**: Logs are formatted and colorized using `pino-pretty` to be highly readable. Standard system timestamps are shown, and internal metadata like process IDs (`pid`) and hostnames are ignored.
+* **Production**: Logs are emitted as fast, raw JSON streams, suitable for ingestion by external log aggregators (e.g., Datadog, ELK, GCP Cloud Logging).
+* **Configuration**: The log level is configurable using the `LOG_LEVEL` environment variable (defaults to `info`).
+
+### Usage in Next.js
+In Next.js applications (such as [astra-aviation-rag](apps/astra-aviation-rag)), you import the `logger` directly and write messages with appropriate log levels (`info`, `error`, `warn`, `debug`, `trace`):
+```typescript
+import { logger } from '@ai-enhanced-web-apps/logger';
+
+// Info logging
+logger.info('[continueConversation] START (Aviation Incident RAG)');
+
+// Error logging (passing the error object for structured logs)
+logger.error({ err: error }, '[continueConversation] RAG Error');
+```
+
+### Usage in NestJS Standalone Apps
+In NestJS applications (such as [rag-indexer](apps/standalone/rag-indexer)), you use the framework's native `@nestjs/common` `Logger` API. During application bootstrapping in `main.ts`, standard logs are intercepted and redirected to Pino using the `NestLoggerService`:
+
+```typescript
+// main.ts
+import { NestLoggerService } from '@ai-enhanced-web-apps/logger';
+
+const app = await NestFactory.createApplicationContext(AppModule, {
+  logger: new NestLoggerService(),
+});
+```
+
+```typescript
+// app.service.ts
+import { Injectable, Logger } from '@nestjs/common';
+
+@Injectable()
+export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
+  async runIndexer() {
+    this.logger.log('Starting Aviation Incident Report Indexer CLI...');
+    this.logger.warn('Source dataset directory not found. Relying on pre-existing assets.');
+  }
+}
+```
+This ensures a single logger backend handles and formats logs for all components in the monorepo.
 
 ## Screenshots
 

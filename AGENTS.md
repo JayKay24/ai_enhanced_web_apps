@@ -35,9 +35,10 @@ This project leverages the following core libraries for various AI-enhanced and 
 | **`@dqbd/tiktoken`** | High-performance BPE tokenizer used to accurately calculate token lengths for OpenAI models. |
 | **`zod`** | TypeScript-first schema declaration and validation library, used for structured data extraction and tool definition schemas. |
 | **`string-comparison`** | String similarity and comparison library used in evaluations (e.g., cosine similarity). |
-| **`@nestjs/core` & `@nestjs/common`** | Framework containers and injection utilities used to structure standalone CLI applications and manage their lifecycles. |
-| **`next`** | React framework for full-stack web applications supporting Server-Side Rendering (SSR), Server Components, and secure API route handlers. |
-| **`tailwindcss` & `@radix-ui/react-*`** | CSS utility styling and accessible, headless Radix UI components used to construct premium, responsive UI components. |
+| `@nestjs/core` & `@nestjs/common` | Framework containers and injection utilities used to structure standalone CLI applications and manage their lifecycles. |
+| `@ai-enhanced-web-apps/logger` | A shared, performance-oriented logging library built on top of Pino. It provides colorized console logs via `pino-pretty` in development and integrates with NestJS applications. |
+| `next` | React framework for full-stack web applications supporting Server-Side Rendering (SSR), Server Components, and secure API route handlers. |
+| `tailwindcss` & `@radix-ui/react-*` | CSS utility styling and accessible, headless Radix UI components used to construct premium, responsive UI components. |
 
 ## Directory Structure
 
@@ -54,6 +55,7 @@ This project leverages the following core libraries for various AI-enhanced and 
 - `libs/shared-types/`: Shared TypeScript interfaces.
 - `libs/shared-utils/`: Shared utilities and AI provider configurations.
 - `libs/rag/`: Shared RAG library containing index builder and LCEL query chain using Google Vertex AI.
+- `libs/logger/`: Shared logging library wrapping Pino, with custom pretty printing in development and NestJS integration.
 
 ## Application Architecture
 
@@ -93,6 +95,37 @@ This project leverages the following core libraries for various AI-enhanced and 
     }
   }
   ```
+
+### Logging Architecture
+
+The monorepo features a unified logging mechanism defined in `libs/logger` (`@ai-enhanced-web-apps/logger`) utilizing the **Pino** structured logging library.
+
+- **Development Mode (`NODE_ENV !== 'production'`)**: Formats output nicely using `pino-pretty` with standard timestamps and stripped pid/hostname flags.
+- **Production Mode**: Emits raw JSON lines for high performance and easy ingestion by cloud log routing agents.
+- **Level Selection**: Defaults to `info` and can be overridden via `LOG_LEVEL` environment variable.
+
+#### Usage in Next.js
+Directly import the raw `logger` from the shared library:
+```typescript
+import { logger } from '@ai-enhanced-web-apps/logger';
+
+logger.info('[continueConversation] START (Aviation Incident RAG)');
+logger.error({ err: error }, '[continueConversation] RAG Error');
+```
+
+#### Usage in NestJS CLI Applications
+NestJS applications log using the standard `@nestjs/common` `Logger` class (e.g. `private readonly logger = new Logger(AppService.name)`). To capture and format these log calls through the same Pino instance, applications must configure `NestLoggerService` during bootstrap:
+```typescript
+// main.ts
+import { NestLoggerService } from '@ai-enhanced-web-apps/logger';
+
+async function bootstrap() {
+  const app = await NestFactory.createApplicationContext(AppModule, {
+    logger: new NestLoggerService(),
+  });
+  // ...
+}
+```
 
 ## Building and Running
 
