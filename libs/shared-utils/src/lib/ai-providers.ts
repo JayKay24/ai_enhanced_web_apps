@@ -29,19 +29,36 @@ export function getModelInstance(providerId: string, modelId: string): any {
   return factory()(modelId);
 }
 
+export interface LangChainModelOptions {
+  temperature?: number;
+  maxOutputTokens?: number;
+}
+
 /**
  * Returns a LangChain Chat Model instance for the given provider and model.
  */
-export function getLangChainModelInstance(providerId: string, modelId: string): any {
+export function getLangChainModelInstance(
+  providerId: string,
+  modelId: string,
+  options: LangChainModelOptions = {}
+): any {
   const config = SUPPORTED_PROVIDERS_CONFIG[providerId as ProviderId];
   if (!config) {
     throw new Error(`Unsupported provider: ${providerId}`);
   }
 
   if (providerId === 'vertex') {
+    const project = process.env.VERTEX_AI_PROJECT_ID;
+    const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
+
     return new ChatVertexAI({
       model: modelId,
-      temperature: 0.7,
+      temperature: options.temperature ?? 0.7,
+      maxOutputTokens: options.maxOutputTokens ?? 2048,
+      authOptions: {
+        projectId: project,
+      },
+      location: location,
     });
   }
 

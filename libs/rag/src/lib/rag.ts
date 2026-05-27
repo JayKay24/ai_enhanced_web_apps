@@ -1,6 +1,6 @@
 import { HNSWLib } from '@langchain/community/vectorstores/hnswlib';
 import { VertexAIEmbeddings } from '@langchain/google-vertexai';
-import { ChatVertexAI } from '@langchain/google-vertexai';
+import { getLangChainModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
@@ -94,16 +94,9 @@ export class AviationRAG {
     const vectorStore = await HNSWLib.load(indexPath, this.embeddings);
     const retriever = vectorStore.asRetriever({ k: 4 });
 
-    const project = process.env.VERTEX_AI_PROJECT_ID;
-    const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
-
-    const llm = new ChatVertexAI({
-      model: 'gemini-2.5-flash',
-      authOptions: {
-        projectId: project,
-      },
-      location: location,
+    const llm = getLangChainModelInstance('vertex', 'gemini-2.5-flash', {
       temperature: 0,
+      maxOutputTokens: 2048,
     });
 
     const prompt = ChatPromptTemplate.fromMessages([
