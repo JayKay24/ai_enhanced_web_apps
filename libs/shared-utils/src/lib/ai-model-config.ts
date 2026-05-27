@@ -10,3 +10,6 @@ export const SUPPORTED_PROVIDERS_CONFIG = {
 } as const;
 
 export type ProviderId = keyof typeof SUPPORTED_PROVIDERS_CONFIG;
+
+export const MAX_FILE_SIZE_BYTES = 500 * 1024; // 500 KB
+export const FILE_SIZE_ERROR_MESSAGE = 'File size exceeds the 500 KB limit. Please upload a smaller document.';

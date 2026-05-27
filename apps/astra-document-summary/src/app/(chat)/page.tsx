@@ -16,7 +16,7 @@ import {
 } from '@ai-enhanced-web-apps/chat-hooks';
 import { useActions, useUIState } from '@ai-sdk/rsc';
 import { ChevronUp, Send, Paperclip, X, FileText } from 'lucide-react';
-import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
+import { generateUniqueId, MAX_FILE_SIZE_BYTES, FILE_SIZE_ERROR_MESSAGE } from '@ai-enhanced-web-apps/shared-utils';
 import { AI } from './actions';
 
 export default function ChatPage() {
@@ -37,6 +37,15 @@ export default function ChatPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      alert(FILE_SIZE_ERROR_MESSAGE);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
 
     if (
       file.type === 'application/pdf' ||

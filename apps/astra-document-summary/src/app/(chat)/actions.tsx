@@ -4,7 +4,7 @@ import React from 'react';
 import { ModelMessage } from 'ai';
 import { createAI, getMutableAIState } from '@ai-sdk/rsc';
 import { ChatMessage } from '@ai-enhanced-web-apps/chat-ui';
-import { generateUniqueId, AIErrorTracker } from '@ai-enhanced-web-apps/shared-utils';
+import { generateUniqueId, AIErrorTracker, MAX_FILE_SIZE_BYTES, FILE_SIZE_ERROR_MESSAGE } from '@ai-enhanced-web-apps/shared-utils';
 import { processFile, summarizeText } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 
 import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
@@ -30,6 +30,21 @@ export const continueConversation = async (
 
       if (!file) {
         throw new Error('No file uploaded.');
+      }
+
+      // Server-side validation guard (500 KB limit)
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        return {
+          id: generateUniqueId(),
+          display: (
+            <ChatMessage
+              role="assistant"
+              text={FILE_SIZE_ERROR_MESSAGE}
+              className="text-amber-500 font-medium"
+            />
+          ),
+          role: 'assistant',
+        };
       }
 
       const fileType = file.type;
