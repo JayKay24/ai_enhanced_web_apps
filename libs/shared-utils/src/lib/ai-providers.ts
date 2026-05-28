@@ -1,10 +1,11 @@
 import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
+import { LanguageModel } from 'ai';
 import { ChatVertexAI } from '@langchain/google-vertexai';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
 
-const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
+const PROVIDER_FACTORIES: Record<ProviderId, () => (modelId: string, settings?: any) => LanguageModel> = {
   vertex: () =>
     createVertex({
       project: process.env.VERTEX_AI_PROJECT_ID,
@@ -16,7 +17,7 @@ const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
     }),
 };
 
-export function getModelInstance(providerId: string, modelId: string): any {
+export function getModelInstance(providerId: string, modelId: string): LanguageModel {
   const config = SUPPORTED_PROVIDERS_CONFIG[providerId as ProviderId];
   if (!config) {
     throw new Error(`Unsupported provider: ${providerId}`);
