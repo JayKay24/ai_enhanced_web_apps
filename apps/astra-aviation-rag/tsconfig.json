@@ -21,7 +21,7 @@
       "@/*": ["./src/*"]
     },
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../../",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "include": [
@@ -61,9 +61,6 @@
     },
     {
       "path": "../../libs/chat-hooks"
-    },
-    {
-      "path": "./tsconfig.spec.json"
     }
   ]
 }
