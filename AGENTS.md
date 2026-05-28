@@ -175,6 +175,44 @@ Import from `@ai-enhanced-web-apps/shared-types`:
 ```typescript
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
 ```
+## Testing Conventions & Architecture
+
+To ensure the reliability, performance, and credential-independence of our AI features, we follow strict testing conventions across the monorepo:
+
+### 1. Zero-API Testing Guarantee
+* **No Live Calls:** Unit and integration tests must **never** make actual API calls to external providers (e.g., Google Cloud Vertex AI, OpenAI) or remote databases.
+* **LangChain Fakes:** Use LangChain's built-in testing mocks, such as `FakeEmbeddings` and `FakeListChatModel`, to simulate embeddings and LLM responses.
+* **Module Mocking:** Mock local/native resources such as `fs` and local index stores (e.g., `HNSWLib`, `PDFLoader`) using Jest (`jest.mock(...)`) to avoid file system reads/writes and vector indexing overhead during testing.
+
+### 2. Global Polyfills in Jest
+* Web stream and encoding APIs (`TextEncoder`, `TextDecoder`, `ReadableStream`, `TransformStream`) are not present by default in Node-based Jest environments.
+* Keep a `jest.setup.ts` file in the testing library configuration that loads these globals:
+  ```typescript
+  import { TextEncoder, TextDecoder } from 'util';
+  import { ReadableStream, TransformStream } from 'stream/web';
+  Object.assign(global, { TextEncoder, TextDecoder, ReadableStream, TransformStream });
+  ```
+* Reference this setup file in your project's `jest.config.cts` or similar Jest configuration using `setupFilesAfterEnv`.
+
+### 3. TypeScript Spec Configuration
+* Match the spec build rules (`tsconfig.spec.json`) exactly to the library compilation rules (`tsconfig.lib.json`). Specifically, if the target package has `"type": "module"` and uses `"moduleResolution": "nodenext"`, the spec must also use the same resolution strategy to prevent compilation errors (like `TS2307` or `TS2322`).
+* When using ESM/NodeNext resolution, relative imports in test specs must specify the `.js` extension (e.g., `import { AviationRAG } from './rag.js'`).
+
+### 4. Running Tests
+
+* **Run all tests in the workspace:**
+  ```bash
+  npx nx run-many -t test
+  ```
+* **Run tests for a specific project:**
+  ```bash
+  npx nx test <project-name>
+  ```
+  *(e.g., `npx nx test @ai-enhanced-web-apps/rag` or `npx nx test astra-document-summary`)*
+* **Run affected tests:**
+  ```bash
+  npx nx affected -t test
+  ```
 
 ## MCP
 

@@ -182,16 +182,32 @@ npx nx build astra-document-summary
 
 ### Test
 
-```bash
-npx nx test astra-document-summary
-```
+To run unit and integration tests across the workspace, you can use the following commands:
+
+* **Run all tests in the workspace**:
+  ```bash
+  npx nx run-many -t test
+  ```
+
+* **Run tests for a specific application**:
+  ```bash
+  npx nx test astra-document-summary
+  ```
+
+* **Run tests for a specific shared library**:
+  For example, to run tests for the `@ai-enhanced-web-apps/rag` library:
+  ```bash
+  npx nx test @ai-enhanced-web-apps/rag
+  ```
+
+* **Run tests only on projects affected by recent changes**:
+  ```bash
+  npx nx affected -t test
+  ```
+
 
 ### Linting
 
 ```bash
 npx nx lint astra-document-summary
 ```
-
-## Documentation
-
-For more detailed information on development workflows and guidelines, see [GEMINI.md](./GEMINI.md).
