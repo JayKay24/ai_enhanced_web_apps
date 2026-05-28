@@ -1,11 +1,9 @@
 import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
-import { LanguageModel } from 'ai';
 import { ChatVertexAI } from '@langchain/google-vertexai';
-import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
 
-const PROVIDER_FACTORIES: Record<ProviderId, () => (modelId: string, settings?: any) => LanguageModel> = {
+const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
   vertex: () =>
     createVertex({
       project: process.env.VERTEX_AI_PROJECT_ID,
@@ -17,7 +15,21 @@ const PROVIDER_FACTORIES: Record<ProviderId, () => (modelId: string, settings?: 
     }),
 };
 
-export function getModelInstance(providerId: string, modelId: string): LanguageModel {
+/**
+ * Returns a configured Vercel AI SDK language model instance for the given provider and model IDs.
+ * Checks configurations against allowed schemas in `SUPPORTED_PROVIDERS_CONFIG`.
+ * 
+ * @param providerId - Sibling provider ID (e.g. 'vertex', 'openai').
+ * @param modelId - Target model name string.
+ * @returns The Vercel AI SDK model instance.
+ * @throws {@link Error} If the provider or model is not supported.
+ * 
+ * @example
+ * ```typescript
+ * const model = getModelInstance('vertex', 'gemini-2.5-flash');
+ * ```
+ */
+export function getModelInstance(providerId: string, modelId: string): any {
   const config = SUPPORTED_PROVIDERS_CONFIG[providerId as ProviderId];
   if (!config) {
     throw new Error(`Unsupported provider: ${providerId}`);
@@ -31,19 +43,40 @@ export function getModelInstance(providerId: string, modelId: string): LanguageM
   return factory()(modelId);
 }
 
+/**
+ * Configuration options when instantiating a LangChain Chat Model.
+ */
 export interface LangChainModelOptions {
+  /**
+   * Output temperature representing randomness. Defaults to 0.7.
+   */
   temperature?: number;
+  /**
+   * The maximum token ceiling limit for generated responses. Defaults to 2048.
+   */
   maxOutputTokens?: number;
 }
 
 /**
- * Returns a LangChain Chat Model instance for the given provider and model.
+ * Returns an instantiated LangChain Chat Model configured for the given provider and model IDs.
+ * Automatically handles Application Default Credentials (ADC) and project/region context for Vertex AI.
+ * 
+ * @param providerId - Sibling provider ID (e.g. 'vertex').
+ * @param modelId - Target model name string.
+ * @param options - Custom overrides for temperature and output token limits.
+ * @returns The LangChain Chat Model instance.
+ * @throws {@link Error} If the provider is unsupported or unimplemented.
+ * 
+ * @example
+ * ```typescript
+ * const model = getLangChainModelInstance('vertex', 'gemini-2.5-flash', { temperature: 0 });
+ * ```
  */
 export function getLangChainModelInstance(
   providerId: string,
   modelId: string,
   options: LangChainModelOptions = {}
-): BaseChatModel {
+): any {
   const config = SUPPORTED_PROVIDERS_CONFIG[providerId as ProviderId];
   if (!config) {
     throw new Error(`Unsupported provider: ${providerId}`);
@@ -68,4 +101,3 @@ export function getLangChainModelInstance(
 }
 
 export * from './summarizer';
-

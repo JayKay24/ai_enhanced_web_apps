@@ -11,6 +11,9 @@ import { ModelMessage } from 'ai';
 import * as path from 'path';
 import * as fs from 'fs';
 
+/**
+ * React Server Component/RSC State Item wrapper representing a chat message node displayed in the UI list.
+ */
 export type UIStateItem = BaseUIStateItem<React.ReactNode>;
 
 let ragInstance: AviationRAG | null = null;
@@ -22,6 +25,13 @@ function getRAGInstance(): AviationRAG {
   return ragInstance;
 }
 
+/**
+ * Server Action that handles RAG query submissions to lookup NTSB incident reports.
+ * Processes search queries against the local vector database and invokes Vertex AI model generation.
+ * 
+ * @param input - The search phrase or question entered by the user.
+ * @returns A promise resolving to the assistant reply's {@link UIStateItem} node.
+ */
 export const continueConversation = async (
   input: string
 ): Promise<UIStateItem> => {
@@ -92,6 +102,9 @@ export const continueConversation = async (
   }
 };
 
+/**
+ * AI Context Provider interface managing conversational message states and server actions.
+ */
 export const AI = createAI<ModelMessage[], UIStateItem[]>({
   actions: {
     continueConversation,

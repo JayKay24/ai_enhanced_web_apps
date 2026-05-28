@@ -10,8 +10,20 @@ import { processFile, summarizeText } from '@ai-enhanced-web-apps/shared-utils/a
 import { UIStateItem as BaseUIStateItem } from '@ai-enhanced-web-apps/shared-types';
 import { logger } from '@ai-enhanced-web-apps/logger';
 
+/**
+ * React Server Component/RSC State Item wrapper representing a chat message node displayed in the UI list.
+ */
 export type UIStateItem = BaseUIStateItem<React.ReactNode>;
 
+/**
+ * Server Action that handles document summarization requests.
+ * Evaluates whether input is FormData (representing a file upload) or a text query string,
+ * processes the content via Vertex AI model instances, and returns a new UIStateItem update.
+ * Enforces file size limitations and intercepts pipeline exceptions to present safe request ID tracking.
+ * 
+ * @param input - The text string query or FormData object containing the uploaded document file.
+ * @returns A promise resolving to the assistant reply's {@link UIStateItem} node.
+ */
 export const continueConversation = async (
   input: string | FormData
 ): Promise<UIStateItem> => {
@@ -90,6 +102,9 @@ export const continueConversation = async (
   }
 };
 
+/**
+ * AI Context Provider interface managing conversational message states and server actions.
+ */
 export const AI = createAI<ModelMessage[], UIStateItem[]>({
   actions: {
     continueConversation,

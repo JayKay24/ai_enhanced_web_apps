@@ -1,3 +1,6 @@
+/**
+ * Configuration schema for supported AI providers (Google Vertex AI, OpenAI) and their permitted models.
+ */
 export const SUPPORTED_PROVIDERS_CONFIG = {
   vertex: {
     name: 'Google Vertex AI',
@@ -9,7 +12,17 @@ export const SUPPORTED_PROVIDERS_CONFIG = {
   },
 } as const;
 
+/**
+ * Union type representing the identifiers of the supported AI providers.
+ */
 export type ProviderId = keyof typeof SUPPORTED_PROVIDERS_CONFIG;
 
+/**
+ * The maximum permitted file size for document uploads (500 KB).
+ */
 export const MAX_FILE_SIZE_BYTES = 500 * 1024; // 500 KB
+
+/**
+ * The user-facing error message displayed when an uploaded file exceeds the maximum size limit.
+ */
 export const FILE_SIZE_ERROR_MESSAGE = 'File size exceeds the 500 KB limit. Please upload a smaller document.';

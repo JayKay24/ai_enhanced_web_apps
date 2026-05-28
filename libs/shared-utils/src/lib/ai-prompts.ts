@@ -4,7 +4,9 @@ import {
 import { BaseMessage } from '@langchain/core/messages';
 import { MessageRole } from '@ai-enhanced-web-apps/shared-types';
 
-// Define the weather prompt template for the chat interaction
+/**
+ * LangChain ChatPromptTemplate configured with system instructions and human/assistant roles for weather inquiries.
+ */
 export const weatherPromptTemplate = ChatPromptTemplate.fromMessages([
   ['system', "You are a friendly weather assistant. Use the provided weather data to answer the user's query."],
   ['human', "What's the weather like in {city}?"],
@@ -24,8 +26,10 @@ export const weatherPromptTemplate = ChatPromptTemplate.fromMessages([
 ]);
 
 /**
- * Formats the weather prompt with the given city name and mock data.
- * Returns an array of message objects compatible with LangChain.
+ * Formats the weather prompt template with the provided city name and mock weather data.
+ * 
+ * @param city - The target city name.
+ * @returns A promise resolving to an array of LangChain {@link BaseMessage} objects.
  */
 export async function getWeatherPromptMessages(city: string): Promise<BaseMessage[]> {
   return await weatherPromptTemplate.formatMessages({
@@ -38,7 +42,10 @@ export async function getWeatherPromptMessages(city: string): Promise<BaseMessag
 }
 
 /**
- * Formats the weather prompt and returns a plain string.
+ * Formats the weather prompt template with mock weather data and returns it as a plain text string.
+ * 
+ * @param city - The target city name.
+ * @returns A promise resolving to the formatted prompt string.
  */
 export async function getWeatherPromptString(city: string) {
   return await weatherPromptTemplate.format({
@@ -51,7 +58,10 @@ export async function getWeatherPromptString(city: string) {
 }
 
 /**
- * Formats the weather prompt and returns messages in Vercel AI SDK format.
+ * Formats the weather prompt template and converts the resulting messages into the Vercel AI SDK Core message format.
+ * 
+ * @param city - The target city name.
+ * @returns A promise resolving to an array of Vercel AI SDK compatible message objects.
  */
 export async function getWeatherPromptCoreMessages(city: string) {
   const messages = await getWeatherPromptMessages(city);
@@ -69,8 +79,11 @@ export async function getWeatherPromptCoreMessages(city: string) {
 }
 
 /**
- * Mock function to fetch weather data for a city.
- * Used as the first step in a LangChain runnable sequence.
+ * A mock function representing an asynchronous fetch of current weather data for a specified city.
+ * Frequently used as the initial stage in LangChain runnable chains.
+ * 
+ * @param input - Object containing the target city.
+ * @returns A promise resolving to the mock weather properties.
  */
 export const fetchWeatherData = async (input: { city: string }) => ({
   city: input.city,

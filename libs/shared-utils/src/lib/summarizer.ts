@@ -14,6 +14,17 @@ const REDUCE_PROMPT = PromptTemplate.fromTemplate(
   "Write a cohesive and concise summary of the following text, which is a collection of summaries from a larger document:\n\n\"{text}\"\n\nCOHESIVE SUMMARY:"
 );
 
+/**
+ * Summarizes an array of LangChain Documents using a Map-Reduce chain workflow.
+ * For single documents, optimizes execution using a single-run Stuffing pipeline.
+ * For multiple documents or long text, splits the content, maps summaries in parallel, and reduces them into a cohesive summary.
+ * 
+ * @param docs - Array of LangChain {@link Document} inputs to process.
+ * @param providerId - Model provider ID. Defaults to 'vertex'.
+ * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
+ * @returns A promise resolving to the final cohesive summary string.
+ * @throws {@link Error} If the model instantiation fails or generation errors out.
+ */
 export async function summarizeDocs(
   docs: Document[],
   providerId = 'vertex',
@@ -24,13 +35,11 @@ export async function summarizeDocs(
     throw new Error(`Could not initialize LangChain model for ${providerId}/${modelId}`);
   }
 
-  // Normalize document content to replace extra newlines and multiple spaces
   const normalizedDocs = docs.map(doc => new Document({
     pageContent: doc.pageContent.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
     metadata: doc.metadata
   }));
 
-  // Split documents using text splitter
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 10000,
     chunkOverlap: 200,
@@ -40,22 +49,27 @@ export async function summarizeDocs(
   const mapChain = MAP_PROMPT.pipe(llm).pipe(new StringOutputParser());
 
   if (splitDocs.length === 1) {
-    // Single chunk optimization (stuffing approach)
     return await mapChain.invoke({ text: splitDocs[0].pageContent });
   }
 
-  // Map step: summarize each chunk in parallel
   const chunkSummaries = await Promise.all(
     splitDocs.map(doc => mapChain.invoke({ text: doc.pageContent }))
   );
 
-  // Reduce step: combine chunk summaries and summarize again
   const combinedText = chunkSummaries.join("\n\n");
   const reduceChain = REDUCE_PROMPT.pipe(llm).pipe(new StringOutputParser());
 
   return await reduceChain.invoke({ text: combinedText });
 }
 
+/**
+ * Generates a concise summary for a raw text input string using the LangChain Map-Reduce pipeline.
+ * 
+ * @param text - The raw text content to summarize.
+ * @param providerId - Sibling provider ID. Defaults to 'vertex'.
+ * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
+ * @returns A promise resolving to the generated summary string.
+ */
 export async function summarizeText(
   text: string,
   providerId = 'vertex',
@@ -65,6 +79,17 @@ export async function summarizeText(
   return summarizeDocs([doc], providerId, modelId);
 }
 
+/**
+ * Loads, parses, and summarizes a raw file blob (supports PDF and DOCX formats).
+ * Delegates text extraction to corresponding document loaders before compiling summaries.
+ * 
+ * @param fileBlob - Binary blob of the uploaded file.
+ * @param fileType - MIME type of the file (application/pdf or application/vnd.openxmlformats-officedocument.wordprocessingml.document).
+ * @param providerId - Model provider ID. Defaults to 'vertex'.
+ * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
+ * @returns A promise resolving to the final parsed document summary.
+ * @throws {@link Error} If the file type is unsupported or reading/extraction fails.
+ */
 export async function processFile(
   fileBlob: Blob,
   fileType: string,

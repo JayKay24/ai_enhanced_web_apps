@@ -1,6 +1,11 @@
 import { LoggerService } from '@nestjs/common';
 import { logger } from './logger';
 
+/**
+ * NestJS compatible LoggerService implementation.
+ * Intercepts standard NestJS logging calls (e.g. log, error, warn, debug, verbose)
+ * and redirects them to the shared monorepo Pino logger, preserving context, levels, and output structures.
+ */
 export class NestLoggerService implements LoggerService {
   /**
    * Write a 'log' level log.

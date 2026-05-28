@@ -11,9 +11,16 @@ import { Document } from '@langchain/core/documents';
 import * as fs from 'fs';
 import * as path from 'path';
 
+/**
+ * Service class handling the Aviation incident safety database index construction and query execution.
+ * Integrates local HNSWLib vector storage with Google Cloud Vertex AI embeddings and model generation.
+ */
 export class AviationRAG {
   private embeddings: VertexAIEmbeddings;
 
+  /**
+   * Initializes the Google Cloud Vertex AI embeddings configuration using active environment settings.
+   */
   constructor() {
     const project = process.env.VERTEX_AI_PROJECT_ID;
     const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
@@ -28,7 +35,13 @@ export class AviationRAG {
   }
 
   /**
-   * Reads PDFs from docsDir, splits them, computes embeddings, and builds a new HNSWLib index on disk.
+   * Reads, parses, and splits NTSB incident report PDFs, computes text embeddings,
+   * and saves the serialized HNSWLib vector index to the specified disk path.
+   * 
+   * @param docsDir - Path to the directory containing NTSB PDF files.
+   * @param saveDir - Path where the computed vector store files should be serialized on disk.
+   * @returns A promise resolving when the index is successfully generated and stored.
+   * @throws {@link Error} If documents directory is not found, or if zero PDF files are indexed.
    */
   async buildIndex(docsDir: string, saveDir: string): Promise<void> {
     logger.info('[AviationRAG] Starting index build...');
@@ -83,7 +96,13 @@ export class AviationRAG {
   }
 
   /**
-   * Queries the vector store index and uses Gemini to synthesize the grounded safety response.
+   * Queries the local HNSWLib vector store, retrieves relevant grounded context,
+   * and uses Vertex AI Gemini to generate the incident lookup answers.
+   * 
+   * @param indexPath - Path to the directory where the HNSWLib index is serialized.
+   * @param userQuery - Question or search phrase submitted by the user.
+   * @returns A promise resolving to the generated assistant answer string.
+   * @throws {@link Error} If a valid index configuration (args.json) is not found at the index path.
    */
   async query(indexPath: string, userQuery: string): Promise<string> {
     logger.info(`[AviationRAG] Loading index from: "${indexPath}"...`);
