@@ -156,6 +156,7 @@ npm exec nx build astra-aviation-rag
 - **Module Boundaries:** Strictly enforced via `@nx/enforce-module-boundaries`.
 - **TypeScript:** Strict mode enabled.
 - **Styling:** Tailwind utility classes are preferred.
+- **TSDoc/JSDoc Documentation:** Always write or update JSDoc/TSDoc annotations (`/** ... */`) for all exported functions, classes, interfaces, and public entrypoints. Focus on explaining the parameter intent, behavior, expected exceptions, and providing usage examples instead of duplicating types. This ensures clear IDE Intellisense and successful compiling of the TypeDoc HTML workspace documentation portal.
 
 ### Shared Library Imports
 
