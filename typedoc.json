@@ -1,0 +1,18 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "apps/astra-aviation-rag/src/app/(chat)/actions.tsx",
+    "apps/astra-document-summary/src/app/(chat)/actions.tsx",
+    "libs/shared-utils/src/lib/ai-providers.ts",
+    "libs/shared-utils/src/lib/error-tracking.ts",
+    "libs/shared-utils/src/lib/summarizer.ts",
+    "libs/rag/src/lib/rag.ts",
+    "libs/logger/src/lib/logger.ts"
+  ],
+  "out": "dist/docs/workspace-portal",
+  "tsconfig": "./tsconfig.json",
+  "name": "Astra Monorepo API Portal",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "hideGenerator": true
+}

@@ -2,7 +2,9 @@
   "name": "@ai-enhanced-web-apps/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "docs:generate": "typedoc"
+  },
   "private": true,
   "dependencies": {
     "@ai-sdk/google": "^3.0.71",
@@ -97,6 +99,7 @@
     "ts-jest": "^29.4.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
+    "typedoc": "^0.28.19",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0",
     "webpack-cli": "^5.1.4"
