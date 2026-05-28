@@ -1,6 +1,7 @@
 import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
 import { ChatVertexAI } from '@langchain/google-vertexai';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
 
 const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
@@ -41,7 +42,7 @@ export function getLangChainModelInstance(
   providerId: string,
   modelId: string,
   options: LangChainModelOptions = {}
-): any {
+): BaseChatModel {
   const config = SUPPORTED_PROVIDERS_CONFIG[providerId as ProviderId];
   if (!config) {
     throw new Error(`Unsupported provider: ${providerId}`);
