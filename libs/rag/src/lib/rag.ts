@@ -8,6 +8,9 @@ import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { RunnableSequence, RunnablePassthrough } from '@langchain/core/runnables';
 import { Document } from '@langchain/core/documents';
+import { Embeddings } from '@langchain/core/embeddings';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import { FakeEmbeddings, FakeListChatModel } from '@langchain/core/utils/testing';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,22 +19,36 @@ import * as path from 'path';
  * Integrates local HNSWLib vector storage with Google Cloud Vertex AI embeddings and model generation.
  */
 export class AviationRAG {
-  private embeddings: VertexAIEmbeddings;
+  private embeddings: Embeddings;
+  private llm?: BaseChatModel;
 
   /**
-   * Initializes the Google Cloud Vertex AI embeddings configuration using active environment settings.
+   * Initializes the AviationRAG service.
+   * Accepts optional injected dependencies for embeddings and chat model (LLM),
+   * falling back to default Vertex AI implementations (or Fake implementations in test mode).
+   * 
+   * @param config - Optional configuration object containing custom dependencies.
    */
-  constructor() {
-    const project = process.env.VERTEX_AI_PROJECT_ID;
-    const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
+  constructor(config?: { embeddings?: Embeddings; llm?: BaseChatModel }) {
+    if (config?.embeddings) {
+      this.embeddings = config.embeddings;
+    } else if (process.env.NODE_ENV === 'test') {
+      this.embeddings = new FakeEmbeddings();
+    } else {
+      const project = process.env.VERTEX_AI_PROJECT_ID;
+      const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
+      this.embeddings = new VertexAIEmbeddings({
+        model: 'text-embedding-004',
+        authOptions: {
+          projectId: project,
+        },
+        location: location,
+      });
+    }
 
-    this.embeddings = new VertexAIEmbeddings({
-      model: 'text-embedding-004',
-      authOptions: {
-        projectId: project,
-      },
-      location: location,
-    });
+    if (config?.llm) {
+      this.llm = config.llm;
+    }
   }
 
   /**
@@ -114,10 +131,17 @@ export class AviationRAG {
     const vectorStore = await HNSWLib.load(indexPath, this.embeddings);
     const retriever = vectorStore.asRetriever({ k: 4 });
 
-    const llm = getLangChainModelInstance('vertex', 'gemini-2.5-flash', {
-      temperature: 0,
-      maxOutputTokens: 2048,
-    });
+    let llm: BaseChatModel;
+    if (this.llm) {
+      llm = this.llm;
+    } else if (process.env.NODE_ENV === 'test') {
+      llm = new FakeListChatModel({ responses: ['Fake test response'] });
+    } else {
+      llm = getLangChainModelInstance('vertex', 'gemini-2.5-flash', {
+        temperature: 0,
+        maxOutputTokens: 2048,
+      });
+    }
 
     const prompt = ChatPromptTemplate.fromMessages([
       [

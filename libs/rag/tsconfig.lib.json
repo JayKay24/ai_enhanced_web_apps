@@ -11,6 +11,12 @@
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "out-tsc",
+    "dist"
+  ],
   "references": [
     {
       "path": "../shared-utils/tsconfig.lib.json"
