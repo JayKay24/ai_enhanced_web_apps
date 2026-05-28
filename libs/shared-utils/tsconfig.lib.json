@@ -14,6 +14,9 @@
   "include": ["src/**/*.ts"],
   "references": [
     {
+      "path": "../logger/tsconfig.lib.json"
+    },
+    {
       "path": "../shared-types/tsconfig.lib.json"
     }
   ],
@@ -31,6 +34,8 @@
     "src/**/*.test.js",
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
-    "src/**/*.spec.jsx"
+    "src/**/*.spec.jsx",
+    "jest.config.ts",
+    "jest.config.cts"
   ]
 }

@@ -1,3 +1,4 @@
+import React from 'react';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from '@ai-enhanced-web-apps/shared-utils';
 
 export interface ModelSelectorProps {

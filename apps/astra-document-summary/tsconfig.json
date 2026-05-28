@@ -58,6 +58,9 @@
     },
     {
       "path": "../../libs/chat-hooks"
+    },
+    {
+      "path": "./tsconfig.spec.json"
     }
   ]
 }
