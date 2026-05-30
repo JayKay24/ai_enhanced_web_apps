@@ -1,8 +1,8 @@
 # Project Context: Astra Monorepo (Document Summary & Aviation RAG)
 
 This project is an Nx-based monorepo for building AI-enhanced web applications. The core applications are:
-- **Astra Document Summary** (`astra-document-summary`): A Next.js-based conversational AI web assistant designed for document parsing and summarization. It is integrated with Google Gemini via Vertex AI and the Vercel AI SDK, supporting real-time streaming, text/document uploads (.pdf, .docx), and text summarization.
-- **Astra Aviation RAG** (`astra-aviation-rag`): A Next.js-based conversational AI web assistant designed to search and analyze NTSB safety incident reports using Retrieval-Augmented Generation (RAG) and local hierarchical navigable small world (HNSW) vector indexing.
+- **Astra Document Summary** ([astra-document-summary](./apps/astra-document-summary)): A Next.js-based conversational AI web assistant designed for document parsing and summarization. It is integrated with Google Gemini via Vertex AI and the Vercel AI SDK, supporting real-time streaming, text/document uploads (.pdf, .docx), and text summarization.
+- **Astra Aviation RAG** ([astra-aviation-rag](./apps/astra-aviation-rag)): A Next.js-based conversational AI web assistant designed to search and analyze NTSB safety incident reports using Retrieval-Augmented Generation (RAG) and local hierarchical navigable small world (HNSW) vector indexing.
 
 ## Project Overview
 
@@ -44,30 +44,30 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 ### Applications
 
-- `apps/astra-document-summary/`: Next.js 15+ conversational AI web assistant featuring streaming, file upload support, and document summarization.
-- `apps/astra-aviation-rag/`: Next.js 15+ conversational AI safety assistant utilizing local HNSWLib RAG and Gemini via Vertex AI.
-- `apps/standalone/`: CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`, `rag-indexer`).
+- [apps/astra-document-summary/](./apps/astra-document-summary/): Next.js 15+ conversational AI web assistant featuring streaming, file upload support, and document summarization.
+- [apps/astra-aviation-rag/](./apps/astra-aviation-rag/): Next.js 15+ conversational AI safety assistant utilizing local HNSWLib RAG and Gemini via Vertex AI.
+- [apps/standalone/](./apps/standalone/): CLI-based NestJS applications demonstrating specific workflows (e.g., `document-retrieval-flow`, `few-shot-chain`, `rag-indexer`).
 
 ### Shared Libraries
 
-- `libs/chat-ui/`: Shared React UI components (Radix, Tailwind).
-- `libs/chat-hooks/`: Shared React hooks for chat functionality.
-- `libs/shared-types/`: Shared TypeScript interfaces.
-- `libs/shared-utils/`: Shared utilities and AI provider configurations.
-- `libs/rag/`: Shared RAG library containing index builder and LCEL query chain using Google Vertex AI.
-- `libs/logger/`: Shared logging library wrapping Pino, with custom pretty printing in development and NestJS integration.
+- [libs/chat-ui/](./libs/chat-ui/): Shared React UI components (Radix, Tailwind).
+- [libs/chat-hooks/](./libs/chat-hooks/): Shared React hooks for chat functionality.
+- [libs/shared-types/](./libs/shared-types/): Shared TypeScript interfaces.
+- [libs/shared-utils/](./libs/shared-utils/): Shared utilities and AI provider configurations.
+- [libs/rag/](./libs/rag/): Shared RAG library containing index builder and LCEL query chain using Google Vertex AI.
+- [libs/logger/](./libs/logger/): Shared logging library wrapping Pino, with custom pretty printing in development and NestJS integration.
 
 ## Application Architecture
 
 ### AI Integration
 
-- **Astra Document Summary Client (`apps/astra-document-summary`):** Uses the Vercel AI SDK for streaming chat responses.
-  - API Route: `apps/astra-document-summary/src/app/(chat)/api/chat/route.ts`
+- **Astra Document Summary Client (`[apps/astra-document-summary](./apps/astra-document-summary)`):** Uses the Vercel AI SDK for streaming chat responses.
+  - API Route: `[apps/astra-document-summary/src/app/(chat)/api/chat/route.ts](./apps/astra-document-summary/src/app/(chat)/api/chat/route.ts)`
   - Uses `streamText` for real-time interaction.
   - Requires Vertex AI Application Default Credentials (ADC).
 - **Architectural Pattern for AI SDKs:**
-  - **Shared Config:** Store non-sensitive metadata (model names, provider IDs) in `libs/shared-utils/src/lib/ai-model-config.ts`.
-  - **Server-Only Logic:** Store model factory logic in `libs/shared-utils/src/lib/ai-providers.ts`.
+  - **Shared Config:** Store non-sensitive metadata (model names, provider IDs) in `[libs/shared-utils/src/lib/ai-model-config.ts](./libs/shared-utils/src/lib/ai-model-config.ts)`.
+  - **Server-Only Logic:** Store model factory logic in `[libs/shared-utils/src/lib/ai-providers.ts](./libs/shared-utils/src/lib/ai-providers.ts)`.
   - **Bundling Protection:** Use sub-path exports (e.g., `@ai-enhanced-web-apps/shared-utils/ai-providers`) for server-side code to avoid browser bundling errors.
 
 - **Vertex AI vs Google Gen AI SDK Guidelines:**
@@ -79,7 +79,7 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 ### Standalone CLI Applications
 
-- **CLI Bootstrapping Pattern:** Standalone CLI applications (found in `apps/standalone/`) should not run a persistent HTTP server. Instead:
+- **CLI Bootstrapping Pattern:** Standalone CLI applications (found in `[apps/standalone/](./apps/standalone/)`) should not run a persistent HTTP server. Instead:
   - Boot using `NestFactory.createApplicationContext` as configured in [main.ts](./apps/standalone/document-retrieval-flow/src/main.ts).
   - Execute their main services within a `try-catch-finally` block.
   - Call `await app.close()` and immediately exit the process (e.g., `process.exit(0)` for success, `process.exit(1)` on failure).
@@ -98,7 +98,7 @@ This project leverages the following core libraries for various AI-enhanced and 
 
 ### Logging Architecture
 
-The monorepo features a unified logging mechanism defined in `libs/logger` (`@ai-enhanced-web-apps/logger`) utilizing the **Pino** structured logging library.
+The monorepo features a unified logging mechanism defined in [libs/logger](./libs/logger) (`@ai-enhanced-web-apps/logger`) utilizing the **Pino** structured logging library.
 
 - **Development Mode (`NODE_ENV !== 'production'`)**: Formats output nicely using `pino-pretty` with standard timestamps and stripped pid/hostname flags.
 - **Production Mode**: Emits raw JSON lines for high performance and easy ingestion by cloud log routing agents.
@@ -163,7 +163,7 @@ npm exec nx build astra-aviation-rag
 
 #### Chat UI Components
 
-Import from `@ai-enhanced-web-apps/chat-ui`:
+Import from `@ai-enhanced-web-apps/chat-ui` (located in [libs/chat-ui](./libs/chat-ui)):
 
 ```typescript
 import { AutoScroll, ChatList, Button } from '@ai-enhanced-web-apps/chat-ui';
@@ -171,7 +171,7 @@ import { AutoScroll, ChatList, Button } from '@ai-enhanced-web-apps/chat-ui';
 
 #### Shared Types
 
-Import from `@ai-enhanced-web-apps/shared-types`:
+Import from `@ai-enhanced-web-apps/shared-types` (located in [libs/shared-types](./libs/shared-types)):
 
 ```typescript
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
