@@ -157,6 +157,7 @@ npm exec nx build astra-aviation-rag
 - **TypeScript:** Strict mode enabled.
 - **Styling:** Tailwind utility classes are preferred.
 - **TSDoc/JSDoc Documentation:** Always write or update JSDoc/TSDoc annotations (`/** ... */`) for all exported functions, classes, interfaces, and public entrypoints. Focus on explaining the parameter intent, behavior, expected exceptions, and providing usage examples instead of duplicating types. This ensures clear IDE Intellisense and successful compiling of the TypeDoc HTML workspace documentation portal.
+- **README Maintenance:** Always ensure both the root `README.md` and individual library/application `README.md` files are updated whenever new features, projects, or library dependencies are introduced. If a new library is generated, construct a descriptive `README.md` immediately containing usage examples and clear module exports, and add a link to the library in the root `README.md` libraries overview.
 
 ### Shared Library Imports
 
