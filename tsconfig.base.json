@@ -19,8 +19,6 @@
     "customConditions": ["@ai-enhanced-web-apps/source"],
     "baseUrl": ".",
     "paths": {
-      "@lib/*": ["apps/chat-client-react/src/lib/*"],
-      "@apps/chat-client-react/*": ["apps/chat-client-react/src/*"],
       "@ai-enhanced-web-apps/shared-utils": ["libs/shared-utils/src/index.ts"],
       "@ai-enhanced-web-apps/shared-utils/ai-providers": [
         "libs/shared-utils/src/lib/ai-providers.ts"
