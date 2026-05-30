@@ -75,10 +75,10 @@ Below is a list of the major libraries used in the workspace and their primary u
 - [apps/standalone/rag-indexer](apps/standalone/rag-indexer): A NestJS CLI application designed to co-locate and compile PDF incident reports into a serialized HNSW vector database.
 
 ### Libraries
-- libs/chat-ui: Shared React components (Radix UI, Tailwind CSS).
-- libs/chat-hooks: Shared React hooks for chat logic and keyboard shortcuts.
-- libs/shared-types: Shared TypeScript interfaces and API contracts.
-- libs/shared-utils: Shared utility functions (e.g., cn).
+- [libs/chat-ui](libs/chat-ui): Shared React components (Radix UI, Tailwind CSS).
+- [libs/chat-hooks](libs/chat-hooks): Shared React hooks for chat logic and keyboard shortcuts.
+- [libs/shared-types](libs/shared-types): Shared TypeScript interfaces and API contracts.
+- [libs/shared-utils](libs/shared-utils): Shared utility functions (e.g., cn).
 - [libs/rag](libs/rag): Shared RAG library containing HNSWLib index builder and LCEL query chain using Google Vertex AI.
 - [libs/logger](libs/logger): Shared logging library wrapping Pino, with custom pretty printing in development and NestJS integration.
 
