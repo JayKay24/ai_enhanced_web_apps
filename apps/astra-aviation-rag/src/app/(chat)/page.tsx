@@ -65,6 +65,22 @@ export default function ChatPage() {
     []
   );
 
+  const chatListMessages = messages.map((m) => {
+    let content = '';
+    if (m.parts && Array.isArray(m.parts)) {
+      for (const part of m.parts) {
+        if (part.type === 'text') {
+          content += part.text;
+        }
+      }
+    }
+    return {
+      id: m.id,
+      role: m.role,
+      content,
+    };
+  });
+
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
       <AutoScroll
@@ -80,7 +96,7 @@ export default function ChatPage() {
           />
         )}
         {messages.length > 0 && (
-          <ChatList messages={messages} isLoading={isLoading} />
+          <ChatList messages={chatListMessages} isLoading={isLoading} />
         )}
       </AutoScroll>
 

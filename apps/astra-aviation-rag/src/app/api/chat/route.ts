@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { createTextStreamResponse } from 'ai';
+import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
 import { AviationRAG } from '@ai-enhanced-web-apps/rag';
 import { logger } from '@ai-enhanced-web-apps/logger';
 import * as path from 'path';
@@ -25,7 +25,20 @@ export async function POST(req: NextRequest) {
     }
 
     const lastMessage = messages[messages.length - 1];
-    const userQuery = lastMessage.content;
+    let userQuery = '';
+    if (lastMessage.parts && Array.isArray(lastMessage.parts)) {
+      for (const part of lastMessage.parts) {
+        if (part.type === 'text' && typeof part.text === 'string') {
+          userQuery += part.text;
+        }
+      }
+    } else if (typeof lastMessage.content === 'string') {
+      userQuery = lastMessage.content;
+    }
+
+    if (!userQuery.trim()) {
+      return new Response('No text query found in the last message', { status: 400 });
+    }
 
     // Resolve RAG index path with default fallback
     let defaultIndexPath = path.join(
@@ -43,9 +56,24 @@ export async function POST(req: NextRequest) {
     logger.info(`[POST /api/chat] Using index path: "${indexPath}"`);
 
     const rag = getRAGInstance();
-    const stream = await rag.queryStream(indexPath, userQuery);
+    const langchainStream = await rag.queryStream(indexPath, userQuery);
 
-    return createTextStreamResponse({ textStream: stream });
+    const uiMessageStream = createUIMessageStream({
+      execute: async ({ writer }) => {
+        try {
+          const messageId = generateId();
+          writer.write({ type: 'text-start', id: messageId });
+          for await (const chunk of langchainStream) {
+            writer.write({ type: 'text-delta', id: messageId, delta: chunk });
+          }
+          writer.write({ type: 'text-end', id: messageId });
+        } catch (err: any) {
+          writer.write({ type: 'error', errorText: err.message || 'An error occurred during streaming.' });
+        }
+      }
+    });
+
+    return createUIMessageStreamResponse({ stream: uiMessageStream });
   } catch (error: any) {
     logger.error({ err: error }, '[POST /api/chat] Error');
     return new Response(
