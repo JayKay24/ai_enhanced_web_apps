@@ -9,6 +9,10 @@ A Next.js 15+ conversational AI safety assistant designed to search and analyze 
 - **Hierarchical Navigable Small World (HNSW) Indexing**: Executes extremely fast semantic retrieval over serialized local HNSWLib databases.
 - **Shared Architecture**: Reuses the core RAG components via the shared library `@ai-enhanced-web-apps/rag` and shared UI components from `@ai-enhanced-web-apps/chat-ui`.
 
+## Dataset Source
+
+The aviation dataset containing NTSB accident and incident reports is sourced from the [Docugami KG-RAG-datasets](https://github.com/docugami/KG-RAG-datasets) repository.
+
 ## Tech Stack
 
 - **Framework**: Next.js 15+ (App Router)
