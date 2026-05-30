@@ -121,9 +121,7 @@ export class AviationRAG {
    * @returns A promise resolving to the generated assistant answer string.
    * @throws {@link Error} If a valid index configuration (args.json) is not found at the index path.
    */
-  async query(indexPath: string, userQuery: string): Promise<string> {
-    logger.info(`[AviationRAG] Loading index from: "${indexPath}"...`);
-    
+  private async buildQueryChain(indexPath: string) {
     if (!fs.existsSync(path.join(indexPath, 'args.json'))) {
       throw new Error(`Valid HNSWLib index not found at path: "${indexPath}"`);
     }
@@ -159,7 +157,7 @@ export class AviationRAG {
         )
         .join('\n\n---\n\n');
 
-    const chain = RunnableSequence.from([
+    return RunnableSequence.from([
       {
         context: retriever.pipe(formatDocs),
         question: new RunnablePassthrough(),
@@ -168,8 +166,34 @@ export class AviationRAG {
       llm,
       new StringOutputParser(),
     ]);
+  }
 
+  /**
+   * Queries the local HNSWLib vector store, retrieves relevant grounded context,
+   * and uses Vertex AI Gemini to generate the incident lookup answers.
+   * 
+   * @param indexPath - Path to the directory where the HNSWLib index is serialized.
+   * @param userQuery - Question or search phrase submitted by the user.
+   * @returns A promise resolving to the generated assistant answer string.
+   * @throws {@link Error} If a valid index configuration (args.json) is not found at the index path.
+   */
+  async query(indexPath: string, userQuery: string): Promise<string> {
+    const chain = await this.buildQueryChain(indexPath);
     logger.info(`[AviationRAG] Executing LCEL sequence for query: "${userQuery}"`);
     return await chain.invoke(userQuery);
+  }
+
+  /**
+   * Queries the local HNSWLib vector store and returns a LangChain stream of response tokens.
+   * 
+   * @param indexPath - Path to the directory where the HNSWLib index is serialized.
+   * @param userQuery - Question or search phrase submitted by the user.
+   * @returns A promise resolving to the LangChain token stream.
+   * @throws {@link Error} If a valid index configuration (args.json) is not found at the index path.
+   */
+  async queryStream(indexPath: string, userQuery: string): Promise<any> {
+    const chain = await this.buildQueryChain(indexPath);
+    logger.info(`[AviationRAG] Executing LCEL sequence (stream) for query: "${userQuery}"`);
+    return await chain.stream(userQuery);
   }
 }

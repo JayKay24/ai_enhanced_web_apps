@@ -108,3 +108,98 @@ export async function processFile(
   const docs = await loader.load();
   return summarizeDocs(docs, providerId, modelId);
 }
+
+/**
+ * Summarizes an array of LangChain Documents using a Map-Reduce chain workflow,
+ * returning a stream of the final cohesive summary.
+ * 
+ * @param docs - Array of LangChain {@link Document} inputs to process.
+ * @param providerId - Model provider ID. Defaults to 'vertex'.
+ * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
+ * @returns A promise resolving to the final cohesive summary LangChain stream.
+ * @throws {@link Error} If the model instantiation fails or generation errors out.
+ */
+export async function summarizeDocsStream(
+  docs: Document[],
+  providerId = 'vertex',
+  modelId = 'gemini-2.5-flash'
+): Promise<any> {
+  const llm = getLangChainModelInstance(providerId, modelId);
+  if (!llm) {
+    throw new Error(`Could not initialize LangChain model for ${providerId}/${modelId}`);
+  }
+
+  const normalizedDocs = docs.map(doc => new Document({
+    pageContent: doc.pageContent.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+    metadata: doc.metadata
+  }));
+
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 10000,
+    chunkOverlap: 200,
+  });
+  const splitDocs = await splitter.splitDocuments(normalizedDocs);
+
+  const mapChain = MAP_PROMPT.pipe(llm).pipe(new StringOutputParser());
+
+  if (splitDocs.length === 1) {
+    return await mapChain.stream({ text: splitDocs[0].pageContent });
+  }
+
+  const chunkSummaries = await Promise.all(
+    splitDocs.map(doc => mapChain.invoke({ text: doc.pageContent }))
+  );
+
+  const combinedText = chunkSummaries.join("\n\n");
+  const reduceChain = REDUCE_PROMPT.pipe(llm).pipe(new StringOutputParser());
+
+  return await reduceChain.stream({ text: combinedText });
+}
+
+/**
+ * Generates a stream of the summary for a raw text input string using the LangChain Map-Reduce pipeline.
+ * 
+ * @param text - The raw text content to summarize.
+ * @param providerId - Sibling provider ID. Defaults to 'vertex'.
+ * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
+ * @returns A promise resolving to the generated summary stream.
+ */
+export async function summarizeTextStream(
+  text: string,
+  providerId = 'vertex',
+  modelId = 'gemini-2.5-flash'
+): Promise<any> {
+  const doc = new Document({ pageContent: text });
+  return summarizeDocsStream([doc], providerId, modelId);
+}
+
+/**
+ * Loads, parses, and summarizes a raw file blob (supports PDF and DOCX formats), returning a stream.
+ * Delegates text extraction to corresponding document loaders before compiling summaries.
+ * 
+ * @param fileBlob - Binary blob of the uploaded file.
+ * @param fileType - MIME type of the file.
+ * @param providerId - Model provider ID. Defaults to 'vertex'.
+ * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
+ * @returns A promise resolving to the final parsed document summary stream.
+ * @throws {@link Error} If the file type is unsupported or reading/extraction fails.
+ */
+export async function processFileStream(
+  fileBlob: Blob,
+  fileType: string,
+  providerId = 'vertex',
+  modelId = 'gemini-2.5-flash'
+): Promise<any> {
+  let loader;
+  if (fileType === 'application/pdf') {
+    loader = new PDFLoader(fileBlob);
+  } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    loader = new DocxLoader(fileBlob);
+  } else {
+    throw new Error('Unsupported file type. Only PDF and DOCX documents are supported.');
+  }
+
+  const docs = await loader.load();
+  return summarizeDocsStream(docs, providerId, modelId);
+}
+

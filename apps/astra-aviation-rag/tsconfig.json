@@ -45,12 +45,6 @@
   ],
   "references": [
     {
-      "path": "../../libs/logger"
-    },
-    {
-      "path": "../../libs/shared-utils"
-    },
-    {
       "path": "../../libs/rag"
     },
     {

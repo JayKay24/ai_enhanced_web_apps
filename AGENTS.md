@@ -44,6 +44,11 @@ This document contains architectural rules, module boundaries, compilation const
 *   **Server-Only Files**: Store model factory initialization logic inside [ai-providers.ts](./libs/shared-utils/src/lib/ai-providers.ts).
 *   **Bundling Rule**: Use sub-path exports (e.g. `@ai-enhanced-web-apps/shared-utils/ai-providers`) to prevent importing server-side dependencies in browser-compiled components.
 
+### API Routes & Streaming
+*   **Aviation RAG**: Employs `/api/chat` using `createTextStreamResponse` to stream token chunks from `AviationRAG.queryStream`.
+*   **Document Summarization**: Employs `/api/summarize` to process text/file summarizations and streams the final reduce phase.
+*   **Server Actions**: Legacy Server Actions (`actions.tsx`) and RSC-based context wrappers (`<AI>`) are deprecated and must not be used in the conversational apps.
+
 ---
 
 ## 3. CLI Applications (NestJS)

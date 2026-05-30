@@ -6,7 +6,6 @@ import {
   AutoScroll,
   AutoScrollHandle,
   Button,
-  ChatMessage,
   ChatList,
   WelcomeHeader,
 } from '@ai-enhanced-web-apps/chat-ui';
@@ -14,15 +13,12 @@ import {
   useEnterSubmit,
   useFocusOnSlashPress,
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { useActions, useUIState } from '@ai-sdk/rsc';
 import { ChevronUp, Send, Paperclip, X, FileText } from 'lucide-react';
 import { generateUniqueId, MAX_FILE_SIZE_BYTES, FILE_SIZE_ERROR_MESSAGE } from '@ai-enhanced-web-apps/shared-utils';
-import { AI } from './actions';
 
 export default function ChatPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [messages, setMessages] = useUIState<typeof AI>();
-  const { continueConversation } = useActions<typeof AI>() as any;
+  const [messages, setMessages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
@@ -73,18 +69,26 @@ export default function ChatPage() {
       ? `Uploaded file: ${selectedFile.name}`
       : value;
 
+    const userMessageId = generateUniqueId();
+    const assistantMessageId = generateUniqueId();
+
     // Optimistic UI update
     setMessages((currentMessages) => [
       ...currentMessages,
       {
-        id: generateUniqueId(),
-        display: (
-          <ChatMessage
-            role="user"
-            text={userMessageText}
-            className="ml-auto"
-          />
-        ),
+        id: userMessageId,
+        role: 'user',
+        content: userMessageText,
+      },
+    ]);
+
+    // Append an empty assistant message that we will stream into
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: '',
       },
     ]);
 
@@ -95,17 +99,67 @@ export default function ChatPage() {
         formData.append('file', selectedFile);
         
         setSelectedFile(null);
-        response = await continueConversation(formData);
+        response = await fetch('/api/summarize', {
+          method: 'POST',
+          body: formData,
+        });
       } else {
-        response = await continueConversation(value);
+        response = await fetch('/api/summarize', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: value }),
+        });
       }
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        response,
-      ]);
-    } catch (error) {
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Failed to generate summary.';
+        try {
+          const errJson = JSON.parse(errorText);
+          errorMessage = `${errJson.error} (Request ID: ${errJson.requestId})`;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('No response body reader available.');
+      }
+
+      const decoder = new TextDecoder();
+      let done = false;
+      let accumulatedText = '';
+
+      while (!done) {
+        const { value: chunk, done: doneReading } = await reader.read();
+        done = doneReading;
+        if (chunk) {
+          const chunkText = decoder.decode(chunk);
+          accumulatedText += chunkText;
+
+          // Update the assistant message in state
+          setMessages((currentMessages) =>
+            currentMessages.map((msg) =>
+              msg.id === assistantMessageId
+                ? { ...msg, content: accumulatedText }
+                : msg
+            )
+          );
+        }
+      }
+    } catch (error: any) {
       console.error('Error in chat submission:', error);
+      setMessages((currentMessages) =>
+        currentMessages.map((msg) =>
+          msg.id === assistantMessageId
+            ? { ...msg, content: `Error: ${error.message || 'Failed to complete summary.'}` }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
       if (fileInputRef.current) {

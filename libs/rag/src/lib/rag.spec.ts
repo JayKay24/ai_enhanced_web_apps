@@ -183,4 +183,34 @@ describe('AviationRAG', () => {
       );
     });
   });
+
+  describe('queryStream', () => {
+    it('should load vector index and stream LCEL chain with fakes', async () => {
+      (fs.existsSync as jest.Mock).mockReturnValue(true);
+
+      const rag = new AviationRAG({
+        embeddings: fakeEmbeddings,
+        llm: fakeLlm,
+      });
+
+      const stream = await rag.queryStream('/fake/index', 'What caused the accident?');
+
+      expect(fs.existsSync).toHaveBeenCalledWith('/fake/index/args.json');
+      expect(HNSWLib.load).toHaveBeenCalledWith('/fake/index', fakeEmbeddings);
+      expect(stream).toBeDefined();
+    });
+
+    it('should throw error if index path is invalid', async () => {
+      (fs.existsSync as jest.Mock).mockReturnValue(false);
+
+      const rag = new AviationRAG({
+        embeddings: fakeEmbeddings,
+        llm: fakeLlm,
+      });
+
+      await expect(rag.queryStream('/fake/index', 'What happened?')).rejects.toThrow(
+        /Valid HNSWLib index not found/
+      );
+    });
+  });
 });

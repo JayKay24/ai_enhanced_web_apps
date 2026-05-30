@@ -6,7 +6,6 @@ import {
   AutoScroll,
   AutoScrollHandle,
   Button,
-  ChatMessage,
   ChatList,
   WelcomeHeader,
 } from '@ai-enhanced-web-apps/chat-ui';
@@ -14,19 +13,20 @@ import {
   useEnterSubmit,
   useFocusOnSlashPress,
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { useActions, useUIState } from '@ai-sdk/rsc';
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { ChevronUp, Send } from 'lucide-react';
-import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
-import { AI } from './actions';
 
 export default function ChatPage() {
-  const [messages, setMessages] = useUIState<typeof AI>();
-  const { continueConversation } = useActions<typeof AI>() as any;
-  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({ api: '/api/chat' }),
+    onError: (error) => {
+      console.error('Error in RAG submission:', error);
+    }
+  });
 
-  const { formRef, onKeyDown } = useEnterSubmit();
-  const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -36,40 +36,20 @@ export default function ChatPage() {
     e?: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e?.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const value = input.trim();
     setInput('');
-    setIsLoading(true);
-
-    // Optimistic UI update for the user query
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: generateUniqueId(),
-        display: (
-          <ChatMessage
-            role="user"
-            text={value}
-            className="ml-auto"
-          />
-        ),
-      },
-    ]);
 
     try {
-      const response = await continueConversation(value);
-
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        response,
-      ]);
+      await sendMessage({ text: value });
     } catch (error) {
       console.error('Error in RAG submission:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  const { formRef, onKeyDown } = useEnterSubmit();
+  const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
   const [isAtTop, setIsAtTop] = useState(true);
