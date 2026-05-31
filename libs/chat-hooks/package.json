@@ -13,6 +13,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@ai-enhanced-web-apps/shared-utils": "^0.0.1"
+    "@ai-enhanced-web-apps/shared-utils": "^0.0.1",
+    "@ai-enhanced-web-apps/shared-types": "^0.0.1"
   }
 }

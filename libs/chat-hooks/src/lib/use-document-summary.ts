@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
 import { generateUniqueId, fetchSummaryResponse } from '@ai-enhanced-web-apps/shared-utils';
+import { Message } from '@ai-enhanced-web-apps/shared-types';
 
 export function useDocumentSummary() {
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const summarizeDocument = useCallback(async (file: File | null, textInput: string) => {
@@ -31,6 +32,16 @@ export function useDocumentSummary() {
         content: '',
       },
     ]);
+
+    const updateAssistantMessage = (accumulatedText: string) => {
+      setMessages((currentMessages) =>
+        currentMessages.map((msg) =>
+          msg.id === assistantMessageId
+            ? { ...msg, content: accumulatedText }
+            : msg
+        )
+      );
+    };
 
     try {
       const response = await fetchSummaryResponse(file, textInput);
@@ -62,15 +73,7 @@ export function useDocumentSummary() {
         if (chunk) {
           const chunkText = decoder.decode(chunk);
           accumulatedText += chunkText;
-
-          // Update the assistant message in state
-          setMessages((currentMessages) =>
-            currentMessages.map((msg) =>
-              msg.id === assistantMessageId
-                ? { ...msg, content: accumulatedText }
-                : msg
-            )
-          );
+          updateAssistantMessage(accumulatedText);
         }
       }
     } catch (error: any) {
@@ -93,3 +96,4 @@ export function useDocumentSummary() {
     summarizeDocument,
   };
 }
+
