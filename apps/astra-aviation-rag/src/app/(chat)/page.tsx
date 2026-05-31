@@ -12,21 +12,13 @@ import {
 import {
   useEnterSubmit,
   useFocusOnSlashPress,
+  useAviationChat,
 } from '@ai-enhanced-web-apps/chat-hooks';
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
 import { ChevronUp, Send } from 'lucide-react';
 
 export default function ChatPage() {
   const [input, setInput] = useState('');
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
-    onError: (error) => {
-      console.error('Error in RAG submission:', error);
-    }
-  });
-
-  const isLoading = status === 'submitted' || status === 'streaming';
+  const { messages, isLoading, submitQuery } = useAviationChat();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -40,12 +32,7 @@ export default function ChatPage() {
 
     const value = input.trim();
     setInput('');
-
-    try {
-      await sendMessage({ text: value });
-    } catch (error) {
-      console.error('Error in RAG submission:', error);
-    }
+    await submitQuery(value);
   };
 
   const { formRef, onKeyDown } = useEnterSubmit();
@@ -65,22 +52,6 @@ export default function ChatPage() {
     []
   );
 
-  const chatListMessages = messages.map((m) => {
-    let content = '';
-    if (m.parts && Array.isArray(m.parts)) {
-      for (const part of m.parts) {
-        if (part.type === 'text') {
-          content += part.text;
-        }
-      }
-    }
-    return {
-      id: m.id,
-      role: m.role,
-      content,
-    };
-  });
-
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
       <AutoScroll
@@ -96,7 +67,7 @@ export default function ChatPage() {
           />
         )}
         {messages.length > 0 && (
-          <ChatList messages={chatListMessages} isLoading={isLoading} />
+          <ChatList messages={messages} isLoading={isLoading} />
         )}
       </AutoScroll>
 

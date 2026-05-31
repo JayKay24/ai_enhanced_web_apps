@@ -24,3 +24,31 @@ export async function fetchAssistantResponse(url: string, text: string): Promise
 
   return (await response.json()) as ChatResponse;
 }
+
+/**
+ * Sends a summarization request to the summarize API endpoint.
+ * Returns the raw Response object to allow chunk-by-chunk stream reading.
+ * 
+ * @param file - Optional PDF or DOCX file to summarize.
+ * @param text - Optional raw text input to summarize.
+ * @returns A promise resolving to the fetch Response.
+ */
+export async function fetchSummaryResponse(file: File | null, text: string): Promise<Response> {
+  if (file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetch('/api/summarize', {
+      method: 'POST',
+      body: formData,
+    });
+  } else {
+    return fetch('/api/summarize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
+  }
+}
+

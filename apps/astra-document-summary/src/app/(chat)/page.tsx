@@ -12,15 +12,15 @@ import {
 import {
   useEnterSubmit,
   useFocusOnSlashPress,
+  useDocumentSummary,
 } from '@ai-enhanced-web-apps/chat-hooks';
 import { ChevronUp, Send, Paperclip, X, FileText } from 'lucide-react';
-import { generateUniqueId, MAX_FILE_SIZE_BYTES, FILE_SIZE_ERROR_MESSAGE } from '@ai-enhanced-web-apps/shared-utils';
+import { MAX_FILE_SIZE_BYTES, FILE_SIZE_ERROR_MESSAGE } from '@ai-enhanced-web-apps/shared-utils';
 
 export default function ChatPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [messages, setMessages] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
+  const { messages, isLoading, summarizeDocument } = useDocumentSummary();
 
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useFocusOnSlashPress<HTMLTextAreaElement>();
@@ -61,111 +61,16 @@ export default function ChatPage() {
     e?.preventDefault();
     if (!selectedFile && !input.trim()) return;
 
-    const value = input.trim();
+    const file = selectedFile;
+    const textVal = input;
+
+    setSelectedFile(null);
     setInput('');
-    setIsLoading(true);
-
-    const userMessageText = selectedFile
-      ? `Uploaded file: ${selectedFile.name}`
-      : value;
-
-    const userMessageId = generateUniqueId();
-    const assistantMessageId = generateUniqueId();
-
-    // Optimistic UI update
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: userMessageId,
-        role: 'user',
-        content: userMessageText,
-      },
-    ]);
-
-    // Append an empty assistant message that we will stream into
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: assistantMessageId,
-        role: 'assistant',
-        content: '',
-      },
-    ]);
-
-    try {
-      let response;
-      if (selectedFile) {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        
-        setSelectedFile(null);
-        response = await fetch('/api/summarize', {
-          method: 'POST',
-          body: formData,
-        });
-      } else {
-        response = await fetch('/api/summarize', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text: value }),
-        });
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Failed to generate summary.';
-        try {
-          const errJson = JSON.parse(errorText);
-          errorMessage = `${errJson.error} (Request ID: ${errJson.requestId})`;
-        } catch {
-          errorMessage = errorText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No response body reader available.');
-      }
-
-      const decoder = new TextDecoder();
-      let done = false;
-      let accumulatedText = '';
-
-      while (!done) {
-        const { value: chunk, done: doneReading } = await reader.read();
-        done = doneReading;
-        if (chunk) {
-          const chunkText = decoder.decode(chunk);
-          accumulatedText += chunkText;
-
-          // Update the assistant message in state
-          setMessages((currentMessages) =>
-            currentMessages.map((msg) =>
-              msg.id === assistantMessageId
-                ? { ...msg, content: accumulatedText }
-                : msg
-            )
-          );
-        }
-      }
-    } catch (error: any) {
-      console.error('Error in chat submission:', error);
-      setMessages((currentMessages) =>
-        currentMessages.map((msg) =>
-          msg.id === assistantMessageId
-            ? { ...msg, content: `Error: ${error.message || 'Failed to complete summary.'}` }
-            : msg
-        )
-      );
-    } finally {
-      setIsLoading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
+
+    await summarizeDocument(file, textVal);
   };
 
   const autoScrollRef = useRef<AutoScrollHandle>(null);
@@ -295,3 +200,4 @@ export default function ChatPage() {
     </div>
   );
 }
+
