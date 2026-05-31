@@ -2,6 +2,7 @@
 import { useState, type SyntheticEvent } from 'react';
 import { generateUniqueId } from '@ai-enhanced-web-apps/shared-utils';
 import { Message, ChatResponse } from '@ai-enhanced-web-apps/shared-types';
+import { logger } from '@ai-enhanced-web-apps/logger';
 
 /**
  * Hook to handle chat form submission and message state management.
@@ -38,7 +39,7 @@ function useChatFormSubmit(
       const { message } = await getAssistantResponse(value);
       setMessages((currentMessages) => [...currentMessages, message]);
     } catch (error) {
-      console.error('Failed to get assistant response:', error);
+      logger.error(error, 'Failed to get assistant response:');
     } finally {
       setIsLoading(false);
     }

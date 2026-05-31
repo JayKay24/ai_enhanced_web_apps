@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import type { ProxyResult } from './compose';
+import { logger } from '@ai-enhanced-web-apps/logger';
 
 // Initialize Redis client using environment variables
 const redis = new Redis({
@@ -31,7 +32,7 @@ export async function rateLimitProxy(
 ): Promise<ProxyResult> {
   // If Upstash credentials are missing in dev, skip rate limiting instead of crashing
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    console.warn('Skipping rate limit: UPSTASH_REDIS env variables are not configured.');
+    logger.warn('Skipping rate limit: UPSTASH_REDIS env variables are not configured.');
     return { continue: true };
   }
 
@@ -57,7 +58,7 @@ export async function rateLimitProxy(
 
     return { continue: true };
   } catch (error) {
-    console.error('Rate limiting error:', error);
+    logger.error(error, 'Rate limiting error:');
     return { continue: true }; // Fallback to allow connection if Redis is down
   }
 }

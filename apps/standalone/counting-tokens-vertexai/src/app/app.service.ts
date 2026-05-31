@@ -11,7 +11,7 @@ export class AppService {
     const location = process.env.VERTEX_AI_LOCATION;
 
     if (!project || !location) {
-      console.warn('VERTEX_AI_PROJECT_ID or VERTEX_AI_LOCATION is not set. The application might fail to connect to Vertex AI.');
+      this.logger.warn('VERTEX_AI_PROJECT_ID or VERTEX_AI_LOCATION is not set. The application might fail to connect to Vertex AI.');
     }
 
     this.ai = new GoogleGenAI({

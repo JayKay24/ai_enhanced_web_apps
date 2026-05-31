@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { generateUniqueId, fetchSummaryResponse } from '@ai-enhanced-web-apps/shared-utils';
 import { Message } from '@ai-enhanced-web-apps/shared-types';
+import { logger } from '@ai-enhanced-web-apps/logger';
 
 /**
  * Custom React hook to manage the state and process flow for document summarization.
@@ -96,7 +97,7 @@ export function useDocumentSummary() {
         }
       }
     } catch (error: any) {
-      console.error('Error in chat submission:', error);
+      logger.error(error, 'Error in chat submission:');
       setMessages((currentMessages) =>
         currentMessages.map((msg) =>
           msg.id === assistantMessageId

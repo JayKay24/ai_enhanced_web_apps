@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { logger } from '@ai-enhanced-web-apps/logger';
 
 export type ProxyResult = {
   response?: NextResponse;
@@ -31,7 +32,7 @@ export function composeProxy(proxies: ProxyFunction[]) {
           break;
         }
       } catch (error) {
-        console.error('Proxy execution error:', error);
+        logger.error(error, 'Proxy execution error:');
         return NextResponse.json(
           { error: 'Internal Server Error' },
           { status: 500 }
