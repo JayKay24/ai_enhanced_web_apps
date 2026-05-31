@@ -2,6 +2,25 @@ import { useState, useCallback } from 'react';
 import { generateUniqueId, fetchSummaryResponse } from '@ai-enhanced-web-apps/shared-utils';
 import { Message } from '@ai-enhanced-web-apps/shared-types';
 
+/**
+ * Custom React hook to manage the state and process flow for document summarization.
+ * Handles user input queries or PDF/DOCX file uploads, manages optimistic UI updates,
+ * triggers API requests via fetch, and decodes the response body web stream chunk-by-chunk in real-time.
+ * 
+ * @returns An object containing:
+ * - `messages`: Statically-typed chat list message array containing history and ongoing streams.
+ * - `isLoading`: Boolean state indicating whether a summarization process is in progress.
+ * - `summarizeDocument`: A callback function to submit either a file or raw text input to the summarizer backend.
+ * 
+ * @example
+ * ```tsx
+ * const { messages, isLoading, summarizeDocument } = useDocumentSummary();
+ * 
+ * const handleUpload = (file: File) => {
+ *   summarizeDocument(file, '');
+ * };
+ * ```
+ */
 export function useDocumentSummary() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
