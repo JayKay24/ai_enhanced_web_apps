@@ -43,11 +43,13 @@ This document contains architectural rules, module boundaries, compilation const
 *   **Config Separation**: Store non-sensitive provider metadata/names in [ai-model-config.ts](./libs/shared-utils/src/lib/ai-model-config.ts).
 *   **Server-Only Files**: Store model factory initialization logic inside [ai-providers.ts](./libs/shared-utils/src/lib/ai-providers.ts).
 *   **Bundling Rule**: Use sub-path exports (e.g. `@ai-enhanced-web-apps/shared-utils/ai-providers`) to prevent importing server-side dependencies in browser-compiled components.
+*   **Edge Proxy Modules**: Keep Edge/server-only dependencies (like `next/server` and `@upstash/redis`) out of primary exports in shared libraries. Use sub-path exports (e.g. `@ai-enhanced-web-apps/shared-utils/middleware`) to prevent test suite failures (`ReferenceError: Request is not defined`) in client-side modules.
 
 ### API Routes & Streaming
 *   **Aviation RAG**: Employs `/api/chat` using `createTextStreamResponse` to stream token chunks from `AviationRAG.queryStream`.
 *   **Document Summarization**: Employs `/api/summarize` to process text/file summarizations and streams the final reduce phase.
 *   **Server Actions**: Legacy Server Actions (`actions.tsx`) and RSC-based context wrappers (`<AI>`) are deprecated and must not be used in the conversational apps.
+*   **Edge Requests Proxy (Next.js 16+)**: Under Next.js 16+, middleware files are renamed to `proxy.ts` (placed at the project root) and must export a `proxy` function. Use the pre-built `apiProxyChain` from `@ai-enhanced-web-apps/shared-utils/middleware` to handle rate limiting, CORS configuration, and security headers.
 
 ### Client-Side State & Hook Patterns
 *   **Separation of Concerns**: Keep page files view-only. Form handling and UI layouts belong in the page component, while state tracking, streaming decoder loops, and Vercel AI SDK operations belong in custom hooks within the `@ai-enhanced-web-apps/chat-hooks` library (e.g., `useAviationChat`, `useDocumentSummary`).

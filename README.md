@@ -93,6 +93,18 @@ Start the Next.js development servers using Nx:
 | **`@langchain/google-vertexai`** | Integration for Vertex AI models and vector embeddings in LangChain workflows. |
 | **`hnswlib-node`** | C++ binder for extremely fast local Hierarchical Navigable Small World vector search. |
 | **`pino` & `pino-pretty`** | Core high-performance logging suite. |
+| **`@upstash/redis` & `@upstash/ratelimit`** | HTTP REST Redis client and sliding-window rate limiter for serverless Edge runtimes. |
+
+---
+
+## 🛡️ Edge Request Proxies (Next.js 16+)
+
+Both web applications implement Next.js 16+ compliant **`proxy.ts`** Edge middleware files. They intercept incoming requests on `/api/` paths and execute a composed chain of:
+1. **CORS Handling**: Cross-Origin resource settings for pre-flight requests.
+2. **Rate Limiting**: Sliding-window rate limit checks (5 requests per 10 seconds) powered by Upstash Redis.
+3. **Security Headers**: Standard response header protection (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, etc.).
+
+The proxy logic is encapsulated inside the shared workspace utility and exposed via the sub-path export `@ai-enhanced-web-apps/shared-utils/middleware` to keep Edge-only dependencies isolated.
 
 ---
 
