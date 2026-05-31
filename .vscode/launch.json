@@ -2,18 +2,29 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node-terminal",
+      "type": "node",
       "request": "launch",
       "name": "Launch & Debug astra-aviation-rag",
-      "command": "npx nx run astra-aviation-rag:dev",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "args": ["dev", "-p", "4400"],
+      "cwd": "${workspaceFolder}/apps/astra-aviation-rag",
       "envFile": "${workspaceFolder}/.env",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
+      "autoAttachChildProcesses": true,
       "sourceMapPathOverrides": {
+        "webpack://server/*": "${workspaceFolder}/*",
+        "webpack://client/*": "${workspaceFolder}/*",
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "${workspaceFolder}/*",
+        "webpack://[name]/./*": "${workspaceFolder}/*",
+        "webpack://[name]/*": "${workspaceFolder}/*",
+        "turbopack://[project]/apps/astra-aviation-rag/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack://[project]/libs/*": "${workspaceFolder}/libs/*",
         "turbopack://[project]/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
-        "turbopack:///./*": "${workspaceFolder}/apps/astra-aviation-rag/*",
-        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
-        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*"
+        "turbopack:///./*": "${workspaceFolder}/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/*"
       },
       "serverReadyAction": {
         "pattern": "Local:\\s*(https?://.+)",
@@ -28,21 +39,60 @@
       "name": "Launch Chrome: astra-aviation-rag",
       "url": "http://localhost:4400",
       "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
-      "webRoot": "${workspaceFolder}/apps/astra-aviation-rag"
+      "webRoot": "${workspaceFolder}/apps/astra-aviation-rag",
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "webpack:///./*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "webpack:///*": "${workspaceFolder}/*"
+      }
     },
     {
-      "type": "node-terminal",
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to astra-aviation-rag",
+      "port": 9229,
+      "cwd": "${workspaceFolder}/apps/astra-aviation-rag",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapPathOverrides": {
+        "webpack://server/*": "${workspaceFolder}/*",
+        "webpack://client/*": "${workspaceFolder}/*",
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "${workspaceFolder}/*",
+        "webpack://[name]/./*": "${workspaceFolder}/*",
+        "webpack://[name]/*": "${workspaceFolder}/*",
+        "turbopack://[project]/apps/astra-aviation-rag/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack://[project]/libs/*": "${workspaceFolder}/libs/*",
+        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-aviation-rag/*",
+        "turbopack:///./*": "${workspaceFolder}/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "type": "node",
       "request": "launch",
       "name": "Launch & Debug astra-document-summary",
-      "command": "npx nx run astra-document-summary:dev",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "args": ["dev", "-p", "4300"],
+      "cwd": "${workspaceFolder}/apps/astra-document-summary",
       "envFile": "${workspaceFolder}/.env",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
+      "autoAttachChildProcesses": true,
       "sourceMapPathOverrides": {
+        "webpack://server/*": "${workspaceFolder}/*",
+        "webpack://client/*": "${workspaceFolder}/*",
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "${workspaceFolder}/*",
+        "webpack://[name]/./*": "${workspaceFolder}/*",
+        "webpack://[name]/*": "${workspaceFolder}/*",
+        "turbopack://[project]/apps/astra-document-summary/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack://[project]/libs/*": "${workspaceFolder}/libs/*",
         "turbopack://[project]/*": "${workspaceFolder}/apps/astra-document-summary/*",
-        "turbopack:///./*": "${workspaceFolder}/apps/astra-document-summary/*",
-        "turbopack:///_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*",
-        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*"
+        "turbopack:///./*": "${workspaceFolder}/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/*"
       },
       "serverReadyAction": {
         "pattern": "Local:\\s*(https?://.+)",
@@ -57,7 +107,35 @@
       "name": "Launch Chrome: astra-document-summary",
       "url": "http://localhost:4300",
       "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
-      "webRoot": "${workspaceFolder}/apps/astra-document-summary"
+      "webRoot": "${workspaceFolder}/apps/astra-document-summary",
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "webpack:///./*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "webpack:///*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to astra-document-summary",
+      "port": 9228,
+      "cwd": "${workspaceFolder}/apps/astra-document-summary",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapPathOverrides": {
+        "webpack://server/*": "${workspaceFolder}/*",
+        "webpack://client/*": "${workspaceFolder}/*",
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "${workspaceFolder}/*",
+        "webpack://[name]/./*": "${workspaceFolder}/*",
+        "webpack://[name]/*": "${workspaceFolder}/*",
+        "turbopack://[project]/apps/astra-document-summary/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack://[project]/libs/*": "${workspaceFolder}/libs/*",
+        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-document-summary/*",
+        "turbopack:///./*": "${workspaceFolder}/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/*"
+      }
     },
     {
       "type": "node",
