@@ -73,7 +73,7 @@ Start the Next.js development servers using Nx:
 
 ### Shared Libraries
 *   [libs/chat-ui](libs/chat-ui): Reusable React presentation components (Radix, Tailwind CSS).
-*   [libs/chat-hooks](libs/chat-hooks): React hooks for chat logic and submission shortcuts.
+*   [libs/chat-hooks](libs/chat-hooks): React hooks for chat logic, submission shortcuts, response streaming and stream decoding (`useDocumentSummary`), and model-to-UI message mappings (`useAviationChat`).
 *   [libs/shared-types](libs/shared-types): Shared TypeScript API contracts.
 *   [libs/shared-utils](libs/shared-utils): Tailwind merging helpers, static prompts, and AI model configs.
 *   [libs/rag](libs/rag): Shared LCEL search chains and vector indexes.

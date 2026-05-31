@@ -49,6 +49,12 @@ This document contains architectural rules, module boundaries, compilation const
 *   **Document Summarization**: Employs `/api/summarize` to process text/file summarizations and streams the final reduce phase.
 *   **Server Actions**: Legacy Server Actions (`actions.tsx`) and RSC-based context wrappers (`<AI>`) are deprecated and must not be used in the conversational apps.
 
+### Client-Side State & Hook Patterns
+*   **Separation of Concerns**: Keep page files view-only. Form handling and UI layouts belong in the page component, while state tracking, streaming decoder loops, and Vercel AI SDK operations belong in custom hooks within the `@ai-enhanced-web-apps/chat-hooks` library (e.g., `useAviationChat`, `useDocumentSummary`).
+*   **Encapsulated API Clients**: Always extract API client calls (like `/api/summarize`) into the centralized client layer: `@ai-enhanced-web-apps/shared-utils/src/lib/api.ts` (e.g. `fetchSummaryResponse`).
+*   **Static Typing**: Statically type chat message arrays using the `Message` interface from `@ai-enhanced-web-apps/shared-types`.
+*   **Loop Closures**: Avoid declaring state-updating function closures within stream loops. Declare updater helper functions outside the loops to prevent mutable loop variable leaks.
+
 ---
 
 ## 3. CLI Applications (NestJS)
