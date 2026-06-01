@@ -98,7 +98,7 @@ export function useDocumentSummary() {
         }
       }
     } catch (error: any) {
-      logger.error(error, 'Error in chat submission:');
+      logger.warn('Handled error in document summary submission:', error.message || error);
       toast.error(error.message || 'Failed to complete summary.');
       setMessages((currentMessages) =>
         currentMessages.map((msg) =>

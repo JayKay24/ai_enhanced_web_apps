@@ -67,8 +67,8 @@ export function useAviationChat() {
     try {
       await sendMessage({ text: text.trim() });
     } catch (error) {
-      logger.error(error, 'Error in RAG submission:');
-      throw error;
+      // Swallowed here because the useChat onError callback already handles logging 
+      // and displaying the toast notification, preventing unhandled promise rejections.
     }
   }, [sendMessage, isLoading]);
 
