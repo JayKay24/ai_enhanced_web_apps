@@ -89,6 +89,7 @@ Start the Next.js development servers using Nx:
 | **`@ai-sdk/google-vertex`** | Adapter for enterprise Google Cloud Vertex AI services. |
 | **`@ai-sdk/openai`** | Adapter for OpenAI models (e.g. `gpt-4o`). |
 | **`@ai-sdk/react` & `@ai-sdk/rsc`** | Frontend streaming hooks (`useChat`, `useCompletion`) and server action wrappers. |
+| **`@clerk/nextjs`** | User authentication, session management, and page/route protection. |
 | **`@langchain/core`** | Abstraction layer for LangChain LCEL sequences and output parsers. |
 | **`@langchain/google-vertexai`** | Integration for Vertex AI models and vector embeddings in LangChain workflows. |
 | **`hnswlib-node`** | C++ binder for extremely fast local Hierarchical Navigable Small World vector search. |
@@ -97,14 +98,15 @@ Start the Next.js development servers using Nx:
 
 ---
 
-## 🛡️ Edge Request Proxies (Next.js 16+)
+## 🛡️ Edge Request Proxies & Authentication (Next.js 16+)
 
-Both web applications implement Next.js 16+ compliant **`proxy.ts`** Edge middleware files. They intercept incoming requests on `/api/` paths and execute a composed chain of:
-1. **CORS Handling**: Cross-Origin resource settings for pre-flight requests.
-2. **Rate Limiting**: Sliding-window rate limit checks (5 requests per 10 seconds) powered by Upstash Redis.
-3. **Security Headers**: Standard response header protection (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, etc.).
+Both web applications implement Next.js 16+ compliant **`proxy.ts`** Edge middleware files. They intercept incoming requests and execute a composed chain of:
+1. **User Authentication (Clerk.js)**: Verifies user session and protects internal routes (like `/`), automatically redirecting unauthenticated users to `/sign-in`.
+2. **CORS Handling**: Cross-Origin resource settings for pre-flight requests on API paths.
+3. **Rate Limiting**: Sliding-window rate limit checks (5 requests per 10 seconds) powered by Upstash Redis on API paths.
+4. **Security Headers**: Standard response header protection (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, etc.).
 
-The proxy logic is encapsulated inside the shared workspace utility and exposed via the sub-path export `@ai-enhanced-web-apps/shared-utils/middleware` to keep Edge-only dependencies isolated.
+The proxy logic is encapsulated inside the shared workspace utility and exposed via the sub-path export `@ai-enhanced-web-apps/shared-utils/middleware` to keep Edge-only dependencies isolated, while Clerk-specific route checks run at the application level in `proxy.ts`.
 
 ---
 
