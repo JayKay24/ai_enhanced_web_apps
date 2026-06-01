@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { 
   processFileStream, 
   summarizeTextStream 
@@ -14,6 +15,11 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   logger.info('[POST /api/summarize] START (Document Summarization)');
+  const { userId } = await auth();
+  if (!userId) {
+    logger.warn('[POST /api/summarize] Unauthorized access attempt');
+    return new Response('Unauthorized', { status: 401 });
+  }
   const contentType = req.headers.get('content-type') || '';
 
   try {

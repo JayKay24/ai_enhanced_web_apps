@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
 import { AviationRAG } from '@ai-enhanced-web-apps/rag';
 import { logger } from '@ai-enhanced-web-apps/logger';
@@ -18,6 +19,11 @@ function getRAGInstance(): AviationRAG {
 
 export async function POST(req: NextRequest) {
   logger.info('[POST /api/chat] START (Aviation Incident RAG)');
+  const { userId } = await auth();
+  if (!userId) {
+    logger.warn('[POST /api/chat] Unauthorized access attempt');
+    return new Response('Unauthorized', { status: 401 });
+  }
   try {
     const { messages } = await req.json();
     if (!messages || messages.length === 0) {

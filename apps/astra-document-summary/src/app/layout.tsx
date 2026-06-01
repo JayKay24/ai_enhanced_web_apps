@@ -1,4 +1,5 @@
 import './global.css';
+import { ClerkProvider } from '@clerk/nextjs';
 
 export const metadata = {
   title: 'Astra AI - AI Assistant',
@@ -11,8 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen">{children}</body>
-    </html>
+    <ClerkProvider afterSignOutUrl="/sign-in">
+      <html lang="en">
+        <body className="flex flex-col min-h-screen">{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

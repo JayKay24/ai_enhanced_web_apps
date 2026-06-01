@@ -26,6 +26,6 @@
   "dependencies": {
     "@langchain/core": "^1.1.46",
     "@upstash/redis": "^1.34.3",
-    "@upstash/ratelimit": "^1.21.0"
+    "@upstash/ratelimit": "^2.0.8"
   }
 }

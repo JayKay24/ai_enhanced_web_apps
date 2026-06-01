@@ -1,17 +1,30 @@
-import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { apiProxyChain } from '@ai-enhanced-web-apps/shared-utils/middleware';
 
-/**
- * Next.js 16+ Edge Proxy Middleware for astra-aviation-rag.
- * Chains CORS checking, Upstash rate limiting, and security header insertion.
- * 
- * @param request - Incoming NextRequest object.
- * @returns The final NextResponse.
- */
-export async function proxy(request: NextRequest) {
-  return await apiProxyChain(request);
-}
+const isProtectedRoute = createRouteMatcher([
+  '/',
+]);
+
+const isApiRoute = createRouteMatcher([
+  '/api/(.*)',
+]);
+
+export const proxy = clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+
+  if (isApiRoute(req)) {
+    return await apiProxyChain(req);
+  }
+
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
 };
