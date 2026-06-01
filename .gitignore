@@ -73,3 +73,5 @@ out
 next-env.d.ts
 
 __MACOSX
+# clerk configuration (can include secrets)
+.clerk/
