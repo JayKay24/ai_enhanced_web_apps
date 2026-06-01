@@ -103,8 +103,9 @@ Start the Next.js development servers using Nx:
 Both web applications implement Next.js 16+ compliant **`proxy.ts`** Edge middleware files. They intercept incoming requests and execute a composed chain of:
 1. **User Authentication (Clerk.js)**: Verifies user session and protects internal routes (like `/`), automatically redirecting unauthenticated users to `/sign-in`.
 2. **CORS Handling**: Cross-Origin resource settings for pre-flight requests on API paths.
-3. **Rate Limiting**: Sliding-window rate limit checks (5 requests per 10 seconds) powered by Upstash Redis on API paths.
-4. **Security Headers**: Standard response header protection (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, etc.).
+3. **IP-based Rate Limiting**: Sliding-window rate limit checks (5 requests per 10 seconds) powered by Upstash Redis on API paths.
+4. **User-based Message Quotas**: Enforces daily message quota limits (10 queries per day per authenticated user) powered by Upstash Redis on API paths.
+5. **Security Headers**: Standard response header protection (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, etc.).
 
 The proxy logic is encapsulated inside the shared workspace utility and exposed via the sub-path export `@ai-enhanced-web-apps/shared-utils/middleware` to keep Edge-only dependencies isolated, while Clerk-specific route checks run at the application level in `proxy.ts`.
 

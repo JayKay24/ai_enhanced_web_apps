@@ -1,5 +1,6 @@
 import './global.css';
 import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from 'sonner';
 
 export const metadata = {
   title: 'Astra Aviation RAG - NTSB Aviation Reports Search',
@@ -14,7 +15,10 @@ export default function RootLayout({
   return (
     <ClerkProvider afterSignOutUrl="/sign-in">
       <html lang="en">
-        <body className="flex flex-col min-h-screen">{children}</body>
+        <body className="flex flex-col min-h-screen">
+          {children}
+          <Toaster richColors position="top-right" />
+        </body>
       </html>
     </ClerkProvider>
   );

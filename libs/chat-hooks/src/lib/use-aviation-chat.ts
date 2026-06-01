@@ -2,6 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { logger } from '@ai-enhanced-web-apps/logger';
+import { toast } from 'sonner';
 
 /**
  * Custom React hook for managing the aviation incident RAG chatbot session.
@@ -28,6 +29,16 @@ export function useAviationChat() {
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     onError: (error) => {
       logger.error(error, 'Error in RAG submission:');
+      let errorMessage = error.message || 'An error occurred during submission.';
+      try {
+        const parsed = JSON.parse(error.message);
+        if (parsed && parsed.error) {
+          errorMessage = parsed.error;
+        }
+      } catch {
+        // Not JSON, use fallback message
+      }
+      toast.error(errorMessage);
     }
   });
 

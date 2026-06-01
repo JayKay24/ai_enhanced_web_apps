@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { generateUniqueId, fetchSummaryResponse } from '@ai-enhanced-web-apps/shared-utils';
 import { Message } from '@ai-enhanced-web-apps/shared-types';
 import { logger } from '@ai-enhanced-web-apps/logger';
+import { toast } from 'sonner';
 
 /**
  * Custom React hook to manage the state and process flow for document summarization.
@@ -98,6 +99,7 @@ export function useDocumentSummary() {
       }
     } catch (error: any) {
       logger.error(error, 'Error in chat submission:');
+      toast.error(error.message || 'Failed to complete summary.');
       setMessages((currentMessages) =>
         currentMessages.map((msg) =>
           msg.id === assistantMessageId

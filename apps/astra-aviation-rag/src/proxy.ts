@@ -16,6 +16,10 @@ export const proxy = clerkMiddleware(async (auth, req) => {
   }
 
   if (isApiRoute(req)) {
+    const { userId } = await auth();
+    if (userId) {
+      req.headers.set('x-user-id', userId);
+    }
     return await apiProxyChain(req);
   }
 

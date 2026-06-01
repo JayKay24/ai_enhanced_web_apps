@@ -49,10 +49,10 @@ This document contains architectural rules, module boundaries, compilation const
 *   **Aviation RAG**: Employs `/api/chat` using `createTextStreamResponse` to stream token chunks from `AviationRAG.queryStream`.
 *   **Document Summarization**: Employs `/api/summarize` to process text/file summarizations and streams the final reduce phase.
 *   **Server Actions**: Legacy Server Actions (`actions.tsx`) and RSC-based context wrappers (`<AI>`) are deprecated and must not be used in the conversational apps.
-*   **Edge Requests Proxy (Next.js 16+)**: Under Next.js 16+, middleware files are renamed to `proxy.ts` (placed at the project root) and must export a `proxy` function. Use the pre-built `apiProxyChain` from `@ai-enhanced-web-apps/shared-utils/middleware` to handle rate limiting, CORS configuration, and security headers.
+*   **Edge Requests Proxy (Next.js 16+)**: Under Next.js 16+, middleware files are renamed to `proxy.ts` (placed at the project root) and must export a `proxy` function. Use the pre-built `apiProxyChain` from `@ai-enhanced-web-apps/shared-utils/middleware` to handle rate limiting, user quotas, CORS configuration, and security headers.
 *   **Authentication & Clerk.js**: Enforce user authentication using Clerk.js (`@clerk/nextjs`).
     *   **Root Layouts**: Wrap all root layout trees in `<ClerkProvider afterSignOutUrl="/sign-in">`.
-    *   **Edge Requests Proxy**: Wrap edge routing in `clerkMiddleware` to protect UI pages (like `/`) and chain `apiProxyChain` for backend API routing.
+    *   **Edge Requests Proxy**: Wrap edge routing in `clerkMiddleware` to protect UI pages (like `/`). For API routes, retrieve Clerk `userId`, inject it into the request headers as `x-user-id`, and chain `apiProxyChain` (which validates daily user message quotas).
     *   **API Routes**: Always enforce authentication checks in API endpoints (e.g. `/api/chat`, `/api/summarize`) using the `auth()` helper, returning `401 Unauthorized` for anonymous requests.
     *   **Shared Components**: Access authentication state in shared UI components (like [Navbar.tsx](file:///Users/jamesnjuguna/Downloads/books/personal_projects/ai_enhanced_web_apps/libs/chat-ui/src/lib/Navbar.tsx)) using Clerk's `<Show when="signed-in">` wrapper and `<UserButton />`.
 
