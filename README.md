@@ -27,6 +27,7 @@ The workspace is inspired by the book *Building AI-Enhanced Web Apps* by Theo De
 Ensure you have the following installed:
 *   [Node.js](https://nodejs.org) (v18+)
 *   [Google Cloud SDK](https://cloud.google.com/sdk) (for Vertex AI authentication)
+*   [Infisical CLI](https://infisical.com/docs/cli/overview) (for secrets management)
 
 ### 2. Google Cloud Authentication
 Authenticate your local environment to Vertex AI using Application Default Credentials (ADC):
@@ -40,26 +41,35 @@ Clone the repository and install the dependencies:
 npm install
 ```
 
-### 4. Build the Local Vector Index
-If you are running the **Astra Aviation RAG** app, build its local database index first:
+### 4. Infisical Secrets Injection
+If you are managing your environment variables and API keys (Vertex AI, Clerk, Upstash Redis) using Infisical, all commands that access external services require secrets injection via the `infisical run --` wrapper.
+
+### 5. Build the Local Vector Index
+If you are running the **Astra Aviation RAG** app, build its local database index. Running the indexer requires Vertex AI credentials:
 ```bash
 # Build the indexer CLI
 npx nx build rag-indexer
 
-# Run the indexer CLI to process NTSB PDF reports
-npx nx execute rag-indexer
+# Run the indexer CLI (injecting secrets)
+infisical run -- npx nx execute rag-indexer
 ```
 
-### 5. Run the Applications
-Start the Next.js development servers using Nx:
+### 6. Run the Applications
+Start the Next.js development servers (secrets must be injected for dynamic routing, rate limiting, and model access):
 
 *   **Run Document Summary** (Default port: `4300`):
     ```bash
-    npx nx dev astra-document-summary
+    infisical run -- npx nx dev astra-document-summary
     ```
 *   **Run Aviation RAG** (Default port: `4400`):
     ```bash
-    npx nx dev astra-aviation-rag
+    infisical run -- npx nx dev astra-aviation-rag
+    ```
+
+*   **Production Build & Start** (if building static pages that require credentials):
+    ```bash
+    infisical run -- npx nx build astra-document-summary
+    infisical run -- npx nx start astra-document-summary
     ```
 
 ---

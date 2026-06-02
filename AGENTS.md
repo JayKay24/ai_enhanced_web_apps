@@ -31,13 +31,17 @@ This document contains architectural rules, module boundaries, compilation const
 
 ### Preferred Provider: Vertex AI
 *   **Rule**: Always build AI features using Google **Vertex AI** integrations (e.g. `@ai-sdk/google-vertex` or `@langchain/google-vertexai`) instead of the standalone `@google/genai` SDK.
-*   **Authentication**: Authenticate using Application Default Credentials (ADC). Run:
-    ```bash
-    gcloud auth application-default login
-    ```
+*   **Authentication & Secrets Management**:
+    *   **GCP Auth**: Authenticate using Application Default Credentials (ADC):
+        ```bash
+        gcloud auth application-default login
+        ```
+    *   **Infisical Integration**: Environment variables/secrets are managed and injected dynamically using the Infisical CLI. Prepend all execution commands with `infisical run --` for `dev`, `start`, and `execute` targets.
 *   **Active Env Vars**:
     *   `VERTEX_AI_PROJECT_ID` (GCP Project)
     *   `VERTEX_AI_LOCATION` (GCP Location, e.g. `us-central1`)
+    *   Clerk.js variables (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, etc.)
+    *   Upstash Redis variables (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`)
 
 ### Architecture Boundaries & Bundling Protection
 *   **Config Separation**: Store non-sensitive provider metadata/names in [ai-model-config.ts](./libs/shared-utils/src/lib/ai-model-config.ts).
