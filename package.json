@@ -6,6 +6,9 @@
     "docs:generate": "typedoc"
   },
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@ai-sdk/google": "^3.0.71",
     "@ai-sdk/google-vertex": "^4.0.125",
