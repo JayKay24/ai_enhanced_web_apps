@@ -11,6 +11,12 @@ const nextConfig = {
   // See: https://nx.dev/recipes/next/next-config-setup
   nx: {},
   serverExternalPackages: ['hnswlib-node', 'pdf-parse'],
+  outputFileTracingIncludes: {
+    '/api/chat': [
+      '../../node_modules/hnswlib-node/build/Release/addon.node',
+      'src/assets/hnswlib-index/**/*'
+    ]
+  }
 };
 
 const plugins = [
