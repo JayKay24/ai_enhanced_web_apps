@@ -10,7 +10,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
 });
 
-const DAILY_QUOTA_LIMIT = 5;
+const DAILY_QUOTA_LIMIT = 15;
 
 /**
  * Edge-compatible User Quota Proxy Middleware using Upstash Redis.
