@@ -26,8 +26,8 @@ export function initGCPCredentials(): void {
   const oidcToken = process.env.VERCEL_OIDC_TOKEN;
   const projectNumber = process.env.GCP_PROJECT_NUMBER;
   const saEmail = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
-  const poolId = process.env.GCP_WORKLOAD_IDENTITY_POOL;
-  const providerId = process.env.GCP_WORKLOAD_IDENTITY_PROVIDER;
+  const poolId = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID; 
+  const providerId = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID;
 
   if (oidcToken && projectNumber && saEmail && poolId && providerId && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     try {

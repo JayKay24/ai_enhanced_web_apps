@@ -38,8 +38,8 @@ export class AviationRAG {
     } else if (process.env.NODE_ENV === 'test') {
       this.embeddings = new FakeEmbeddings();
     } else {
-      const project = process.env.VERTEX_AI_PROJECT_ID;
-      const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
+      const project = process.env.GCP_PROJECT_ID;
+      const location = process.env.VERTEX_AI_LOCATION;
       this.embeddings = new VertexAIEmbeddings({
         model: 'text-embedding-004',
         authOptions: {

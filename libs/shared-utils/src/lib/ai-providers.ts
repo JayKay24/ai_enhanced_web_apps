@@ -12,8 +12,8 @@ initGCPCredentials();
 const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
   vertex: () =>
     createVertex({
-      project: process.env.VERTEX_AI_PROJECT_ID,
-      location: process.env.VERTEX_AI_LOCATION || 'us-central1',
+      project: process.env.GCP_PROJECT_ID,
+      location: process.env.VERTEX_AI_LOCATION,
     }),
   openai: () =>
     createOpenAI({
@@ -89,7 +89,7 @@ export function getLangChainModelInstance(
   }
 
   if (providerId === 'vertex') {
-    const project = process.env.VERTEX_AI_PROJECT_ID;
+    const project = process.env.GCP_PROJECT_ID || process.env.VERTEX_AI_PROJECT_ID;
     const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
 
     return new ChatVertexAI({
