@@ -1,6 +1,6 @@
 import { HNSWLib } from '@langchain/community/vectorstores/hnswlib';
 import { VertexAIEmbeddings } from '@langchain/google-vertexai';
-import { getLangChainModelInstance, initGCPCredentials } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
+import { getLangChainModelInstance, getGCPAuthOptions } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { logger } from '@ai-enhanced-web-apps/logger';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
@@ -30,21 +30,25 @@ export class AviationRAG {
    * @param config - Optional configuration object containing custom dependencies.
    */
   constructor(config?: { embeddings?: Embeddings; llm?: BaseChatModel }) {
-    if (process.env.NODE_ENV !== 'test') {
-      initGCPCredentials();
-    }
     if (config?.embeddings) {
       this.embeddings = config.embeddings;
     } else if (process.env.NODE_ENV === 'test') {
       this.embeddings = new FakeEmbeddings();
     } else {
-      const project = process.env.GCP_PROJECT_ID;
-      const location = process.env.VERTEX_AI_LOCATION;
+      const project = process.env.GCP_PROJECT_ID || process.env.VERTEX_AI_PROJECT_ID;
+      const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
+      const authOpts = getGCPAuthOptions();
+      
       this.embeddings = new VertexAIEmbeddings({
         model: 'text-embedding-004',
-        authOptions: {
-          projectId: project,
-        },
+        authOptions: authOpts
+          ? {
+              projectId: project,
+              authClient: authOpts.authClient,
+            }
+          : {
+              projectId: project,
+            },
         location: location,
       });
     }

@@ -2,18 +2,16 @@ import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
 import { ChatVertexAI } from '@langchain/google-vertexai';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
-import { initGCPCredentials } from './gcp-auth';
-export { initGCPCredentials };
-
-// Eagerly initialize GCP credentials when this server-only helper is loaded
-initGCPCredentials();
+import { getGCPAuthOptions } from './gcp-auth';
+export { getGCPAuthOptions };
 
 
 const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
   vertex: () =>
     createVertex({
-      project: process.env.GCP_PROJECT_ID,
-      location: process.env.VERTEX_AI_LOCATION,
+      project: process.env.GCP_PROJECT_ID || process.env.VERTEX_AI_PROJECT_ID,
+      location: process.env.VERTEX_AI_LOCATION || 'us-central1',
+      googleAuthOptions: getGCPAuthOptions(),
     }),
   openai: () =>
     createOpenAI({
@@ -91,14 +89,20 @@ export function getLangChainModelInstance(
   if (providerId === 'vertex') {
     const project = process.env.GCP_PROJECT_ID || process.env.VERTEX_AI_PROJECT_ID;
     const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
+    const authOpts = getGCPAuthOptions();
 
     return new ChatVertexAI({
       model: modelId,
       temperature: options.temperature ?? 0.7,
       maxOutputTokens: options.maxOutputTokens ?? 2048,
-      authOptions: {
-        projectId: project,
-      },
+      authOptions: authOpts
+        ? {
+            projectId: project,
+            authClient: authOpts.authClient,
+          }
+        : {
+            projectId: project,
+          },
       location: location,
     });
   }

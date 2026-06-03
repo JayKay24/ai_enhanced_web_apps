@@ -1,64 +1,57 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { getVercelOidcToken } from '@vercel/oidc';
+import { ExternalAccountClient } from 'google-auth-library';
+
+export interface GCPAuthOptions {
+  authClient: ExternalAccountClient;
+  projectId: string;
+}
 
 /**
- * Initializes Google Cloud credentials on environments (like Vercel serverless functions)
- * where application default credentials are not locally available on disk.
- * Supports both traditional Service Account keys and Workload Identity Federation (OIDC).
+ * Programmatically constructs the GCP Workload Identity Federation ExternalAccountClient
+ * using Vercel OIDC. Returns the client configuration if environment variables are
+ * present, or undefined to fallback to default Application Default Credentials (ADC).
  */
-export function initGCPCredentials(): void {
-  // 1. Traditional Service Account Key Fallback
-  const credentialsJson = process.env.GCP_SERVICE_ACCOUNT_KEY || process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-  if (credentialsJson && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    const tempPath = path.join('/tmp', 'gcp-service-account.json');
-    try {
-      if (!fs.existsSync(tempPath)) {
-        fs.writeFileSync(tempPath, credentialsJson);
-      }
-      process.env.GOOGLE_APPLICATION_CREDENTIALS = tempPath;
-      return;
-    } catch (error) {
-      console.error('Failed to initialize GCP service account key credentials:', error);
-    }
-  }
+export function getGCPAuthOptions(): GCPAuthOptions | undefined {
+  const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID || process.env.VERTEX_AI_PROJECT_ID;
+  const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
+  const GCP_SERVICE_ACCOUNT_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
+  const GCP_WORKLOAD_IDENTITY_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID;
+  const GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID;
 
-  // 2. Workload Identity Federation (Keyless OIDC)
-  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
-  const projectNumber = process.env.GCP_PROJECT_NUMBER;
-  const saEmail = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
-  const poolId = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID; 
-  const providerId = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID;
-
-  if (oidcToken && projectNumber && saEmail && poolId && providerId && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    try {
-      const tokenPath = path.join('/tmp', 'vercel-oidc-token.txt');
-      const configPath = path.join('/tmp', 'gcp-workload-identity.json');
-
-      // Write OIDC token to temporary file
-      fs.writeFileSync(tokenPath, oidcToken);
-
-      // Construct the Google credential configuration object
-      const workloadConfig = {
-        type: 'external_account',
-        audience: `//iam.googleapis.com/projects/${projectNumber}/locations/global/workloadIdentityPools/${poolId}/providers/${providerId}`,
-        subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-        token_url: 'https://sts.googleapis.com/v1/token',
-        credential_source: {
-          file: tokenPath,
-          format: {
-            type: 'text',
-          },
+  if (
+    GCP_PROJECT_ID &&
+    GCP_PROJECT_NUMBER &&
+    GCP_SERVICE_ACCOUNT_EMAIL &&
+    GCP_WORKLOAD_IDENTITY_POOL_ID &&
+    GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID &&
+    (process.env.VERCEL_OIDC_TOKEN || process.env.NODE_ENV === 'production')
+  ) {
+    const authClient = ExternalAccountClient.fromJSON({
+      type: 'external_account',
+      audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+      subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+      token_url: 'https://sts.googleapis.com/v1/token',
+      service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+      subject_token_supplier: {
+        getSubjectToken: async () => {
+          const token = await getVercelOidcToken();
+          if (!token) {
+            throw new Error('Vercel OIDC token not found');
+          }
+          return token;
         },
-        service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${saEmail}:generateAccessToken`,
-      };
+      },
+    });
 
-      // Write credential config file
-      fs.writeFileSync(configPath, JSON.stringify(workloadConfig, null, 2));
-
-      // Instruct Google Auth library to use this config file
-      process.env.GOOGLE_APPLICATION_CREDENTIALS = configPath;
-    } catch (error) {
-      console.error('Failed to initialize GCP Workload Identity Federation credentials:', error);
+    if (!authClient) {
+      throw new Error('Failed to initialize GCP ExternalAccountClient from JSON configuration');
     }
+
+    return {
+      authClient: authClient as ExternalAccountClient,
+      projectId: GCP_PROJECT_ID,
+    };
   }
+
+  return undefined;
 }
