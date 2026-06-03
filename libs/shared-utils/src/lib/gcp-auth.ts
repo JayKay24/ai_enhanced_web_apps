@@ -2,7 +2,7 @@ import { getVercelOidcToken } from '@vercel/oidc';
 import { ExternalAccountClient } from 'google-auth-library';
 
 export interface GCPAuthOptions {
-  authClient: ExternalAccountClient;
+  authClient: any;
   projectId: string;
 }
 
