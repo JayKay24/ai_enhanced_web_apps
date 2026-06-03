@@ -38,8 +38,13 @@ This document contains architectural rules, module boundaries, compilation const
         ```
     *   **Infisical Integration**: Environment variables/secrets are managed and injected dynamically using the Infisical CLI. Prepend all execution commands with `infisical run --` for `dev`, `start`, and `execute` targets.
 *   **Active Env Vars**:
-    *   `VERTEX_AI_PROJECT_ID` (GCP Project)
+    *   `GCP_PROJECT_ID` / `VERTEX_AI_PROJECT_ID` (GCP Project ID)
     *   `VERTEX_AI_LOCATION` (GCP Location, e.g. `us-central1`)
+    *   `GCP_PROJECT_NUMBER` (GCP Project Number, for OIDC Token Exchange)
+    *   `GCP_SERVICE_ACCOUNT_EMAIL` (Target GCP Service Account to impersonate)
+    *   `GCP_WORKLOAD_IDENTITY_POOL_ID` (GCP Workload Identity Pool ID)
+    *   `GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID` (GCP Workload Identity Provider ID)
+    *   `VERCEL_OIDC_TOKEN` (Vercel-injected OIDC token for Workload Identity Federation in production)
     *   Clerk.js variables (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, etc.)
     *   Upstash Redis variables (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`)
 
