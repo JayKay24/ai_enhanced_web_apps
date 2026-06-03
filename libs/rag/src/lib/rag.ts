@@ -1,6 +1,6 @@
 import { HNSWLib } from '@langchain/community/vectorstores/hnswlib';
 import { VertexAIEmbeddings } from '@langchain/google-vertexai';
-import { getLangChainModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
+import { getLangChainModelInstance, initGCPCredentials } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { logger } from '@ai-enhanced-web-apps/logger';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
@@ -30,6 +30,9 @@ export class AviationRAG {
    * @param config - Optional configuration object containing custom dependencies.
    */
   constructor(config?: { embeddings?: Embeddings; llm?: BaseChatModel }) {
+    if (process.env.NODE_ENV !== 'test') {
+      initGCPCredentials();
+    }
     if (config?.embeddings) {
       this.embeddings = config.embeddings;
     } else if (process.env.NODE_ENV === 'test') {

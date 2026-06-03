@@ -2,6 +2,12 @@ import { createVertex } from '@ai-sdk/google-vertex';
 import { createOpenAI } from '@ai-sdk/openai';
 import { ChatVertexAI } from '@langchain/google-vertexai';
 import { SUPPORTED_PROVIDERS_CONFIG, ProviderId } from './ai-model-config';
+import { initGCPCredentials } from './gcp-auth';
+export { initGCPCredentials };
+
+// Eagerly initialize GCP credentials when this server-only helper is loaded
+initGCPCredentials();
+
 
 const PROVIDER_FACTORIES: Record<ProviderId, () => any> = {
   vertex: () =>
