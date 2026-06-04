@@ -10,6 +10,7 @@ The workspace is inspired by the book *Building AI-Enhanced Web Apps* by Theo De
 
 *   **Astra Document Summary** ([apps/astra-document-summary](apps/astra-document-summary) | [Deploy URL](https://project-kl3jb.vercel.app/)): A Next.js-based conversational AI assistant for document parsing and summarization. Powered by Google Gemini (via Vertex AI), it supports PDF/DOCX file uploads or raw text inputs to generate cohesive summaries.
 *   **Astra Aviation RAG** ([apps/astra-aviation-rag](apps/astra-aviation-rag) | [Deploy URL](https://project-zffq7.vercel.app/)): A Next.js-based conversational AI safety assistant. It queries NTSB aviation accident reports using Retrieval-Augmented Generation (RAG) backed by a local Hierarchical Navigable Small World (HNSW) vector index.
+*   **Astra Interview Assistant** ([apps/astra-interview-assistant](apps/astra-interview-assistant)): A Next.js-based conversational AI assistant that simulates real-world job interviews using Vertex AI and provides personalized feedback.
 
 ---
 
@@ -79,6 +80,7 @@ Start the Next.js development servers (secrets must be injected for dynamic rout
 ### Applications
 *   [apps/astra-document-summary](apps/astra-document-summary): Next.js 15+ conversational AI web assistant.
 *   [apps/astra-aviation-rag](apps/astra-aviation-rag): Next.js 15+ conversational AI safety assistant.
+*   [apps/astra-interview-assistant](apps/astra-interview-assistant): Next.js 15+ conversational AI job interview practice assistant.
 *   [apps/standalone/rag-indexer](apps/standalone/rag-indexer): NestJS CLI to index source reports to local HNSW vector stores.
 
 ### Shared Libraries

@@ -1,5 +1,6 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
+import { fetchTTSAudio } from '@ai-enhanced-web-apps/shared-utils';
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 export function useInterviewChat(sessionId: string, initialMessages: any[] = []) {
@@ -27,19 +28,7 @@ export function useInterviewChat(sessionId: string, initialMessages: any[] = [])
 
   const playTTS = useCallback(async (text: string) => {
     try {
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate speech');
-      }
-
-      const audioBlob = await response.blob();
+      const audioBlob = await fetchTTSAudio(text);
       const audioUrl = URL.createObjectURL(audioBlob);
 
       if (audioRef.current) {

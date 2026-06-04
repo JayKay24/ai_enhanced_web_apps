@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@ai-enhanced-web-apps/chat-ui';
 import { Input } from '../../components/ui/input';
+import { createInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
 
 export default function ChatConfigurator() {
   const router = useRouter();
@@ -14,15 +15,7 @@ export default function ChatConfigurator() {
   
   const startInterview = async () => {
     setIsLoading(true);
-    const res = await fetch('/api/interview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'create',
-        interviewConfig: { jobType, difficulty, questionType, questionCount }
-      })
-    });
-    const { sessionId } = await res.json();
+    const { sessionId } = await createInterviewSession({ jobType, difficulty, questionType, questionCount });
     router.push(`/chat/${sessionId}`);
   };
 

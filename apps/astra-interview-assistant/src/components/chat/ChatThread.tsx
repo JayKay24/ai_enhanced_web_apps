@@ -7,6 +7,7 @@ import ChatBubble from './ChatBubble';
 import { AlertCircle, Volume2, VolumeX } from 'lucide-react';
 import { useInterviewChat } from '@ai-enhanced-web-apps/chat-hooks';
 import { UIMessage } from 'ai';
+import { completeInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
 
 export default function ChatThread({ sessionId, initialMessages = [], isCompleted = false }: any) {
   const {
@@ -36,11 +37,7 @@ export default function ChatThread({ sessionId, initialMessages = [], isComplete
   const handleCompleteSession = async () => {
     if (isLoading || messages.length === 0) return;
     try {
-      await fetch('/api/interview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'complete', sessionId }),
-      });
+      await completeInterviewSession(sessionId);
       setCompleted(true);
     } catch (error) {
       console.error('Error completing session:', error);
