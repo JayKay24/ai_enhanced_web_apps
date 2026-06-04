@@ -19,7 +19,8 @@ export function getInterviewInitialMessage(
   questionType: string,
   questionCount: number
 ) {
-  return `Hello and welcome to your ${jobType} interview! I'm your interviewer today, and I'll be asking you ${questionCount} ${questionType} questions at the ${difficulty} level. I'll provide feedback after each of your responses and guide you if needed. Take your time to think through your answers - this is about understanding your approach and thought process. Ready to begin?`;
+  return `Hello and welcome to your ${jobType} interview! I'm your interviewer today, and I'll be asking you ${questionCount} ${questionType} questions at the ${difficulty} level. 
+  I'll provide feedback after each of your responses and guide you if needed. Take your time to think through your answers - this is about understanding your approach and thought process. Ready to begin?`;
 }
 
 export function getInterviewFeedbackPrompt(messagesFormatted: string) {
