@@ -5,8 +5,7 @@ import { cn } from '@ai-enhanced-web-apps/shared-utils';
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+const Textarea = ({ className, ref, ...props }: TextareaProps & { ref?: React.Ref<HTMLTextAreaElement> }) => {
     return (
       <textarea
       className={cn(
@@ -17,8 +16,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       {...props}
     />
     );
-  }
-);
+  };
 
 Textarea.displayName = "Textarea";
 
