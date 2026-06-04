@@ -1,6 +1,6 @@
 import { generateId, generateText } from 'ai';
 import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
-import { getInterviewSystemPrompt, getInterviewInitialMessage, getInterviewFeedbackPrompt } from '@ai-enhanced-web-apps/shared-utils';
+import { getInterviewSystemPrompt, getInterviewFeedbackPrompt } from '@ai-enhanced-web-apps/shared-utils';
 import { Redis } from '@upstash/redis';
 import { 
   InterviewConfig, 
@@ -31,13 +31,6 @@ export async function createSession(
   const { jobType, difficulty, questionType, questionCount } = interviewConfig;
   const newSessionId = generateId();
 
-  const initialMessage: Message & { sessionId: string } = {
-    id: generateId(),
-    role: 'assistant',
-    content: getInterviewInitialMessage(jobType, difficulty, questionType, questionCount),
-    sessionId: newSessionId,
-  };
-
   const systemPrompt: Message = {
     id: generateId(),
     role: 'system',
@@ -49,11 +42,11 @@ export async function createSession(
     userId,
     isCompleted: false,
     createdAt: Date.now(),
-    messages: [systemPrompt, initialMessage],
+    messages: [systemPrompt],
   });
 
   await redis.sadd(`user:sessions:${userId}`, newSessionId);
-  return { sessionId: newSessionId, initialAIState: [initialMessage] };
+  return { sessionId: newSessionId, initialAIState: [] };
 }
 
 /**
@@ -110,7 +103,7 @@ export async function generateFeedback(
   const prompt = getInterviewFeedbackPrompt(messagesFormatted);
 
   const { text } = await generateText({
-    model: getModelInstance('vertex', 'gemini-1.5-pro'),
+    model: getModelInstance('vertex', 'gemini-2.5-flash'),
     prompt,
   });
   

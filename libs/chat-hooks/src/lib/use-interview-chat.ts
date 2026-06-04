@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport, UIMessage } from 'ai';
+import { DefaultChatTransport, UIMessage, generateId } from 'ai';
 import { fetchTTSAudio } from '@ai-enhanced-web-apps/shared-utils';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Message, TextPart } from '@ai-enhanced-web-apps/shared-types';
@@ -7,6 +7,7 @@ import { Message, TextPart } from '@ai-enhanced-web-apps/shared-types';
 export function useInterviewChat(sessionId: string, initialMessages: Message[] = []) {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const initialTriggerRef = useRef(false);
   
   const [input, setInput] = useState('');
 
@@ -18,7 +19,10 @@ export function useInterviewChat(sessionId: string, initialMessages: Message[] =
     error
   } = useChat({
     id: sessionId,
-    messages: initialMessages as unknown as UIMessage[],
+    messages: initialMessages.map((m) => ({
+      ...m,
+      id: m.id || generateId(),
+    })) as unknown as UIMessage[],
     transport: new DefaultChatTransport({
       api: '/api/chat',
       body: { sessionId },
@@ -66,6 +70,17 @@ export function useInterviewChat(sessionId: string, initialMessages: Message[] =
   const append = useCallback((message: Message) => {
     sendMessage({ text: message.content });
   }, [sendMessage]);
+
+  // Trigger initial AI question if conversation is empty
+  useEffect(() => {
+    const hasUserOrAssistantMessage = messages.some(
+      (m) => m.role === 'user' || m.role === 'assistant'
+    );
+    if (!hasUserOrAssistantMessage && status === 'ready' && !initialTriggerRef.current) {
+      initialTriggerRef.current = true;
+      sendMessage({ text: 'Start the interview' });
+    }
+  }, [messages, status, sendMessage]);
 
   // Handle auto-playing TTS for the latest assistant message
   useEffect(() => {

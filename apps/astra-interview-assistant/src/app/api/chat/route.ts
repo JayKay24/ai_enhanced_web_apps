@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { streamText } from 'ai';
+import { convertToModelMessages, generateId, streamText } from 'ai';
 import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { logger } from '@ai-enhanced-web-apps/logger';
 import { Redis } from '@upstash/redis';
@@ -42,12 +42,27 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const normalizedMessages = messages.map((m: any) => {
+      if (!m.parts && typeof m.content === 'string') {
+        return {
+          ...m,
+          parts: [{ type: 'text', text: m.content }],
+        };
+      }
+      return m;
+    });
+
+    const coreMessages = await convertToModelMessages(normalizedMessages);
+    const systemMessage = coreMessages.find((m) => m.role === 'system');
+    const conversationMessages = coreMessages.filter((m) => m.role !== 'system');
+
     const result = streamText({
-      model: getModelInstance('vertex', 'gemini-1.5-pro'), 
-      messages,
+      model: getModelInstance('vertex', 'gemini-2.5-flash'), 
+      system: systemMessage?.content as string | undefined,
+      messages: conversationMessages,
       onFinish: async (event) => {
         if (sessionId) {
-          const aiMessage = { role: 'assistant', content: event.text };
+          const aiMessage = { id: generateId(), role: 'assistant', content: event.text };
           const sessionKey = `session:${sessionId}`;
           try {
             const session = (await redis.hgetall(sessionKey)) as InterviewSession | null;

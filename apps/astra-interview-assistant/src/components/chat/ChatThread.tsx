@@ -89,17 +89,17 @@ const ChatThread: React.FC<ChatThreadProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {messages.filter((m: UIMessage) => m.role !== 'system').map((message: UIMessage) => (
+            {messages.filter((m: UIMessage) => m.role !== 'system' && (m as any).content !== 'Start the interview' && !m.parts?.some(p => p.type === 'text' && (p as TextPart).text === 'Start the interview')).map((message: UIMessage) => (
               <div key={message.id}>
                 <ChatBubble
                   role={message.role}
-                  text={message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || ""}
+                  text={message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || (message as any).content || ""}
                   
                 />
                 {message.role === 'assistant' && !isAudioMuted && (
                   <div className="flex justify-start ml-2 mt-1">
                     <button
-                      onClick={() => playTTS(message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || "")}
+                      onClick={() => playTTS(message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || (message as any).content || "")}
                       className="text-xs text-gray-500 hover:text-blue-500 flex items-center"
                       disabled={completed}
                     >
