@@ -66,6 +66,10 @@ Start the Next.js development servers (secrets must be injected for dynamic rout
     ```bash
     infisical run -- npx nx dev astra-aviation-rag
     ```
+*   **Run Interview Assistant** (Default port: `4500`):
+    ```bash
+    infisical run -- npx nx dev astra-interview-assistant
+    ```
 
 *   **Production Build & Start** (if building static pages that require credentials):
     ```bash

@@ -13,10 +13,12 @@ This document contains architectural rules, module boundaries, compilation const
 *   **Port Mapping**:
     *   `astra-document-summary`: `4300` (Next.js client)
     *   `astra-aviation-rag`: `4400` (Next.js client)
+    *   `astra-interview-assistant`: `4500` (Next.js client)
 
 ### Key Projects
 *   [apps/astra-document-summary](./apps/astra-document-summary): Next.js conversational summarizer.
 *   [apps/astra-aviation-rag](./apps/astra-aviation-rag): Next.js aviation safety query client with RAG.
+*   [apps/astra-interview-assistant](./apps/astra-interview-assistant): Next.js conversational technical interview assistant.
 *   [apps/standalone/rag-indexer](./apps/standalone/rag-indexer): NestJS CLI to index source reports to local HNSW vector stores.
 *   [libs/chat-ui](./libs/chat-ui): Reusable React presentation components.
 *   [libs/chat-hooks](./libs/chat-hooks): React UX and input submission hooks.

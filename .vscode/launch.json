@@ -140,6 +140,74 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch & Debug astra-interview-assistant",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "args": ["dev", "-p", "4500"],
+      "cwd": "${workspaceFolder}/apps/astra-interview-assistant",
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "autoAttachChildProcesses": true,
+      "sourceMapPathOverrides": {
+        "webpack://server/*": "${workspaceFolder}/*",
+        "webpack://client/*": "${workspaceFolder}/*",
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "${workspaceFolder}/*",
+        "webpack://[name]/./*": "${workspaceFolder}/*",
+        "webpack://[name]/*": "${workspaceFolder}/*",
+        "turbopack://[project]/apps/astra-interview-assistant/*": "${workspaceFolder}/apps/astra-interview-assistant/*",
+        "turbopack://[project]/libs/*": "${workspaceFolder}/libs/*",
+        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-interview-assistant/*",
+        "turbopack:///./*": "${workspaceFolder}/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/*"
+      },
+      "serverReadyAction": {
+        "pattern": "Local:\\s*(https?://.+)",
+        "uriFormat": "%s",
+        "action": "startDebugging",
+        "name": "Launch Chrome: astra-interview-assistant"
+      }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome: astra-interview-assistant",
+      "url": "http://localhost:4500",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "webRoot": "${workspaceFolder}/apps/astra-interview-assistant",
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${workspaceFolder}/apps/astra-interview-assistant/*",
+        "webpack:///./*": "${workspaceFolder}/apps/astra-interview-assistant/*",
+        "webpack:///*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to astra-interview-assistant",
+      "port": 9230,
+      "cwd": "${workspaceFolder}/apps/astra-interview-assistant",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapPathOverrides": {
+        "webpack://server/*": "${workspaceFolder}/*",
+        "webpack://client/*": "${workspaceFolder}/*",
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "${workspaceFolder}/*",
+        "webpack://[name]/./*": "${workspaceFolder}/*",
+        "webpack://[name]/*": "${workspaceFolder}/*",
+        "turbopack://[project]/apps/astra-interview-assistant/*": "${workspaceFolder}/apps/astra-interview-assistant/*",
+        "turbopack://[project]/libs/*": "${workspaceFolder}/libs/*",
+        "turbopack://[project]/*": "${workspaceFolder}/apps/astra-interview-assistant/*",
+        "turbopack:///./*": "${workspaceFolder}/*",
+        "turbopack:///_N_E/*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Debug standalone-counting-tokens-openai with Nx",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["nx", "execute", "standalone-counting-tokens-openai"],

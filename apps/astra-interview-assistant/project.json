@@ -1,0 +1,35 @@
+{
+  "name": "astra-interview-assistant",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/astra-interview-assistant/src",
+  "tags": [],
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next dev -p 4500",
+        "cwd": "apps/astra-interview-assistant"
+      },
+      "configurations": {
+        "debug": {
+          "command": "NODE_OPTIONS=\"--inspect=9230\" next dev -p 4500"
+        }
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next start -p 4500",
+        "cwd": "apps/astra-interview-assistant"
+      }
+    },
+    "serve-static": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next start -p 4500",
+        "cwd": "apps/astra-interview-assistant"
+      }
+    }
+  }
+}
