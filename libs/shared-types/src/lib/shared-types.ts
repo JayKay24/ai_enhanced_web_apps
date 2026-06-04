@@ -37,5 +37,56 @@ export interface ChatResponse {
 export interface UIStateItem<T = any> {
   id: string;
   display?: T;
-  role?: MessageRole;
+}
+
+/**
+ * Configuration for an interview session.
+ */
+export interface InterviewConfig {
+  jobType: string;
+  difficulty: string;
+  questionType: string;
+  questionCount: number;
+}
+
+/**
+ * Represents an interview session.
+ */
+export interface InterviewSession extends InterviewConfig {
+  id?: string;
+  userId: string;
+  isCompleted: boolean;
+  createdAt: number;
+  completedAt?: number;
+  messages: Message[];
+}
+
+/**
+ * Represents the response for interview session creation.
+ */
+export interface CreateInterviewSessionResponse {
+  sessionId: string;
+  initialAIState: Message[];
+}
+
+/**
+ * Represents the response for fetching a single interview session.
+ */
+export interface FetchInterviewSessionResponse {
+  session: InterviewSession;
+  feedback: string | null;
+}
+
+/**
+ * Represents the response for fetching all interview sessions.
+ */
+export interface FetchAllInterviewSessionsResponse {
+  sessions: InterviewSession[];
+}
+
+/**
+ * Represents the response for fetching feedback.
+ */
+export interface InterviewFeedbackResponse {
+  feedback: string;
 }

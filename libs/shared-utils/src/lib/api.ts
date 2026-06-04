@@ -1,4 +1,11 @@
-import { ChatResponse } from '@ai-enhanced-web-apps/shared-types';
+import { 
+  ChatResponse,
+  InterviewConfig,
+  CreateInterviewSessionResponse,
+  FetchInterviewSessionResponse,
+  FetchAllInterviewSessionsResponse,
+  InterviewFeedbackResponse
+} from '@ai-enhanced-web-apps/shared-types';
 
 /**
  * Sends a POST request to the specified assistant endpoint with user text.
@@ -56,50 +63,52 @@ export async function fetchSummaryResponse(file: File | null, text: string): Pro
 /**
  * Creates a new interview session.
  */
-export async function createInterviewSession(interviewConfig: any): Promise<any> {
+export async function createInterviewSession(interviewConfig: InterviewConfig): Promise<CreateInterviewSessionResponse> {
   const response = await fetch('/api/interview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'create', interviewConfig }),
   });
   if (!response.ok) throw new Error('Failed to create interview session');
-  return response.json();
+  return (await response.json()) as CreateInterviewSessionResponse;
 }
 
 /**
  * Completes an interview session.
  */
-export async function completeInterviewSession(sessionId: string): Promise<any> {
+export async function completeInterviewSession(sessionId: string): Promise<{ success: boolean }> {
   const response = await fetch('/api/interview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'complete', sessionId }),
   });
   if (!response.ok) throw new Error('Failed to complete interview session');
-  return response.json();
+  return (await response.json()) as { success: boolean };
 }
 
 /**
  * Generates and fetches feedback for a completed interview session.
  */
-export async function fetchInterviewFeedback(sessionId: string): Promise<any> {
+export async function fetchInterviewFeedback(sessionId: string): Promise<InterviewFeedbackResponse> {
   const response = await fetch('/api/interview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'feedback', sessionId }),
   });
   if (!response.ok) throw new Error('Failed to fetch interview feedback');
-  return response.json();
+  return (await response.json()) as InterviewFeedbackResponse;
 }
 
 /**
  * Fetches a specific interview session or all sessions if sessionId is not provided.
  */
-export async function fetchInterviewSession(sessionId?: string): Promise<any> {
+export function fetchInterviewSession(sessionId: string): Promise<FetchInterviewSessionResponse>;
+export function fetchInterviewSession(): Promise<FetchAllInterviewSessionsResponse>;
+export async function fetchInterviewSession(sessionId?: string): Promise<FetchInterviewSessionResponse | FetchAllInterviewSessionsResponse> {
   const url = sessionId ? `/api/interview?sessionId=${sessionId}` : '/api/interview';
   const response = await fetch(url);
   if (!response.ok) throw new Error('Failed to fetch interview session(s)');
-  return response.json();
+  return (await response.json()) as FetchInterviewSessionResponse | FetchAllInterviewSessionsResponse;
 }
 
 /**
