@@ -8,6 +8,13 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
+/**
+ * Creates a new interview session for a user.
+ * 
+ * @param userId - The ID of the authenticated user creating the session.
+ * @param interviewConfig - Configuration object detailing jobType, difficulty, questionType, and questionCount.
+ * @returns An object containing the generated sessionId and initial AI message state.
+ */
 export async function createSession(userId: string, interviewConfig: any) {
   const { jobType, difficulty, questionType, questionCount } = interviewConfig;
   const newSessionId = generateId();
@@ -36,6 +43,14 @@ export async function createSession(userId: string, interviewConfig: any) {
   return { sessionId: newSessionId, initialAIState: [initialMessage] };
 }
 
+/**
+ * Marks an active interview session as completed.
+ * 
+ * @param userId - The ID of the authenticated user completing the session.
+ * @param sessionId - The unique identifier of the interview session to complete.
+ * @returns An object indicating success.
+ * @throws {Error} If the session is not found or the user is unauthorized.
+ */
 export async function completeSession(userId: string, sessionId: string) {
   const sessionKey = `session:${sessionId}`;
   const session: any = await redis.hgetall(sessionKey);
@@ -55,6 +70,14 @@ export async function completeSession(userId: string, sessionId: string) {
   return { success: true };
 }
 
+/**
+ * Generates AI feedback for a completed interview session using the full conversation history.
+ * 
+ * @param userId - The ID of the authenticated user.
+ * @param sessionId - The unique identifier of the interview session.
+ * @returns An object containing the generated feedback text.
+ * @throws {Error} If the session is not found or the user is unauthorized.
+ */
 export async function generateFeedback(userId: string, sessionId: string) {
   const sessionKey = `session:${sessionId}`;
   const session: any = await redis.hgetall(sessionKey);
@@ -78,6 +101,14 @@ export async function generateFeedback(userId: string, sessionId: string) {
   return { feedback: text };
 }
 
+/**
+ * Retrieves a specific interview session and its associated feedback (if any).
+ * 
+ * @param userId - The ID of the authenticated user.
+ * @param sessionId - The unique identifier of the interview session.
+ * @returns An object containing the session data and the feedback text.
+ * @throws {Error} If the session is not found or the user is unauthorized.
+ */
 export async function getSession(userId: string, sessionId: string) {
   const session: any = await redis.hgetall(`session:${sessionId}`);
   if (!session || session.userId !== userId) {
@@ -87,6 +118,12 @@ export async function getSession(userId: string, sessionId: string) {
   return { session, feedback };
 }
 
+/**
+ * Retrieves all interview sessions for a specific user, sorted by creation date descending.
+ * 
+ * @param userId - The ID of the authenticated user.
+ * @returns An object containing an array of the user's interview sessions.
+ */
 export async function getAllSessions(userId: string) {
   const sessionIds = await redis.smembers(`user:sessions:${userId}`);
   const sessions = await Promise.all(

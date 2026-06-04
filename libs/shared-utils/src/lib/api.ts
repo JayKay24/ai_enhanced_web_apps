@@ -61,7 +61,11 @@ export async function fetchSummaryResponse(file: File | null, text: string): Pro
 
 
 /**
- * Creates a new interview session.
+ * Sends a request to create a new AI interview session.
+ * 
+ * @param interviewConfig - Configuration object defining the job role, difficulty, and questions.
+ * @returns A promise resolving to an object containing the new sessionId and the initial AI prompt messages.
+ * @throws {Error} If the server responds with a non-OK status.
  */
 export async function createInterviewSession(interviewConfig: InterviewConfig): Promise<CreateInterviewSessionResponse> {
   const response = await fetch('/api/interview', {
@@ -74,7 +78,11 @@ export async function createInterviewSession(interviewConfig: InterviewConfig): 
 }
 
 /**
- * Completes an interview session.
+ * Sends a request to mark an active interview session as completed.
+ * 
+ * @param sessionId - The unique identifier of the interview session to complete.
+ * @returns A promise resolving to an object indicating success.
+ * @throws {Error} If the server responds with a non-OK status.
  */
 export async function completeInterviewSession(sessionId: string): Promise<{ success: boolean }> {
   const response = await fetch('/api/interview', {
@@ -87,7 +95,11 @@ export async function completeInterviewSession(sessionId: string): Promise<{ suc
 }
 
 /**
- * Generates and fetches feedback for a completed interview session.
+ * Sends a request to generate and fetch feedback for a completed interview session.
+ * 
+ * @param sessionId - The unique identifier of the interview session.
+ * @returns A promise resolving to the feedback payload.
+ * @throws {Error} If the server responds with a non-OK status.
  */
 export async function fetchInterviewFeedback(sessionId: string): Promise<InterviewFeedbackResponse> {
   const response = await fetch('/api/interview', {
@@ -100,7 +112,11 @@ export async function fetchInterviewFeedback(sessionId: string): Promise<Intervi
 }
 
 /**
- * Fetches a specific interview session or all sessions if sessionId is not provided.
+ * Fetches either a specific interview session or all past interview sessions for the authenticated user.
+ * 
+ * @param sessionId - (Optional) The unique identifier of a specific interview session.
+ * @returns A promise resolving to either a specific session (with feedback) or a list of all sessions.
+ * @throws {Error} If the server responds with a non-OK status.
  */
 export function fetchInterviewSession(sessionId: string): Promise<FetchInterviewSessionResponse>;
 export function fetchInterviewSession(): Promise<FetchAllInterviewSessionsResponse>;
@@ -112,7 +128,11 @@ export async function fetchInterviewSession(sessionId?: string): Promise<FetchIn
 }
 
 /**
- * Fetches TTS Audio blob for a given text.
+ * Sends a request to generate Text-To-Speech (TTS) audio for a given string of text.
+ * 
+ * @param text - The raw text payload (will be stripped of markdown by the server).
+ * @returns A promise resolving to a Blob containing the MP3 audio data.
+ * @throws {Error} If the server responds with a non-OK status or generation fails.
  */
 export async function fetchTTSAudio(text: string): Promise<Blob> {
   const response = await fetch('/api/tts', {
