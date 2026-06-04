@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { Redis } from '@upstash/redis';
+import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,21 +19,22 @@ export default async function InterviewSidebar() {
 
   const sessionIds = await redis.smembers(`user:sessions:${userId}`);
   const sessions = await Promise.all(
-    sessionIds.map(async (id) => {
-      const session: any = await redis.hgetall(`session:${id}`);
-      return { ...session, id };
+    sessionIds.map(async (id): Promise<InterviewSession | null> => {
+      const session = (await redis.hgetall(`session:${id}`)) as InterviewSession | null;
+      return session ? { ...session, id } : null;
     })
   );
-  sessions.sort((a, b) => b.createdAt - a.createdAt);
+  const validSessions = sessions.filter((s): s is InterviewSession => s !== null);
+  validSessions.sort((a, b) => b.createdAt - a.createdAt);
 
   return (
     <aside className="w-64 border-r p-4 overflow-y-auto hidden md:block">
       <h2 className="text-lg font-semibold mb-4">Interview History</h2>
       <div className="space-y-2">
-        {sessions.length === 0 ? (
+        {validSessions.length === 0 ? (
           <p className="text-sm text-gray-500">No interviews yet.</p>
         ) : (
-          sessions.map((session) => (
+          validSessions.map((session) => (
             <Link
               key={session.id}
               href={`/chat/${session.id}`}
