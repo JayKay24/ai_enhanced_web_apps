@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import ChatThread from '../../../components/chat/ChatThread';
 import { useParams } from 'next/navigation';
 import { fetchInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
+import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
 
 export default function ChatSessionPage() {
   const params = useParams();
   const sessionId = params.sessionId as string;
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<InterviewSession | null>(null);
 
   useEffect(() => {
     fetchInterviewSession(sessionId)

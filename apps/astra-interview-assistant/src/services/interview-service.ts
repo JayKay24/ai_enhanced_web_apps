@@ -2,6 +2,15 @@ import { generateId, generateText } from 'ai';
 import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { getInterviewSystemPrompt, getInterviewInitialMessage, getInterviewFeedbackPrompt } from '@ai-enhanced-web-apps/shared-utils';
 import { Redis } from '@upstash/redis';
+import { 
+  InterviewConfig, 
+  InterviewSession, 
+  CreateInterviewSessionResponse,
+  FetchInterviewSessionResponse,
+  FetchAllInterviewSessionsResponse,
+  InterviewFeedbackResponse,
+  Message 
+} from '@ai-enhanced-web-apps/shared-types';
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -15,18 +24,22 @@ const redis = new Redis({
  * @param interviewConfig - Configuration object detailing jobType, difficulty, questionType, and questionCount.
  * @returns An object containing the generated sessionId and initial AI message state.
  */
-export async function createSession(userId: string, interviewConfig: any) {
+export async function createSession(
+  userId: string, 
+  interviewConfig: InterviewConfig
+): Promise<CreateInterviewSessionResponse> {
   const { jobType, difficulty, questionType, questionCount } = interviewConfig;
   const newSessionId = generateId();
 
-  const initialMessage = {
+  const initialMessage: Message & { sessionId: string } = {
     id: generateId(),
     role: 'assistant',
     content: getInterviewInitialMessage(jobType, difficulty, questionType, questionCount),
     sessionId: newSessionId,
   };
 
-  const systemPrompt = {
+  const systemPrompt: Message = {
+    id: generateId(),
     role: 'system',
     content: getInterviewSystemPrompt(jobType, difficulty, questionType, questionCount),
   };
@@ -51,9 +64,12 @@ export async function createSession(userId: string, interviewConfig: any) {
  * @returns An object indicating success.
  * @throws {Error} If the session is not found or the user is unauthorized.
  */
-export async function completeSession(userId: string, sessionId: string) {
+export async function completeSession(
+  userId: string, 
+  sessionId: string
+): Promise<{ success: boolean }> {
   const sessionKey = `session:${sessionId}`;
-  const session: any = await redis.hgetall(sessionKey);
+  const session = (await redis.hgetall(sessionKey)) as InterviewSession | null;
 
   if (!session || session.userId !== userId) {
     throw new Error('Session not found or unauthorized');
@@ -78,16 +94,19 @@ export async function completeSession(userId: string, sessionId: string) {
  * @returns An object containing the generated feedback text.
  * @throws {Error} If the session is not found or the user is unauthorized.
  */
-export async function generateFeedback(userId: string, sessionId: string) {
+export async function generateFeedback(
+  userId: string, 
+  sessionId: string
+): Promise<InterviewFeedbackResponse> {
   const sessionKey = `session:${sessionId}`;
-  const session: any = await redis.hgetall(sessionKey);
+  const session = (await redis.hgetall(sessionKey)) as InterviewSession | null;
 
   if (!session || session.userId !== userId) {
     throw new Error('Session not found or unauthorized');
   }
 
   const messages = session.messages || [];
-  const messagesFormatted = messages.map((m: any) => `${m.role}: ${m.content}`).join('\n');
+  const messagesFormatted = messages.map((m: Message) => `${m.role}: ${m.content}`).join('\n');
   const prompt = getInterviewFeedbackPrompt(messagesFormatted);
 
   const { text } = await generateText({
@@ -109,12 +128,15 @@ export async function generateFeedback(userId: string, sessionId: string) {
  * @returns An object containing the session data and the feedback text.
  * @throws {Error} If the session is not found or the user is unauthorized.
  */
-export async function getSession(userId: string, sessionId: string) {
-  const session: any = await redis.hgetall(`session:${sessionId}`);
+export async function getSession(
+  userId: string, 
+  sessionId: string
+): Promise<FetchInterviewSessionResponse> {
+  const session = (await redis.hgetall(`session:${sessionId}`)) as InterviewSession | null;
   if (!session || session.userId !== userId) {
     throw new Error('Session not found or unauthorized');
   }
-  const feedback = await redis.get(`feedback:${sessionId}`);
+  const feedback = await redis.get<string>(`feedback:${sessionId}`);
   return { session, feedback };
 }
 
@@ -124,14 +146,17 @@ export async function getSession(userId: string, sessionId: string) {
  * @param userId - The ID of the authenticated user.
  * @returns An object containing an array of the user's interview sessions.
  */
-export async function getAllSessions(userId: string) {
+export async function getAllSessions(
+  userId: string
+): Promise<FetchAllInterviewSessionsResponse> {
   const sessionIds = await redis.smembers(`user:sessions:${userId}`);
   const sessions = await Promise.all(
-    sessionIds.map(async (id) => {
-      const session: any = await redis.hgetall(`session:${id}`);
-      return { ...session, id };
+    sessionIds.map(async (id): Promise<InterviewSession | null> => {
+      const session = (await redis.hgetall(`session:${id}`)) as InterviewSession | null;
+      return session ? { ...session, id } : null;
     })
   );
-  sessions.sort((a, b) => b.createdAt - a.createdAt);
-  return { sessions };
+  const validSessions = sessions.filter((s): s is InterviewSession => s !== null);
+  validSessions.sort((a, b) => b.createdAt - a.createdAt);
+  return { sessions: validSessions };
 }

@@ -50,6 +50,9 @@
       "path": "../../libs/chat-ui"
     },
     {
+      "path": "../../libs/shared-types"
+    },
+    {
       "path": "../../libs/logger"
     },
     {
