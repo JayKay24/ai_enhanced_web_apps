@@ -4,6 +4,7 @@ import { streamText } from 'ai';
 import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-providers';
 import { logger } from '@ai-enhanced-web-apps/logger';
 import { Redis } from '@upstash/redis';
+import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     if (sessionId) {
       const sessionKey = `session:${sessionId}`;
-      const session: any = await redis.hgetall(sessionKey);
+      const session = (await redis.hgetall(sessionKey)) as InterviewSession | null;
       if (session && session.userId === userId && !session.isCompleted) {
         const updatedMessages = [...(session.messages || []), messages[messages.length - 1]];
         await redis.hset(sessionKey, {
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
           const aiMessage = { role: 'assistant', content: event.text };
           const sessionKey = `session:${sessionId}`;
           try {
-            const session: any = await redis.hgetall(sessionKey);
+            const session = (await redis.hgetall(sessionKey)) as InterviewSession | null;
             if (session && session.userId === userId) {
               const updatedMessages = [...(session.messages || []), aiMessage];
               await redis.hset(sessionKey, {
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
                 updatedAt: Date.now(),
               });
             }
-          } catch (err) {
+          } catch (err: unknown) {
             logger.error({ err }, 'Redis ai save error');
           }
         }
@@ -66,10 +67,11 @@ export async function POST(req: NextRequest) {
     });
 
     return result.toTextStreamResponse();
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An error occurred during query execution.';
     logger.error({ err: error }, '[POST /api/chat] Error');
     return new Response(
-      JSON.stringify({ error: error.message || 'An error occurred during query execution.' }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
