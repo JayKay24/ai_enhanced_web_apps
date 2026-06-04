@@ -9,7 +9,7 @@ import { AlertCircle, Volume2, VolumeX } from 'lucide-react';
 import { useInterviewChat } from '@ai-enhanced-web-apps/chat-hooks';
 import { UIMessage } from 'ai';
 import { completeInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
-import { Message } from '@ai-enhanced-web-apps/shared-types';
+import { Message, TextPart } from '@ai-enhanced-web-apps/shared-types';
 
 interface ChatThreadProps {
   sessionId: string;
@@ -93,13 +93,13 @@ const ChatThread: React.FC<ChatThreadProps> = ({
               <div key={message.id}>
                 <ChatBubble
                   role={message.role}
-                  text={message.parts?.filter((p: any) => p.type === "text").map((p: any) => p.text).join("") || ""}
+                  text={message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || ""}
                   
                 />
                 {message.role === 'assistant' && !isAudioMuted && (
                   <div className="flex justify-start ml-2 mt-1">
                     <button
-                      onClick={() => playTTS(message.parts?.filter((p: any) => p.type === "text").map((p: any) => p.text).join("") || "")}
+                      onClick={() => playTTS(message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || "")}
                       className="text-xs text-gray-500 hover:text-blue-500 flex items-center"
                       disabled={completed}
                     >

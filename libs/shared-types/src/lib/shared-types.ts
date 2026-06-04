@@ -90,3 +90,11 @@ export interface FetchAllInterviewSessionsResponse {
 export interface InterviewFeedbackResponse {
   feedback: string;
 }
+
+/**
+ * Represents a text part in a message.
+ */
+export interface TextPart {
+  type: 'text';
+  text: string;
+}

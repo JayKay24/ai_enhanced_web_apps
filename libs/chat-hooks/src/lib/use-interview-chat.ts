@@ -2,7 +2,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
 import { fetchTTSAudio } from '@ai-enhanced-web-apps/shared-utils';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Message } from '@ai-enhanced-web-apps/shared-types';
+import { Message, TextPart } from '@ai-enhanced-web-apps/shared-types';
 
 export function useInterviewChat(sessionId: string, initialMessages: Message[] = []) {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
@@ -73,7 +73,7 @@ export function useInterviewChat(sessionId: string, initialMessages: Message[] =
     const lastMessage = messages[messages.length - 1];
     if (lastMessage.role === 'assistant' && status === 'ready' && lastMessage.parts && lastMessage.parts.length > 0) {
       const textParts = lastMessage.parts.filter(
-        (p): p is { type: 'text'; text: string } => p.type === 'text'
+        (p): p is TextPart => p.type === 'text'
       );
       if (textParts.length > 0) {
         textParts.map((p) => p.text).join(' ');
