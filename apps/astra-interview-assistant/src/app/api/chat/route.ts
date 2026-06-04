@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    return result.toTextStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'An error occurred during query execution.';
     logger.error({ err: error }, '[POST /api/chat] Error');
