@@ -40,7 +40,7 @@ const ChatThread: React.FC<ChatThreadProps> = ({
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim() || isLoading || completed) return;
     handleChatSubmit(e);
