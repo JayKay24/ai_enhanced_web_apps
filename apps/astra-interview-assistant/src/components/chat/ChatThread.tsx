@@ -1,4 +1,5 @@
 'use client';
+import * as React from 'react';
 import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@ai-enhanced-web-apps/chat-ui';
@@ -8,8 +9,19 @@ import { AlertCircle, Volume2, VolumeX } from 'lucide-react';
 import { useInterviewChat } from '@ai-enhanced-web-apps/chat-hooks';
 import { UIMessage } from 'ai';
 import { completeInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
+import { Message } from '@ai-enhanced-web-apps/shared-types';
 
-export default function ChatThread({ sessionId, initialMessages = [], isCompleted = false }: any) {
+interface ChatThreadProps {
+  sessionId: string;
+  initialMessages?: Message[];
+  isCompleted?: boolean;
+}
+
+const ChatThread: React.FC<ChatThreadProps> = ({ 
+  sessionId, 
+  initialMessages = [], 
+  isCompleted = false 
+}) => {
   const {
     messages,
     input,
@@ -142,3 +154,5 @@ export default function ChatThread({ sessionId, initialMessages = [], isComplete
     </div>
   );
 }
+
+export default ChatThread;
