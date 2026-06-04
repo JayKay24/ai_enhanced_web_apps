@@ -56,7 +56,7 @@ export function useInterviewChat(sessionId: string, initialMessages: Message[] =
     setInput(e.target.value);
   }, []);
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.SyntheticEvent<HTMLFormElement>) => {
     if (e && e.preventDefault) e.preventDefault();
     if (!input.trim()) return;
     sendMessage({ text: input });
