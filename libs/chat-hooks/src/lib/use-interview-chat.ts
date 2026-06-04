@@ -2,8 +2,9 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
 import { fetchTTSAudio } from '@ai-enhanced-web-apps/shared-utils';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { Message } from '@ai-enhanced-web-apps/shared-types';
 
-export function useInterviewChat(sessionId: string, initialMessages: any[] = []) {
+export function useInterviewChat(sessionId: string, initialMessages: Message[] = []) {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
@@ -17,7 +18,7 @@ export function useInterviewChat(sessionId: string, initialMessages: any[] = [])
     error
   } = useChat({
     id: sessionId,
-    messages: initialMessages as UIMessage[],
+    messages: initialMessages as unknown as UIMessage[],
     transport: new DefaultChatTransport({
       api: '/api/chat',
       body: { sessionId },
@@ -51,18 +52,18 @@ export function useInterviewChat(sessionId: string, initialMessages: any[] = [])
     setIsAudioMuted(!isAudioMuted);
   };
 
-  const handleInputChange = useCallback((e: any) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   }, []);
 
-  const handleSubmit = useCallback((e: any) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     if (e && e.preventDefault) e.preventDefault();
     if (!input.trim()) return;
     sendMessage({ text: input });
     setInput('');
   }, [input, sendMessage]);
 
-  const append = useCallback((message: any) => {
+  const append = useCallback((message: Message) => {
     sendMessage({ text: message.content });
   }, [sendMessage]);
 
@@ -71,9 +72,11 @@ export function useInterviewChat(sessionId: string, initialMessages: any[] = [])
     if (messages.length === 0 || isAudioMuted) return;
     const lastMessage = messages[messages.length - 1];
     if (lastMessage.role === 'assistant' && status === 'ready' && lastMessage.parts && lastMessage.parts.length > 0) {
-      const textParts = lastMessage.parts.filter(p => p.type === 'text');
+      const textParts = lastMessage.parts.filter(
+        (p): p is { type: 'text'; text: string } => p.type === 'text'
+      );
       if (textParts.length > 0) {
-        textParts.map((p: any) => p.text).join(' ');
+        textParts.map((p) => p.text).join(' ');
         // We only want to play it if we just finished streaming it.
         // It's a bit tricky to detect "just finished", but let's assume we do it.
         // For now, let's just expose playTTS and let the user click to play.
