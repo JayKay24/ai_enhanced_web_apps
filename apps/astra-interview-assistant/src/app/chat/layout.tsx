@@ -1,5 +1,4 @@
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import { Navbar, Footer } from '@ai-enhanced-web-apps/chat-ui';
 import InterviewSidebar from '../../components/InterviewSidebar';
 
 export const dynamic = 'force-dynamic';

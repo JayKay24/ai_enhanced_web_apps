@@ -1,11 +1,10 @@
 'use client';
 import * as React from 'react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Button } from '@ai-enhanced-web-apps/chat-ui';
-import { Input } from '../ui/input';
+import { Button, Input, AutoScroll, AutoScrollHandle } from '@ai-enhanced-web-apps/chat-ui';
 import ChatBubble from './ChatBubble';
-import { AlertCircle, Volume2, VolumeX } from 'lucide-react';
+import { AlertCircle, Volume2, VolumeX, Send, CheckCircle, ChevronUp } from 'lucide-react';
 import { useInterviewChat } from '@ai-enhanced-web-apps/chat-hooks';
 import { UIMessage } from 'ai';
 import { completeInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
@@ -34,11 +33,8 @@ const ChatThread: React.FC<ChatThreadProps> = ({
   } = useInterviewChat(sessionId, initialMessages);
 
   const [completed, setCompleted] = useState(isCompleted);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const autoScrollRef = useRef<AutoScrollHandle>(null);
+  const [isAtTop, setIsAtTop] = useState(true);
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,100 +52,156 @@ const ChatThread: React.FC<ChatThreadProps> = ({
     }
   };
 
+  const handleScrollToTop = useCallback(() => {
+    autoScrollRef.current?.scrollToTop();
+  }, []);
+
+  const handleScrollPositionChange = useCallback(
+    (position: { atTop: boolean }) => {
+      setIsAtTop(position.atTop);
+    },
+    []
+  );
+
+  const filteredMessages = messages.filter(
+    (m: UIMessage) => 
+      m.role !== 'system' && 
+      (m as any).content !== 'Start the interview' && 
+      !m.parts?.some(p => p.type === 'text' && (p as TextPart).text === 'Start the interview')
+  );
+
   return (
-    <div className="flex flex-col h-[60vh]">
+    <div className="flex flex-col flex-1 h-[calc(100vh-8.5rem)] relative">
       {completed && (
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
+        <div className="bg-yellow-50 dark:bg-yellow-950/20 border-l-4 border-yellow-500 text-yellow-800 dark:text-yellow-200 p-4 mb-4 rounded-r-xl shadow-sm mx-4 shrink-0 transition-all duration-300">
           <div className="flex items-center">
-            <AlertCircle className="mr-2" size={20} />
-            <p className="font-medium">This interview session has been completed</p>
+            <AlertCircle className="mr-2 text-yellow-500 shrink-0" size={20} />
+            <p className="font-semibold text-sm">This interview session has been completed</p>
           </div>
-          <p className="mt-1">The interview is now locked and cannot be modified.</p>
+          <p className="mt-1 text-xs text-yellow-700/80 dark:text-yellow-300/80">The interview is now locked and feedback has been generated.</p>
         </div>
       )}
 
-      <div className="flex justify-end mb-2">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={toggleAudio}
-          className={`flex items-center gap-1 ${!isAudioMuted ? 'text-blue-600' : 'text-gray-500'}`}
-          disabled={completed}
+      {/* Main Messages List wrapping in AutoScroll */}
+      <div className="flex-1 overflow-hidden px-4 relative min-h-0">
+        <AutoScroll
+          ref={autoScrollRef}
+          onScrollPositionChange={handleScrollPositionChange}
         >
-          {!isAudioMuted ? <Volume2 size={16} /> : <VolumeX size={16} />}
-          <span className="text-xs">{!isAudioMuted ? 'Voice On' : 'Voice Off'}</span>
-        </Button>
-      </div>
-
-      <div className={`flex-1 overflow-y-auto p-2 ${completed ? 'opacity-80' : ''}`}>
-        {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-slate-400">
-            Your interview will begin when you send your first message
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {messages.filter((m: UIMessage) => m.role !== 'system' && (m as any).content !== 'Start the interview' && !m.parts?.some(p => p.type === 'text' && (p as TextPart).text === 'Start the interview')).map((message: UIMessage) => (
-              <div key={message.id}>
-                <ChatBubble
-                  role={message.role}
-                  text={message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || (message as any).content || ""}
-                  
-                />
-                {message.role === 'assistant' && !isAudioMuted && (
-                  <div className="flex justify-start ml-2 mt-1">
-                    <button
-                      onClick={() => playTTS(message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || (message as any).content || "")}
-                      className="text-xs text-gray-500 hover:text-blue-500 flex items-center"
-                      disabled={completed}
-                    >
-                      <Volume2 size={14} className="mr-1" />
-                      Play
-                    </button>
+          {filteredMessages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-500 py-12">
+              <span className="text-4xl mb-3">💬</span>
+              <p className="text-sm font-medium">Your interview will begin when you send your first message</p>
+            </div>
+          ) : (
+            <div className="space-y-6 py-4 pb-28">
+              {filteredMessages.map((message: UIMessage) => {
+                const messageText = message.parts?.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("") || (message as any).content || "";
+                return (
+                  <div key={message.id} className="flex flex-col gap-1.5">
+                    <ChatBubble
+                      role={message.role}
+                      text={messageText}
+                    />
+                    {message.role === 'assistant' && !isAudioMuted && (
+                      <div className="flex justify-start ml-2 mt-0.5">
+                        <button
+                          onClick={() => playTTS(messageText)}
+                          className="text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                          disabled={completed}
+                          title="Listen to response"
+                        >
+                          <Volume2 size={13} />
+                          <span>Speak</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
-            <div ref={chatEndRef} />
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </AutoScroll>
       </div>
 
-      <div className="border-t mt-4 pt-4">
-        {completed ? (
-          <div className="flex items-center justify-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <AlertCircle className="text-yellow-500 mr-2" size={18} />
-            <span className="text-gray-700 font-medium">
-              This interview session has been completed and cannot be modified
-            </span>
-            &nbsp;
-            <Link href={`/chat/${sessionId}/feedback`}>
-              <b>View Feedback</b>
-            </Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <Input
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Type your response..."
-              disabled={isLoading || completed}
-              className="flex-1"
-            />
-            <Button type="submit" disabled={isLoading || !input.trim() || completed}>
-              Send
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="bg-yellow-50 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-              onClick={handleCompleteSession}
-              disabled={isLoading || messages.length === 0}
-            >
-              Complete Interview
-            </Button>
-          </form>
-        )}
+      {/* Floating Scroll to Top Button */}
+      {!isAtTop && filteredMessages.length > 0 && (
+        <Button
+          onClick={handleScrollToTop}
+          className="absolute bottom-28 right-8 p-3 rounded-full shadow-lg bg-blue-600 text-white hover:bg-blue-700 z-40 shrink-0 transition-all duration-200"
+          aria-label="Scroll to top of conversation"
+          size="icon"
+        >
+          <ChevronUp className="h-5 w-5" />
+        </Button>
+      )}
+
+      {/* Floating Bottom Input Area */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-50 dark:from-slate-900/90 via-slate-50/90 to-transparent pt-10 shrink-0 z-30">
+        <div className="max-w-3xl mx-auto flex flex-col gap-3">
+          {completed ? (
+            <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle className="text-emerald-500 shrink-0" size={20} />
+                <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">
+                  Interview completed
+                </span>
+              </div>
+              <Link href={`/chat/${sessionId}/feedback`} passHref legacyBehavior>
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm">
+                  View Feedback Analysis
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl shadow-xl transition-all focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-950 overflow-hidden">
+              <div className="flex items-center gap-2 p-2 pl-4 pr-3">
+                <Input
+                  value={input}
+                  onChange={handleInputChange}
+                  placeholder="Type your response..."
+                  disabled={isLoading || completed}
+                  className="flex-1 border-none focus-visible:ring-0 shadow-none py-3 px-1 text-base bg-transparent dark:text-white"
+                  autoFocus
+                  autoComplete="off"
+                />
+                
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleAudio}
+                    className={`rounded-full h-9 w-9 shrink-0 ${!isAudioMuted ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40' : 'text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                    disabled={completed}
+                    title={!isAudioMuted ? 'Mute voice responses' : 'Unmute voice responses'}
+                  >
+                    {!isAudioMuted ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 text-xs font-semibold bg-yellow-50 dark:bg-yellow-950/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-900/50 hover:bg-yellow-100 dark:hover:bg-yellow-950/40"
+                    onClick={handleCompleteSession}
+                    disabled={isLoading || messages.length === 0}
+                  >
+                    Complete
+                  </Button>
+
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading || !input.trim() || completed}
+                    size="icon"
+                    className="h-9 w-9 rounded-full shrink-0"
+                  >
+                    <Send className="h-4.5 w-4.5" />
+                  </Button>
+                </div>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

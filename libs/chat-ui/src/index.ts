@@ -5,6 +5,7 @@ export { default as Button } from './lib/ui/button';
 export * from './lib/ui/button';
 export * from './lib/ui/card';
 export * from './lib/ui/textarea';
+export * from './lib/ui/input';
 export { default as ChatList } from './lib/chat/ChatList';
 export * from './lib/chat/ChatList';
 export { default as ChatMessage } from './lib/chat/ChatMessage';
