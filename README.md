@@ -8,9 +8,12 @@ The workspace is inspired by the book *Building AI-Enhanced Web Apps* by Theo De
 
 ## 📱 Central Applications
 
-*   **Astra Document Summary** ([apps/astra-document-summary](apps/astra-document-summary) | [Deploy URL](https://project-kl3jb.vercel.app/)): A Next.js-based conversational AI assistant for document parsing and summarization. Powered by Google Gemini (via Vertex AI), it supports PDF/DOCX file uploads or raw text inputs to generate cohesive summaries.
-*   **Astra Aviation RAG** ([apps/astra-aviation-rag](apps/astra-aviation-rag) | [Deploy URL](https://project-zffq7.vercel.app/)): A Next.js-based conversational AI safety assistant. It queries NTSB aviation accident reports using Retrieval-Augmented Generation (RAG) backed by a local Hierarchical Navigable Small World (HNSW) vector index.
-*   **Astra Interview Assistant** ([apps/astra-interview-assistant](apps/astra-interview-assistant)): A Next.js-based conversational AI assistant that simulates real-world job interviews using Vertex AI and provides personalized feedback.
+| Application | Source Code | Deploy URL | Description |
+| :--- | :--- | :--- | :--- |
+| **Astra Document Summary** | [`apps/astra-document-summary`](apps/astra-document-summary) | [🚀 Live Demo](https://project-kl3jb.vercel.app/) | Next.js-based conversational AI assistant for document parsing and summarization. Supports PDF/DOCX file uploads or raw text inputs. |
+| **Astra Aviation RAG** | [`apps/astra-aviation-rag`](apps/astra-aviation-rag) | [🚀 Live Demo](https://project-zffq7.vercel.app/) | Next.js-based conversational AI safety assistant. Queries NTSB aviation accident reports using RAG backed by a local HNSW vector index. |
+| **Astra Interview Assistant** | [`apps/astra-interview-assistant`](apps/astra-interview-assistant) | [🚀 Live Demo](https://project-n9t17.vercel.app/) | Next.js-based conversational AI assistant simulating real-world job interviews with personalized feedback. |
+
 
 ---
 
