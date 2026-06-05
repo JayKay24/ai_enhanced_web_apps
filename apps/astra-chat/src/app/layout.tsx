@@ -1,5 +1,4 @@
 import './global.css';
-import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'sonner';
 
 export const metadata = {
@@ -13,13 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider afterSignOutUrl="/sign-in">
-      <html lang="en">
-        <body className="flex flex-col min-h-screen">
-          {children}
-          <Toaster richColors position="top-right" />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className="flex flex-col min-h-screen">
+        {children}
+        <Toaster richColors position="top-right" />
+      </body>
+    </html>
   );
 }
