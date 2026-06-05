@@ -68,9 +68,6 @@
     },
     {
       "path": "./apps/astra-interview-assistant"
-    },
-    {
-      "path": "./apps/astra-chat"
     }
   ]
 }
