@@ -1,0 +1,35 @@
+{
+  "name": "astra-chat",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/astra-chat/src",
+  "tags": [],
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next dev -p 4600",
+        "cwd": "apps/astra-chat"
+      },
+      "configurations": {
+        "debug": {
+          "command": "NODE_OPTIONS=\"--inspect=9231\" next dev -p 4600"
+        }
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next start -p 4600",
+        "cwd": "apps/astra-chat"
+      }
+    },
+    "serve-static": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next start -p 4600",
+        "cwd": "apps/astra-chat"
+      }
+    }
+  }
+}
