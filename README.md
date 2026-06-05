@@ -14,6 +14,9 @@ The workspace is inspired by the book *Building AI-Enhanced Web Apps* by Theo De
 | **Astra Aviation RAG** | [`apps/astra-aviation-rag`](apps/astra-aviation-rag) | [🚀 Live Demo](https://project-zffq7.vercel.app/) | Next.js-based conversational AI safety assistant. Queries NTSB aviation accident reports using RAG backed by a local HNSW vector index. |
 | **Astra Interview Assistant** | [`apps/astra-interview-assistant`](apps/astra-interview-assistant) | [🚀 Live Demo](https://project-n9t17.vercel.app/) | Next.js-based conversational AI assistant simulating real-world job interviews with personalized feedback. |
 
+> [!IMPORTANT]
+> **Authentication & Session Isolation:** For the optimal experience, log in to **one** application at a time. To switch between applications, log out of the current one first. This is because a custom shared domain has not been set up across the three deployments, and Clerk.js satellite domain configurations (to share sessions across distinct domains) are a paid Clerk Pro feature.
+
 
 ---
 
