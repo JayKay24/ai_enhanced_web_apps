@@ -147,11 +147,11 @@ const ChatThread: React.FC<ChatThreadProps> = ({
                   Interview completed
                 </span>
               </div>
-              <Link href={`/chat/${sessionId}/feedback`} passHref legacyBehavior>
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm">
+              <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm">
+                <Link href={`/chat/${sessionId}/feedback`}>
                   View Feedback Analysis
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl shadow-xl transition-all focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-950 overflow-hidden">
