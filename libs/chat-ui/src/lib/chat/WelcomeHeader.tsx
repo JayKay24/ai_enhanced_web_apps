@@ -13,7 +13,7 @@ export default function WelcomeHeader({
   subtitle,
 }: WelcomeHeaderProps) {
   return (
-    <h1 className="text-6xl font-semibold leading-tight mt-4 mb-16">
+    <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight mt-4 mb-8 md:mb-16">
       <div className="inline-block">
         Hello, I'm{' '}
         <span role="img" aria-label={emojiLabel}>
