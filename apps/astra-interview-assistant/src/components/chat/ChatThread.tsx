@@ -63,6 +63,10 @@ const ChatThread: React.FC<ChatThreadProps> = ({
     []
   );
 
+  const handlePlayTTS = useCallback((text: string) => {
+    playTTS(text);
+  }, [playTTS]);
+
   const filteredMessages = messages.filter(
     (m: UIMessage) => 
       m.role !== 'system' && 
@@ -104,15 +108,20 @@ const ChatThread: React.FC<ChatThreadProps> = ({
                       text={messageText}
                     />
                     {message.role === 'assistant' && !isAudioMuted && (
-                      <div className="flex justify-start ml-2 mt-0.5">
+                      <div className="flex justify-start ml-2 mt-0.5 relative z-10 pointer-events-auto">
                         <button
-                          onClick={() => playTTS(messageText)}
-                          className="text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handlePlayTTS(messageText);
+                          }}
+                          className="text-xs cursor-pointer text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
                           disabled={completed}
                           title="Listen to response"
                         >
-                          <Volume2 size={13} />
-                          <span>Speak</span>
+                          <Volume2 size={13} className="pointer-events-none" />
+                          <span className="pointer-events-none">Speak</span>
                         </button>
                       </div>
                     )}
@@ -137,10 +146,10 @@ const ChatThread: React.FC<ChatThreadProps> = ({
       )}
 
       {/* Floating Bottom Input Area */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-50 dark:from-slate-900/90 via-slate-50/90 to-transparent pt-10 shrink-0 z-30">
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-50 dark:from-slate-900/90 via-slate-50/90 to-transparent pt-10 shrink-0 z-30 pointer-events-none">
         <div className="max-w-3xl mx-auto flex flex-col gap-3">
           {completed ? (
-            <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md">
+            <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md pointer-events-auto">
               <div className="flex items-center gap-2.5">
                 <CheckCircle className="text-emerald-500 shrink-0" size={20} />
                 <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">
@@ -154,7 +163,7 @@ const ChatThread: React.FC<ChatThreadProps> = ({
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl shadow-xl transition-all focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-950 overflow-hidden">
+            <form onSubmit={handleSubmit} className="flex flex-col bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl shadow-xl transition-all focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-950 overflow-hidden pointer-events-auto">
               <div className="flex items-center gap-2 p-2 pl-4 pr-3">
                 <Input
                   value={input}
