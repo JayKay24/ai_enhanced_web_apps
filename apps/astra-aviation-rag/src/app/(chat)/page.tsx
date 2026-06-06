@@ -53,11 +53,12 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="flex flex-col w-full max-w-4xl mx-auto py-24 stretch h-screen relative px-4">
-      <AutoScroll
-        ref={autoScrollRef}
-        onScrollPositionChange={handleScrollPositionChange}
-      >
+    <div className="flex flex-col flex-1 h-[100dvh] w-full max-w-4xl mx-auto relative px-4 pt-12 pb-4">
+      <main className="flex-1 min-h-0 flex flex-col relative overflow-hidden">
+        <AutoScroll
+          ref={autoScrollRef}
+          onScrollPositionChange={handleScrollPositionChange}
+        >
         {messages.length === 0 && (
           <WelcomeHeader
             emoji="✈️"
@@ -70,8 +71,9 @@ export default function ChatPage() {
           <ChatList messages={messages} isLoading={isLoading} />
         )}
       </AutoScroll>
+      </main>
 
-      <div className="fixed bottom-0 w-full max-w-4xl left-1/2 -translate-x-1/2 px-4 pb-12 bg-gradient-to-t from-white via-white/90 to-transparent">
+      <div className="shrink-0 pt-4">
         <form
           className="flex flex-col bg-white border border-gray-200 rounded-2xl shadow-2xl transition-all focus-within:ring-2 focus-within:ring-blue-100 overflow-hidden"
           ref={formRef}
