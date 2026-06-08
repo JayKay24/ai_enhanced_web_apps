@@ -4,7 +4,9 @@ import ChatThread from '../../../components/chat/ChatThread';
 import { useParams } from 'next/navigation';
 import { fetchInterviewSession } from '@ai-enhanced-web-apps/shared-utils';
 import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@ai-enhanced-web-apps/chat-ui';
 
 export default function ChatSessionPage() {
   const params = useParams();
@@ -32,6 +34,11 @@ export default function ChatSessionPage() {
       {/* Premium Session Header */}
       <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-950 border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm shrink-0 z-20">
         <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" asChild className="mr-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+            <Link href="/chat" title="Back to configurator">
+              <ChevronLeft className="h-5 w-5" />
+            </Link>
+          </Button>
           <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
             <Briefcase className="h-5 w-5" />
           </div>
