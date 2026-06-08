@@ -19,4 +19,5 @@ export { default as Navbar } from './lib/Navbar';
 export { default as Footer } from './lib/Footer';
 export { default as WelcomeHeader } from './lib/chat/WelcomeHeader';
 export * from './lib/chat/WelcomeHeader';
-
+export { default as SessionCompletedBanner } from './lib/chat/SessionCompletedBanner';
+export * from './lib/chat/SessionCompletedBanner';

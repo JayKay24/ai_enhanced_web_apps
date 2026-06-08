@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Button, Input, AutoScroll, AutoScrollHandle } from '@ai-enhanced-web-apps/chat-ui';
+import { Button, Input, AutoScroll, AutoScrollHandle, SessionCompletedBanner } from '@ai-enhanced-web-apps/chat-ui';
 import ChatBubble from './ChatBubble';
 import { AlertCircle, Volume2, VolumeX, Send, CheckCircle, ChevronUp } from 'lucide-react';
 import { useInterviewChat } from '@ai-enhanced-web-apps/chat-hooks';
@@ -77,13 +77,10 @@ const ChatThread: React.FC<ChatThreadProps> = ({
   return (
     <div className="flex flex-col flex-1 h-[calc(100vh-8.5rem)] relative">
       {completed && (
-        <div className="bg-yellow-50 dark:bg-yellow-950/20 border-l-4 border-yellow-500 text-yellow-800 dark:text-yellow-200 p-4 mb-4 rounded-r-xl shadow-sm mx-4 shrink-0 transition-all duration-300">
-          <div className="flex items-center">
-            <AlertCircle className="mr-2 text-yellow-500 shrink-0" size={20} />
-            <p className="font-semibold text-sm">This interview session has been completed</p>
-          </div>
-          <p className="mt-1 text-xs text-yellow-700/80 dark:text-yellow-300/80">The interview is now locked and feedback has been generated.</p>
-        </div>
+        <SessionCompletedBanner
+          title="This interview session has been completed"
+          description="The interview is now locked and feedback has been generated."
+        />
       )}
 
       {/* Main Messages List wrapping in AutoScroll */}
