@@ -3,6 +3,7 @@ import { DefaultChatTransport, UIMessage, generateId } from 'ai';
 import { fetchTTSAudio } from '@ai-enhanced-web-apps/shared-utils';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Message, TextPart } from '@ai-enhanced-web-apps/shared-types';
+import { toast } from 'sonner';
 
 export function useInterviewChat(sessionId: string, initialMessages: Message[] = []) {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
@@ -44,8 +45,9 @@ export function useInterviewChat(sessionId: string, initialMessages: Message[] =
         audioRef.current = audio;
         audio.play();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error playing TTS:', error);
+      toast.error(error?.message || 'Failed to play audio.');
     }
   }, []);
 
@@ -98,6 +100,13 @@ export function useInterviewChat(sessionId: string, initialMessages: Message[] =
       }
     }
   }, [messages, status, isAudioMuted]);
+
+  // Handle generic AI stream/transport errors
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || 'An error occurred during the conversation.');
+    }
+  }, [error]);
 
   return {
     messages,
