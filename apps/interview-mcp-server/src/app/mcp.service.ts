@@ -4,6 +4,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { z } from 'zod';
 import { Request, Response } from 'express';
 import { logger } from '@ai-enhanced-web-apps/logger';
+import { randomUUID } from 'crypto';
 
 const MOCK_QUESTIONS = [
   { id: 1, difficulty: 'easy', text: 'What is the Virtual DOM in React?' },
@@ -54,9 +55,11 @@ export class McpService implements OnModuleInit {
       }
     );
     
-    this.transport = new StreamableHTTPServerTransport();
+    this.transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: () => randomUUID(),
+    });
     await this.server.connect(this.transport);
-    logger.info('MCP Server initialized with StreamableHTTPServerTransport');
+    logger.info('MCP Server initialized with StreamableHTTPServerTransport (Stateful)');
   }
 
   async handleRequest(req: Request, res: Response) {
