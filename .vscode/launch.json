@@ -522,7 +522,8 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["nx", "serve", "interview-mcp-server"],
       "env": {
-        "NODE_OPTIONS": "--inspect=9243"
+        "NODE_OPTIONS": "--inspect=9243",
+        "PORT": "4501"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

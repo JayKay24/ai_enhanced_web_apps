@@ -65,7 +65,20 @@ export async function POST(req: NextRequest) {
 
     if (session && session.jobType.toLowerCase() === 'frontend engineer' && session.questionType.toLowerCase() === 'technical') {
       try {
-        mcpTransport = new StreamableHTTPClientTransport(new URL('http://localhost:3000/mcp'));
+        const mcpUrl = process.env.INTERVIEW_MCP_SERVER_URL || 'http://127.0.0.1:4501/mcp';
+        mcpTransport = new StreamableHTTPClientTransport(new URL(mcpUrl));
+        
+        // Add a setter for protocolVersion to satisfy @ai-sdk/mcp which attempts to set it directly
+        Object.defineProperty(mcpTransport, 'protocolVersion', {
+          get() {
+            return (this as any)._protocolVersion;
+          },
+          set(version: string) {
+            (this as any).setProtocolVersion(version);
+          },
+          configurable: true,
+        });
+
         mcpClient = await createMCPClient({ transport: mcpTransport });
         tools = await mcpClient.tools();
       } catch (err) {
