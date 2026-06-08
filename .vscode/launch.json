@@ -533,5 +533,14 @@
         "!**/node_modules/**"
       ]
     }
+  ],
+  "compounds": [
+    {
+      "name": "Start: Interview Assistant & MCP Server",
+      "configurations": [
+        "Launch & Debug astra-interview-assistant",
+        "Debug interview-mcp-server with Nx"
+      ]
+    }
   ]
 }

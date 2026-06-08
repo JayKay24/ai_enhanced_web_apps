@@ -70,9 +70,6 @@
       "path": "./apps/astra-interview-assistant"
     },
     {
-      "path": "./apps/interview-mcp-server-e2e"
-    },
-    {
       "path": "./apps/interview-mcp-server"
     }
   ]
