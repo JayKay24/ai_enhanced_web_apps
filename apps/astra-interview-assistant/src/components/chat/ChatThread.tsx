@@ -4,7 +4,7 @@ import { useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Button, Input, AutoScroll, AutoScrollHandle, SessionCompletedBanner } from '@ai-enhanced-web-apps/chat-ui';
 import ChatBubble from './ChatBubble';
-import { AlertCircle, Volume2, VolumeX, Send, CheckCircle, ChevronUp } from 'lucide-react';
+import { Volume2, VolumeX, Send, CheckCircle, ChevronUp } from 'lucide-react';
 import { useInterviewChat } from '@ai-enhanced-web-apps/chat-hooks';
 import { UIMessage } from 'ai';
 import { completeInterviewSession } from '@ai-enhanced-web-apps/shared-utils';

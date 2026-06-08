@@ -1,15 +1,9 @@
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
-import { Redis } from '@upstash/redis';
-import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
 import { Calendar, Briefcase, GraduationCap } from 'lucide-react';
+import { getAllSessions } from '../services/interview-service';
 
 export const dynamic = 'force-dynamic';
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
 
 export default async function InterviewSidebar() {
   const { userId } = await auth();
@@ -22,15 +16,7 @@ export default async function InterviewSidebar() {
     );
   }
 
-  const sessionIds = await redis.smembers(`user:sessions:${userId}`);
-  const sessions = await Promise.all(
-    sessionIds.map(async (id): Promise<InterviewSession | null> => {
-      const session = (await redis.hgetall(`session:${id}`)) as InterviewSession | null;
-      return session ? { ...session, id } : null;
-    })
-  );
-  const validSessions = sessions.filter((s): s is InterviewSession => s !== null);
-  validSessions.sort((a, b) => b.createdAt - a.createdAt);
+  const { sessions: validSessions } = await getAllSessions(userId);
 
   return (
     <aside className="w-66 border-r border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-xl p-5 overflow-y-auto hidden md:flex flex-col h-[calc(100vh-3.5rem)] shrink-0">
