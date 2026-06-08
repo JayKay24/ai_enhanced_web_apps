@@ -6,7 +6,7 @@ import { logger } from '@ai-enhanced-web-apps/logger';
 import { Redis } from '@upstash/redis';
 import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
 import { createMCPClient } from '@ai-sdk/mcp';
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,12 +60,12 @@ export async function POST(req: NextRequest) {
     const conversationMessages = coreMessages.filter((m) => m.role !== 'system');
 
     let mcpClient: any = null;
-    let mcpTransport: SSEClientTransport | null = null;
+    let mcpTransport: StreamableHTTPClientTransport | null = null;
     let tools: Record<string, any> = {};
 
     if (session && session.jobType.toLowerCase() === 'frontend engineer' && session.questionType.toLowerCase() === 'technical') {
       try {
-        mcpTransport = new SSEClientTransport(new URL('http://localhost:3000/sse'));
+        mcpTransport = new StreamableHTTPClientTransport(new URL('http://localhost:3000/mcp'));
         mcpClient = await createMCPClient({ transport: mcpTransport });
         tools = await mcpClient.tools();
       } catch (err) {

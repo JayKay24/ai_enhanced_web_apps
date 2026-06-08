@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { z } from 'zod';
 import { Request, Response } from 'express';
 import { logger } from '@ai-enhanced-web-apps/logger';
@@ -21,9 +21,9 @@ const MOCK_QUESTIONS = [
 @Injectable()
 export class McpService implements OnModuleInit {
   private server!: McpServer;
-  private transport: SSEServerTransport | null = null;
+  private transport!: StreamableHTTPServerTransport;
 
-  onModuleInit() {
+  async onModuleInit() {
     this.server = new McpServer({
       name: 'interview-mcp-server',
       version: '1.0.0',
@@ -53,21 +53,14 @@ export class McpService implements OnModuleInit {
         };
       }
     );
-    logger.info('MCP Server initialized with get-interview-questions tool');
-  }
-
-  async handleSseConnection(req: Request, res: Response) {
-    logger.info('New SSE connection established');
-    this.transport = new SSEServerTransport('/message', res);
+    
+    this.transport = new StreamableHTTPServerTransport();
     await this.server.connect(this.transport);
+    logger.info('MCP Server initialized with StreamableHTTPServerTransport');
   }
 
-  async handleMessage(req: Request, res: Response) {
-    if (this.transport) {
-      await this.transport.handlePostMessage(req, res);
-    } else {
-      logger.warn('Received message but no active SSE connection');
-      res.status(400).send('No active SSE connection');
-    }
+  async handleRequest(req: Request, res: Response) {
+    // Pass req.body if it exists because NestJS may have already parsed it
+    await this.transport.handleRequest(req, res, req.body);
   }
 }
