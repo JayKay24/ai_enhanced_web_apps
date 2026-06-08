@@ -514,6 +514,24 @@
         "${workspaceFolder}/apps/standalone/kmeans-summarization/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug interview-mcp-server with Nx",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "serve", "interview-mcp-server"],
+      "env": {
+        "NODE_OPTIONS": "--inspect=9243"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/apps/interview-mcp-server/dist/**/*.(m|c|)js",
+        "!**/node_modules/**"
+      ]
     }
   ]
 }

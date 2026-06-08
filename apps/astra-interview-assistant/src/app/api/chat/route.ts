@@ -5,6 +5,8 @@ import { getModelInstance } from '@ai-enhanced-web-apps/shared-utils/ai-provider
 import { logger } from '@ai-enhanced-web-apps/logger';
 import { Redis } from '@upstash/redis';
 import { InterviewSession } from '@ai-enhanced-web-apps/shared-types';
+import { createMCPClient } from '@ai-sdk/mcp';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,9 +31,10 @@ export async function POST(req: NextRequest) {
       return new Response('No messages provided', { status: 400 });
     }
 
+    let session: InterviewSession | null = null;
     if (sessionId) {
       const sessionKey = `session:${sessionId}`;
-      const session = (await redis.hgetall(sessionKey)) as InterviewSession | null;
+      session = (await redis.hgetall(sessionKey)) as InterviewSession | null;
       if (session && session.userId === userId && !session.isCompleted) {
         const updatedMessages = [...(session.messages || []), messages[messages.length - 1]];
         await redis.hset(sessionKey, {
@@ -56,10 +59,25 @@ export async function POST(req: NextRequest) {
     const systemMessage = coreMessages.find((m) => m.role === 'system');
     const conversationMessages = coreMessages.filter((m) => m.role !== 'system');
 
+    let mcpClient: any = null;
+    let mcpTransport: SSEClientTransport | null = null;
+    let tools: Record<string, any> = {};
+
+    if (session && session.jobType.toLowerCase() === 'frontend engineer' && session.questionType.toLowerCase() === 'technical') {
+      try {
+        mcpTransport = new SSEClientTransport(new URL('http://localhost:3000/sse'));
+        mcpClient = await createMCPClient({ transport: mcpTransport });
+        tools = await mcpClient.tools();
+      } catch (err) {
+        logger.error({ err }, 'Failed to connect to MCP server');
+      }
+    }
+
     const result = streamText({
       model: getModelInstance('vertex', 'gemini-2.5-flash'), 
       system: systemMessage?.content as string | undefined,
       messages: conversationMessages,
+      tools: Object.keys(tools).length > 0 ? tools : undefined,
       onFinish: async (event) => {
         if (sessionId) {
           const aiMessage = { id: generateId(), role: 'assistant', content: event.text };
@@ -76,6 +94,14 @@ export async function POST(req: NextRequest) {
             }
           } catch (err: unknown) {
             logger.error({ err }, 'Redis ai save error');
+          }
+        }
+        
+        if (mcpTransport) {
+          try {
+            await mcpTransport.close();
+          } catch (e) {
+            logger.error({ err: e }, 'Error closing MCP transport');
           }
         }
       }
