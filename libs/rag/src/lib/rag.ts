@@ -15,6 +15,18 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
+ * Formats a list of LangChain Document objects into a single string for prompt injection,
+ * prefixing each excerpt with its origin file.
+ */
+const formatDocs = (docs: Document[]) =>
+  docs
+    .map(
+      (d) =>
+        `[Report Source: ${d.metadata.sourceFile || 'Unknown'}]\n${d.pageContent}`
+    )
+    .join('\n\n---\n\n');
+
+/**
  * Service class handling the Aviation incident safety database index construction and query execution.
  * Integrates local HNSWLib vector storage with Google Cloud Vertex AI embeddings and model generation.
  */
@@ -155,14 +167,6 @@ export class AviationRAG {
       ],
       ['human', '{question}'],
     ]);
-
-    const formatDocs = (docs: Document[]) =>
-      docs
-        .map(
-          (d) =>
-            `[Report Source: ${d.metadata.sourceFile || 'Unknown'}]\n${d.pageContent}`
-        )
-        .join('\n\n---\n\n');
 
     return RunnableSequence.from([
       {
