@@ -30,12 +30,14 @@ export class McpService implements OnModuleInit {
       version: '1.0.0',
     });
 
-    this.server.tool(
+    this.server.registerTool(
       'get-interview-questions',
-      'Fetch frontend-focused technical interview questions based on difficulty.',
       {
-        difficulty: z.enum(['easy', 'medium', 'hard']).describe('The difficulty level of the questions to fetch.'),
-        count: z.number().min(1).max(10).optional().describe('Number of questions to fetch, max 10.'),
+        description: 'Fetch frontend-focused technical interview questions based on difficulty.',
+        inputSchema: z.object({
+          difficulty: z.enum(['easy', 'medium', 'hard']).describe('The difficulty level of the questions to fetch.'),
+          count: z.number().min(1).max(10).optional().describe('Number of questions to fetch, max 10.'),
+        }),
       },
       async ({ difficulty, count = 1 }) => {
         logger.info({ difficulty, count }, 'Fetching interview questions via MCP');
