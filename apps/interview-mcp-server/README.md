@@ -16,4 +16,4 @@ Serve the application locally using Nx:
 npx nx serve interview-mcp-server
 ```
 
-The MCP endpoint will be available at `http://localhost:3000/mcp`.
+The MCP endpoint will be available at `http://localhost:4501/mcp`.

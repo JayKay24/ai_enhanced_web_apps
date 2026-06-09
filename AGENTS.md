@@ -14,7 +14,7 @@ This document contains architectural rules, module boundaries, compilation const
     *   `astra-document-summary`: `4300` (Next.js client)
     *   `astra-aviation-rag`: `4400` (Next.js client)
     *   `astra-interview-assistant`: `4500` (Next.js client)
-    *   `interview-mcp-server`: `3000` (NestJS server)
+    *   `interview-mcp-server`: `4501` (NestJS server)
 
 ### Key Projects
 *   [apps/astra-document-summary](./apps/astra-document-summary): Next.js conversational summarizer.
