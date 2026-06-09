@@ -110,10 +110,23 @@ export async function processFile(
 }
 
 /**
- * Summarizes an array of LangChain Documents using a Map-Reduce chain workflow,
- * returning a stream of the final cohesive summary.
+ * Normalizes an array of LangChain Document objects by stripping newlines and consolidating whitespace 
+ * within the page content, preserving the original metadata.
  * 
- * @param docs - Array of LangChain {@link Document} inputs to process.
+ * @param docs - The array of Document objects to normalize.
+ * @returns A new array of Document objects with cleaned whitespace.
+ */
+function normalizeDocuments(docs: Document[]): Document[] {
+  return docs.map(doc => new Document({
+    pageContent: doc.pageContent.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+    metadata: doc.metadata
+  }));
+}
+
+/**
+ * Generates a stream of the summary for an array of LangChain Document objects using the Map-Reduce pipeline.
+ *
+ * @param docs - The array of loaded LangChain documents to summarize.
  * @param providerId - Model provider ID. Defaults to 'vertex'.
  * @param modelId - Target model name. Defaults to 'gemini-2.5-flash'.
  * @returns A promise resolving to the final cohesive summary LangChain stream.
@@ -129,10 +142,7 @@ export async function summarizeDocsStream(
     throw new Error(`Could not initialize LangChain model for ${providerId}/${modelId}`);
   }
 
-  const normalizedDocs = docs.map(doc => new Document({
-    pageContent: doc.pageContent.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-    metadata: doc.metadata
-  }));
+  const normalizedDocs = normalizeDocuments(docs);
 
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 10000,
