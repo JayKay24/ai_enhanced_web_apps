@@ -14,13 +14,13 @@ This document contains architectural rules, module boundaries, compilation const
     *   `astra-document-summary`: `4300` (Next.js client)
     *   `astra-aviation-rag`: `4400` (Next.js client)
     *   `astra-interview-assistant`: `4500` (Next.js client)
-    *   `interview-mcp-server`: `4501` (NestJS server)
+    *   `astra-mcp-server`: `4501` (NestJS server)
 
 ### Key Projects
 *   [apps/astra-document-summary](./apps/astra-document-summary): Next.js conversational summarizer.
 *   [apps/astra-aviation-rag](./apps/astra-aviation-rag): Next.js aviation safety query client with RAG.
 *   [apps/astra-interview-assistant](./apps/astra-interview-assistant): Next.js conversational technical interview assistant.
-*   [apps/interview-mcp-server](./apps/interview-mcp-server): Experimental NestJS server providing MCP tooling.
+*   [apps/astra-mcp-server](./apps/astra-mcp-server): Experimental NestJS server providing MCP tooling.
 *   [apps/standalone/rag-indexer](./apps/standalone/rag-indexer): NestJS CLI to index source reports to local HNSW vector stores.
 *   [libs/chat-ui](./libs/chat-ui): Reusable React presentation components.
 *   [libs/chat-hooks](./libs/chat-hooks): React UX and input submission hooks.

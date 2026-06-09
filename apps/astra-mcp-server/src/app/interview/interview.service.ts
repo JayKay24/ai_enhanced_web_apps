@@ -1,10 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { McpCoreService } from '../mcp-core/mcp-core.service';
 import { z } from 'zod';
-import { Request, Response } from 'express';
 import { logger } from '@ai-enhanced-web-apps/logger';
-import { randomUUID } from 'crypto';
 
 const MOCK_QUESTIONS = [
   { id: 1, difficulty: 'easy', text: 'What is the Virtual DOM in React?' },
@@ -20,17 +17,13 @@ const MOCK_QUESTIONS = [
 ];
 
 @Injectable()
-export class McpService implements OnModuleInit {
-  private server!: McpServer;
-  private transport!: StreamableHTTPServerTransport;
+export class InterviewService implements OnModuleInit {
+  constructor(private readonly mcpCoreService: McpCoreService) {}
 
-  async onModuleInit() {
-    this.server = new McpServer({
-      name: 'interview-mcp-server',
-      version: '1.0.0',
-    });
+  onModuleInit() {
+    const server = this.mcpCoreService.getServer();
 
-    this.server.registerTool(
+    server.registerTool(
       'get-interview-questions',
       {
         description: 'Fetch frontend-focused technical interview questions based on difficulty.',
@@ -56,16 +49,7 @@ export class McpService implements OnModuleInit {
         };
       }
     );
-    
-    this.transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: () => randomUUID(),
-    });
-    await this.server.connect(this.transport);
-    logger.info('MCP Server initialized with StreamableHTTPServerTransport (Stateful)');
-  }
 
-  async handleRequest(req: Request, res: Response) {
-    // Pass req.body if it exists because NestJS may have already parsed it
-    await this.transport.handleRequest(req, res, req.body);
+    logger.info('Registered Interview MCP tools');
   }
 }

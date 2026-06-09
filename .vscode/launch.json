@@ -518,9 +518,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug interview-mcp-server with Nx",
+      "name": "Debug astra-mcp-server with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "interview-mcp-server"],
+      "runtimeArgs": ["nx", "serve", "astra-mcp-server"],
       "env": {
         "NODE_OPTIONS": "--inspect=9243",
         "PORT": "4501"
@@ -530,7 +530,7 @@
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/apps/interview-mcp-server/dist/**/*.(m|c|)js",
+        "${workspaceFolder}/apps/astra-mcp-server/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }
@@ -540,7 +540,7 @@
       "name": "Start: Interview Assistant & MCP Server",
       "configurations": [
         "Launch & Debug astra-interview-assistant",
-        "Debug interview-mcp-server with Nx"
+        "Debug astra-mcp-server with Nx"
       ]
     }
   ]

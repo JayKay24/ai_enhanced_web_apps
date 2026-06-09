@@ -1,9 +1,9 @@
 {
-  "name": "@ai-enhanced-web-apps/interview-mcp-server",
+  "name": "@ai-enhanced-web-apps/astra-mcp-server",
   "version": "0.0.1",
   "private": true,
   "nx": {
-    "name": "interview-mcp-server",
+    "name": "astra-mcp-server",
     "targets": {
       "build": {
         "executor": "nx:run-commands",
@@ -12,7 +12,7 @@
           "args": [
             "--node-env=production"
           ],
-          "cwd": "apps/interview-mcp-server"
+          "cwd": "apps/astra-mcp-server"
         },
         "configurations": {
           "development": {
@@ -29,8 +29,8 @@
         "cache": true,
         "executor": "@nx/js:prune-lockfile",
         "outputs": [
-          "{workspaceRoot}/apps/interview-mcp-server/dist/package.json",
-          "{workspaceRoot}/apps/interview-mcp-server/dist/package-lock.json"
+          "{workspaceRoot}/apps/astra-mcp-server/dist/package.json",
+          "{workspaceRoot}/apps/astra-mcp-server/dist/package-lock.json"
         ],
         "options": {
           "buildTarget": "build"
@@ -42,7 +42,7 @@
         ],
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/apps/interview-mcp-server/dist/workspace_modules"
+          "{workspaceRoot}/apps/astra-mcp-server/dist/workspace_modules"
         ],
         "executor": "@nx/js:copy-workspace-modules",
         "options": {
@@ -64,15 +64,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "interview-mcp-server:build",
+          "buildTarget": "astra-mcp-server:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "interview-mcp-server:build:development"
+            "buildTarget": "astra-mcp-server:build:development"
           },
           "production": {
-            "buildTarget": "interview-mcp-server:build:production"
+            "buildTarget": "astra-mcp-server:build:production"
           }
         }
       }

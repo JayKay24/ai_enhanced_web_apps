@@ -21,7 +21,7 @@ The application is built on Next.js 15+ (App Router) and leverages the following
 
 This assistant integrates with an experimental Model Context Protocol (MCP) server. When the user selects a "Frontend Engineer" job type with a "Technical" question type, the assistant leverages the `experimental_createMCPClient` from the Vercel AI SDK to stream connection and inject the MCP tools directly into the LLM context. 
 
-For more details on the server implementation, see the [Interview MCP Server README](../interview-mcp-server/README.md).
+For more details on the server implementation, see the [Astra MCP Server README](../astra-mcp-server/README.md).
 
 ## Running Locally
 

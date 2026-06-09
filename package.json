@@ -133,6 +133,7 @@
   "workspaces": [
     "apps/*",
     "libs/*",
-    "apps/standalone/*"
+    "apps/standalone/*",
+    "astra-mcp-server"
   ]
 }

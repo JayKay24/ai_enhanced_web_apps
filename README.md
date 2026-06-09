@@ -25,7 +25,7 @@ The workspace is inspired by the book *Building AI-Enhanced Web Apps* by Theo De
 | **Astra Interview Assistant** | [`apps/astra-interview-assistant`](apps/astra-interview-assistant) | [🚀 Live Demo](https://project-n9t17.vercel.app/) | Next.js-based conversational AI assistant simulating real-world job interviews with personalized feedback. |
 
 > [!NOTE]
-> **Experimental MCP Server:** The Interview Assistant integrates with an experimental standalone NestJS server ([`apps/interview-mcp-server`](apps/interview-mcp-server/README.md)) via the Model Context Protocol (MCP). It uses the `StreamableHTTPTransport` to dynamically fetch mock frontend technical questions based on the user's selected difficulty level.
+> **Experimental MCP Server:** The Interview Assistant integrates with an experimental standalone NestJS server ([`apps/astra-mcp-server`](apps/astra-mcp-server/README.md)) via the Model Context Protocol (MCP). It uses the `StreamableHTTPTransport` to dynamically fetch mock frontend technical questions based on the user's selected difficulty level.
 
 > [!IMPORTANT]
 > **Authentication & Session Isolation:** For the optimal experience, log in to **one** application at a time. To switch between applications, log out of the current one first. This is because a custom shared domain has not been set up across the three deployments, and Clerk.js satellite domain configurations (to share sessions across distinct domains) are a paid Clerk Pro feature.
