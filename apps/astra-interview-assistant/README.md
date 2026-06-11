@@ -1,6 +1,6 @@
 # Astra Interview Assistant
 
-A Next.js-based conversational AI assistant designed to help job seekers practice for real-world interviews. Powered by Google Vertex AI, this application simulates realistic interview scenarios and provides personalized feedback using an LLM-powered interviewer.
+A Next.js-based conversational AI assistant that I designed to help job seekers practice for real-world interviews. Powered by Google Vertex AI, my application simulates realistic interview scenarios and provides personalized feedback using an LLM-powered interviewer.
 
 ## Features
 
@@ -12,14 +12,14 @@ A Next.js-based conversational AI assistant designed to help job seekers practic
 
 ## Architecture
 
-The application is built on Next.js 15+ (App Router) and leverages the following technologies:
+I built the application on Next.js 15+ (App Router) and leveraged the following technologies:
 - **Frontend Hooks:** Custom React hooks (`@ai-enhanced-web-apps/chat-hooks`) abstract away the `useChat` integration and audio playback.
-- **Backend Services:** Heavy operations like Redis state management, Vertex AI calls, and TTS synthesis are encapsulated in standard services (`interview-service.ts`, `tts-service.ts`) isolated from HTTP route handlers.
+- **Backend Services:** I encapsulated heavy operations like Redis state management, Vertex AI calls, and TTS synthesis in standard services (`interview-service.ts`, `tts-service.ts`) isolated from HTTP route handlers.
 - **Authentication & Rate Limiting:** Secured with Clerk for user auth and Upstash Redis for sliding-window rate limiting.
 
 ## MCP Integration
 
-This assistant integrates with an experimental Model Context Protocol (MCP) server. When the user selects a "Frontend Engineer" job type with a "Technical" question type, the assistant leverages the `experimental_createMCPClient` from the Vercel AI SDK to stream connection and inject the MCP tools directly into the LLM context. 
+I integrated this assistant with an experimental Model Context Protocol (MCP) server. When the user selects a "Frontend Engineer" job type with a "Technical" question type, my assistant leverages the `experimental_createMCPClient` from the Vercel AI SDK to stream connection and inject the MCP tools directly into the LLM context. 
 
 For more details on the server implementation, see the [Astra MCP Server README](../astra-mcp-server/README.md).
 

@@ -1,6 +1,6 @@
 # Astra Aviation RAG
 
-A Next.js 15+ conversational AI safety assistant designed to search and analyze NTSB aviation accident/incident reports using Retrieval-Augmented Generation (RAG) and local Hierarchical Navigable Small World (HNSW) vector indexing.
+A Next.js 15+ conversational AI safety assistant that I designed to search and analyze NTSB aviation accident/incident reports using Retrieval-Augmented Generation (RAG) and local Hierarchical Navigable Small World (HNSW) vector indexing.
 
 ## Core Features
 

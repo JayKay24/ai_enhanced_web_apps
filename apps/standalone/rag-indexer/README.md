@@ -1,6 +1,6 @@
 # Astra Aviation RAG Indexer
 
-This is a standalone NestJS CLI application designed to build and serialize the vector search index for the **Astra Aviation RAG** application.
+I built this standalone NestJS CLI application to build and serialize the vector search index for the **Astra Aviation RAG** application.
 
 ## Core Features
 

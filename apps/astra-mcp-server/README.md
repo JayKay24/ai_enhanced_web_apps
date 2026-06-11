@@ -1,6 +1,6 @@
 # Astra MCP Server
 
-An experimental standalone NestJS server that implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) to provide specialized tool integrations for multiple AI applications within the Astra Monorepo.
+I built this experimental standalone NestJS server that implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) to provide specialized tool integrations for multiple AI applications within the Astra Monorepo.
 
 ## Features
 
