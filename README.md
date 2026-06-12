@@ -197,3 +197,9 @@ Nx commands can be prefixed with `npx` or the workspace package manager:
 ## 🙏 Acknowledgements
 
 This workspace and the applications within are inspired by the book *Building AI-Enhanced Web Apps* by Theo Despoudis, focusing on Google Vertex AI, Next.js, and the Vercel AI SDK.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
