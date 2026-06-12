@@ -13,7 +13,6 @@
 
 Welcome! This repository is an Nx-based monorepo containing full-stack applications, CLI indexers, and shared libraries demonstrating how to build modern, AI-enhanced web applications using LLMs and generative AI.
 
-The workspace is inspired by the book *Building AI-Enhanced Web Apps* by Theo Despoudis, focusing on Google Vertex AI, Next.js, and the Vercel AI SDK.
 
 ---
 
@@ -192,3 +191,9 @@ Nx commands can be prefixed with `npx` or the workspace package manager:
     ```bash
     npx nx run-many -t lint
     ```
+
+---
+
+## 🙏 Acknowledgements
+
+This workspace and the applications within are inspired by the book *Building AI-Enhanced Web Apps* by Theo Despoudis, focusing on Google Vertex AI, Next.js, and the Vercel AI SDK.
