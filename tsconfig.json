@@ -72,5 +72,8 @@
     {
       "path": "./apps/astra-mcp-server"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0"
+  }
 }

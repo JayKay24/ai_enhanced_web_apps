@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "./out-tsc/jest",
     "types": ["jest", "node", "@testing-library/jest-dom"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "ignoreDeprecations": "6.0",
+    "rootDir": "."
   },
   "include": [
     "jest.config.ts",
