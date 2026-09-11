@@ -194,6 +194,38 @@ Nx commands can be prefixed with `npx` or the workspace package manager:
 
 ---
 
+## 🚀 CI/CD & Deployment Pipeline
+
+This monorepo utilizes automated GitHub Actions workflows with `nx affected` to run efficient checks and targeted deployments:
+
+1. **Pull Request Checks (`.github/workflows/ci.yml`)**:
+   - Runs on all Pull Requests targeting `main` and `develop`.
+   - Executes `nx affected -t lint,typecheck,test,build` with remote caching so only modified projects and their dependents are tested.
+   - Dynamically injects development environment secrets via the `Infisical/secrets-action`.
+
+2. **Branch-Specific Deployments (`.github/workflows/deploy.yml`)**:
+   - **Merge to `develop`**: Automatically triggers **Preview Deployments** on Vercel for affected applications.
+   - **Merge to `main`**: Automatically triggers **Production Deployments** on Vercel for affected applications.
+   - Deployable applications include:
+     - `apps/astra-aviation-rag`
+     - `apps/astra-document-summary`
+     - `apps/astra-interview-assistant`
+     - `apps/astra-mcp-server`
+   - Dynamically injects environment-specific secrets (`dev` for preview, `prod` for production) via Infisical.
+
+### Required GitHub Repository Secrets
+To enable the pipeline, configure the following secrets in GitHub Repository Settings:
+- `INFISICAL_CLIENT_ID`: Machine Identity client ID for Infisical secret management.
+- `INFISICAL_CLIENT_SECRET`: Machine Identity secret for Infisical.
+- `VERCEL_TOKEN`: Vercel personal access token with deployment privileges.
+- `VERCEL_ORG_ID`: Vercel Team or User scope ID.
+- `VERCEL_PROJECT_ID_AVIATION_RAG`: Vercel Project ID for Astra Aviation RAG.
+- `VERCEL_PROJECT_ID_DOCUMENT_SUMMARY`: Vercel Project ID for Astra Document Summary.
+- `VERCEL_PROJECT_ID_INTERVIEW_ASSISTANT`: Vercel Project ID for Astra Interview Assistant.
+- `VERCEL_PROJECT_ID_MCP_SERVER`: Vercel Project ID for Astra MCP Server.
+
+---
+
 ## 🙏 Acknowledgements
 
 This workspace and the applications within are inspired by the book [*Building AI-Enhanced Web Apps*](https://a.co/d/06DfsG5n) by Theo Despoudis, focusing on Google Vertex AI, Next.js, and the Vercel AI SDK.

@@ -151,6 +151,11 @@ We use Pino via the `@ai-enhanced-web-apps/logger` package.
 *   **Module Boundaries**: Strictly enforce `@nx/enforce-module-boundaries` rules. Do not bypass via relative path hacks.
 *   **JSDoc/TSDoc**: Write/update detailed annotations (`/** ... */`) for all exported functions, classes, and types, focusing on parameters, behavior, exceptions, and usage examples.
 *   **Documentation Maintenance**: Always keep the global [README.md](./README.md), individual library/app readmes, and this [AGENTS.md](./AGENTS.md) file up to date whenever new files, configurations, parameters, or architectural patterns are introduced or modified.
+*   **CI/CD Pipeline Conventions**:
+    *   PR validation runs via `.github/workflows/ci.yml` evaluating `nx affected` across `lint`, `typecheck`, `test`, and `build`.
+    *   Deployments run via `.github/workflows/deploy.yml`: pushes/merges to `develop` trigger **Preview Deployments** on Vercel, and pushes/merges to `main` trigger **Production Deployments**.
+    *   Dynamic secrets in CI are resolved through `Infisical/secrets-action`.
+    *   Only affected deployable apps (`astra-aviation-rag`, `astra-document-summary`, `astra-interview-assistant`, `astra-mcp-server`) are built and deployed.
 
 ---
 
