@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-// @ts-ignore - Ignore if string-comparison lacks type definitions
+// @ts-expect-error - Ignore if string-comparison lacks type definitions
 import stringComparison from 'string-comparison';
 
 jest.mock("ai", () => ({

@@ -28,6 +28,10 @@
       "@ai-enhanced-web-apps/chat-ui": ["libs/chat-ui/src/index.ts"],
       "@ai-enhanced-web-apps/chat-hooks": ["libs/chat-hooks/src/index.ts"],
       "@ai-enhanced-web-apps/logger": ["libs/logger/src/index.ts"]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   }
 }

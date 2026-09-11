@@ -8,15 +8,11 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node"],
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "out-tsc",
-    "dist"
-  ],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "out-tsc", "dist"],
   "references": [
     {
       "path": "../shared-utils/tsconfig.lib.json"
