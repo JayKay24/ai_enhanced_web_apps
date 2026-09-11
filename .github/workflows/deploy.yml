@@ -49,8 +49,8 @@ jobs:
       - name: Fetch secrets via Infisical
         uses: Infisical/secrets-action@v1.0.7
         with:
-          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
-          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          method: 'oidc'
+          identity-id: ${{ secrets.INFISICAL_CLIENT_ID }}
           project-slug: e65ac486-ecf3-452c-ac44-ae7d978298e8
           env-slug: ${{ steps.env-detect.outputs.infisical_env }}
         continue-on-error: true

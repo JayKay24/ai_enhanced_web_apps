@@ -215,8 +215,7 @@ This monorepo utilizes automated GitHub Actions workflows with `nx affected` to 
 
 ### Required GitHub Repository Secrets
 To enable the pipeline, configure the following secrets in GitHub Repository Settings:
-- `INFISICAL_CLIENT_ID`: Machine Identity client ID for Infisical secret management.
-- `INFISICAL_CLIENT_SECRET`: Machine Identity secret for Infisical.
+- `INFISICAL_CLIENT_ID`: Infisical Machine Identity ID (authenticated via OIDC).
 - `VERCEL_TOKEN`: Vercel personal access token with deployment privileges.
 - `VERCEL_ORG_ID`: Vercel Team or User scope ID.
 - `VERCEL_PROJECT_ID_AVIATION_RAG`: Vercel Project ID for Astra Aviation RAG.
