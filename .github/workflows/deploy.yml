@@ -1,0 +1,72 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy Affected Applications
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Determine Deployment Environment
+        id: env-detect
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "mode=production" >> $GITHUB_OUTPUT
+            echo "infisical_env=prod" >> $GITHUB_OUTPUT
+            echo "Deploying in PRODUCTION mode"
+          else
+            echo "mode=preview" >> $GITHUB_OUTPUT
+            echo "infisical_env=dev" >> $GITHUB_OUTPUT
+            echo "Deploying in PREVIEW mode"
+          fi
+
+      - name: Fetch secrets via Infisical
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+          method: 'oidc'
+          identity-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          project-slug: e65ac486-ecf3-452c-ac44-ae7d978298e8
+          env-slug: ${{ steps.env-detect.outputs.infisical_env }}
+        continue-on-error: true
+
+      - name: Derive SHAs for Nx Affected
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: main
+
+      - name: Deploy Affected Apps to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID_AVIATION_RAG: ${{ secrets.VERCEL_PROJECT_ID_AVIATION_RAG }}
+          VERCEL_PROJECT_ID_DOCUMENT_SUMMARY: ${{ secrets.VERCEL_PROJECT_ID_DOCUMENT_SUMMARY }}
+          VERCEL_PROJECT_ID_INTERVIEW_ASSISTANT: ${{ secrets.VERCEL_PROJECT_ID_INTERVIEW_ASSISTANT }}
+          VERCEL_PROJECT_ID_MCP_SERVER: ${{ secrets.VERCEL_PROJECT_ID_MCP_SERVER }}
+        run: |
+          node tools/scripts/deploy-affected.mjs ${{ steps.env-detect.outputs.mode }}
