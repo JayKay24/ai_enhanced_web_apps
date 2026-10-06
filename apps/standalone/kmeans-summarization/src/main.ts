@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { NestLoggerService, logger } from '@ai-enhanced-web-apps/logger';
@@ -10,7 +9,9 @@ async function bootstrap() {
 
   if (!pdfPath) {
     logger.error('\n❌ Error: Missing PDF file path argument.');
-    logger.info('Usage: npx nx execute kmeans-summarization --args="path/to/document.pdf"\n');
+    logger.info(
+      'Usage: npx nx execute kmeans-summarization --args="path/to/document.pdf"\n',
+    );
     process.exit(1);
   }
 

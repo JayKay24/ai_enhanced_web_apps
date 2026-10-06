@@ -21,12 +21,12 @@ List some popular programming languages along with a brief description of each:
 4.`;
 
     const response = await generateText({
-      model: this.vertex('gemini-2.5-flash'),
+      model: this.vertex('gemini-2.5-flash') as any,
       prompt: prompt,
-      maxOutputTokens: 512,
+      maxTokens: 512,
     });
 
-    this.logger.log("Generated Programming Languages:\n", response.text, "\n");
+    this.logger.log('Generated Programming Languages:\n', response.text, '\n');
   }
 
   async supportCustomerIssue(message: string): Promise<void> {
@@ -53,22 +53,26 @@ You are a customer support chatbot. Adapt your tone and sentiment based on the f
 `;
 
     const response = await generateText({
-      model: this.vertex('gemini-2.5-flash'),
+      model: this.vertex('gemini-2.5-flash') as any,
       prompt: message,
       system: system,
-      maxOutputTokens: 512,
+      maxTokens: 512,
     });
 
     this.logger.log(`User: ${message}`);
-    this.logger.log("Chatbot Response:", response.text, "\n");
+    this.logger.log('Chatbot Response:', response.text, '\n');
   }
 
   async run() {
-    this.logger.log("--- Generating Programming Languages (Few-Shot) ---");
+    this.logger.log('--- Generating Programming Languages (Few-Shot) ---');
     // await this.generateProgrammingLanguages();
 
-    this.logger.log("--- Customer Support Chatbot (Few-Shot System Prompt) ---");
-    await this.supportCustomerIssue("My Wi-Fi keeps disconnecting every few minutes. What should I do?");
+    this.logger.log(
+      '--- Customer Support Chatbot (Few-Shot System Prompt) ---',
+    );
+    await this.supportCustomerIssue(
+      'My Wi-Fi keeps disconnecting every few minutes. What should I do?',
+    );
     // await this.supportCustomerIssue("I was charged for a service I didn't use. Can you help?");
     // await this.supportCustomerIssue("Can I change my shipping address after placing an order?");
     // await this.supportCustomerIssue("I'm locked out of my account. How can I regain access?");

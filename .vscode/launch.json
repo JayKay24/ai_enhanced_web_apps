@@ -407,24 +407,7 @@
         "!**/node_modules/**"
       ]
     },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug few-shot-chain with Nx",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "execute", "few-shot-chain"],
-      "env": {
-        "NODE_OPTIONS": "--inspect=9237"
-      },
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/apps/standalone/few-shot-chain/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
-    },
+
     {
       "type": "node",
       "request": "launch",
