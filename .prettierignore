@@ -4,3 +4,8 @@
 /.nx/cache
 /.nx/workspace-data
 .nx/self-healing
+/node_modules
+/.next
+/tmp
+/KG-RAG-datasets-main
+*.tsbuildinfo

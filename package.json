@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "docs:generate": "typedoc"
+    "docs:generate": "typedoc",
+    "prepare": "husky",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write ."
   },
   "private": true,
   "dependencies": {
@@ -113,11 +116,13 @@
     "eslint-plugin-playwright": "^1.6.2",
     "eslint-plugin-react": "7.35.0",
     "eslint-plugin-react-hooks": "5.0.0",
+    "husky": "^9.1.7",
     "jest": "~30.3.0",
     "jest-environment-jsdom": "^30.4.1",
     "jest-environment-node": "~30.3.0",
     "jest-util": "~30.3.0",
     "jiti": "2.4.2",
+    "lint-staged": "^17.6.0",
     "nx": "23.2.1",
     "postcss": "8.4.38",
     "prettier": "~3.6.2",
@@ -128,9 +133,9 @@
     "typedoc": "^0.28.19",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.40.0",
+    "webpack": "5.110.3",
     "webpack-cli": "7.2.3",
-    "webpack-dev-server": "5.2.6",
-    "webpack": "5.110.3"
+    "webpack-dev-server": "5.2.6"
   },
   "workspaces": [
     "apps/*",

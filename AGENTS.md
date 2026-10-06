@@ -164,6 +164,12 @@ We use Pino via the `@ai-enhanced-web-apps/logger` package.
 - **Module Boundaries**: Strictly enforce `@nx/enforce-module-boundaries` rules. Do not bypass via relative path hacks.
 - **JSDoc/TSDoc**: Write/update detailed annotations (`/** ... */`) for all exported functions, classes, and types, focusing on parameters, behavior, exceptions, and usage examples.
 - **Documentation Maintenance**: Always keep the global [README.md](./README.md), individual library/app readmes, and this [AGENTS.md](./AGENTS.md) file up to date whenever new files, configurations, parameters, or architectural patterns are introduced or modified.
+- **Pre-Commit Hooks & Formatting**:
+  - Husky and `lint-staged` enforce code quality before each local commit (`.husky/pre-commit` and `.lintstagedrc.json`).
+  - Staged TypeScript/JavaScript files are auto-fixed via `eslint --fix` and formatted via `prettier --write`.
+  - Staged configuration, markdown, and style files are formatted via `prettier --write`.
+  - Whole-monorepo type safety is checked via `tsc --noEmit`.
+  - Manual formatting checks can be run via `npm run format:check` and auto-fixed via `npm run format:write`.
 - **CI/CD Pipeline Conventions**:
   - PR validation runs via `.github/workflows/ci.yml` evaluating `nx affected` across `lint`, `typecheck`, `test`, and `build`.
   - Deployments run via `.github/workflows/deploy.yml`: pushes/merges to `develop` trigger **Preview Deployments** on Vercel, and pushes/merges to `main` trigger **Production Deployments**.
