@@ -9,6 +9,54 @@ A Next.js 15+ conversational AI safety assistant that I designed to search and a
 - **Hierarchical Navigable Small World (HNSW) Indexing**: Executes extremely fast semantic retrieval over serialized local HNSWLib databases.
 - **Shared Architecture**: Reuses the core RAG components via the shared library `@ai-enhanced-web-apps/rag` and shared UI components from `@ai-enhanced-web-apps/chat-ui`.
 
+## High-Level Architecture
+
+```mermaid
+flowchart TD
+    subgraph Client["Browser Client (Port 4400)"]
+        UI["Chat UI (Next.js App Router)"]
+        Hook["useAviationChat Hook"]
+        UI --> Hook
+    end
+
+    subgraph Security["Edge & Auth Layer"]
+        Proxy["proxy.ts (Edge Proxy)"]
+        Clerk["Clerk Authentication"]
+        Upstash["Upstash Redis (Rate Limiter & Quotas)"]
+        Proxy --> Clerk
+        Proxy --> Upstash
+    end
+
+    subgraph Server["Next.js Server Runtime"]
+        API["POST /api/chat"]
+        AviationService["AviationRAG Service (@ai-enhanced-web-apps/rag)"]
+        StreamAdapter["Vercel AI SDK (createUIMessageStream)"]
+        API --> AviationService
+        AviationService --> StreamAdapter
+    end
+
+    subgraph Storage["Vector Storage & Offline Processing"]
+        CLI["Standalone CLI (rag-indexer)"]
+        PDFs["NTSB Incident Report PDFs"]
+        HNSW["HNSWLib Local Vector Store"]
+        PDFs --> CLI
+        CLI --> HNSW
+        HNSW -.->|Read Index| AviationService
+    end
+
+    subgraph Cloud["Google Cloud Platform"]
+        VertexEmbed["Vertex AI Embeddings (text-embedding-004)"]
+        VertexLLM["Vertex AI Gemini (gemini-2.5-flash)"]
+        CLI --> VertexEmbed
+        AviationService --> VertexEmbed
+        AviationService --> VertexLLM
+    end
+
+    Hook --> Proxy
+    Proxy --> API
+    StreamAdapter -.->|UIMessage Stream Response| Hook
+```
+
 ## Dataset Source
 
 The aviation dataset containing NTSB accident and incident reports is sourced from the [Docugami KG-RAG-datasets](https://github.com/docugami/KG-RAG-datasets) repository.
@@ -25,10 +73,12 @@ The aviation dataset containing NTSB accident and incident reports is sourced fr
 ### Prerequisites
 
 Ensure you have authenticated Google Cloud Default Credentials (ADC) and set the following environment variables:
+
 - `VERTEX_AI_PROJECT_ID`
 - `VERTEX_AI_LOCATION` (defaults to `us-central1` if not provided)
 
 If you haven't built the vector index yet, first run the standalone NestJS indexer CLI:
+
 ```bash
 npm exec nx build rag-indexer
 npx nx execute rag-indexer

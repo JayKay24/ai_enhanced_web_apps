@@ -11,6 +11,37 @@ I built this experimental standalone NestJS server that implements the [Model Co
   - **Document Summary:** Scaffolded to provide secure server-side file and text processing tools for `astra-document-summary`.
   - **Aviation RAG:** Scaffolded to expose aviation report vector search and document retrieval tooling for `astra-aviation-rag`.
 
+## High-Level Architecture
+
+```mermaid
+flowchart TD
+    subgraph Clients["Astra Monorepo Clients"]
+        InterviewApp["Astra Interview Assistant (Next.js)"]
+        SummaryApp["Astra Document Summary (Next.js)"]
+        AviationApp["Astra Aviation RAG (Next.js)"]
+    end
+
+    subgraph Server["NestJS MCP Microservice (Port 4501)"]
+        Transport["StreamableHTTPServerTransport (/mcp)"]
+        CoreModule["McpCoreModule & CoreService"]
+
+        subgraph Domains["Feature Tool Modules"]
+            InterviewModule["InterviewModule (get-interview-questions)"]
+            DocModule["DocumentSummaryModule (File/Text Tools)"]
+            AviationModule["AviationRagModule (Vector Search Tools)"]
+        end
+
+        Transport --> CoreModule
+        CoreModule --> InterviewModule
+        CoreModule --> DocModule
+        CoreModule --> AviationModule
+    end
+
+    InterviewApp -.->|"JSON-RPC (StreamableHTTP)"| Transport
+    SummaryApp -.->|"JSON-RPC"| Transport
+    AviationApp -.->|"JSON-RPC"| Transport
+```
+
 ## Running Locally
 
 Serve the application locally using Nx:
