@@ -182,7 +182,11 @@ We use Pino via the `@ai-enhanced-web-apps/logger` package.
 
 - **Nx Tasks**: Run tasks using Nx with package manager execution (e.g. `npx nx test <project>`). Avoid executing underlying tools directly.
 - **Generators**: Eagerly run scaffolding generators first (via `nx-generate` skill) before configuring files manually.
-- **MCP Tools**: Use **Context7** for external library questions, **Nx MCP** for workspace analysis, and **Next DevTools** for Next.js diagnostics.
+- **MCP Tooling Integrations**: Actively leverage available Model Context Protocol (MCP) servers tailored for the workspace:
+  - **`github`**: Use for interacting with issues, pull requests, repository metadata, code search, and review feedback. Always prefer GitHub MCP tools over ad-hoc manual scripts or brittle CLI invocations when managing GitHub resources.
+  - **`next-devtools`**: Use for inspecting Next.js internals, App Router diagnostics, runtime evaluation, route mapping, and Next.js documentation lookup.
+  - **`context7`**: Use for querying up-to-date documentation and library references across external dependencies (e.g., Vercel AI SDK, LangChain, Tailwind CSS).
+  - **`nx-mcp`**: Use for analyzing the monorepo project graph, inspecting running tasks, inspecting task output, and validating project dependency boundaries.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
