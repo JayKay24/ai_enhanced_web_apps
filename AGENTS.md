@@ -164,10 +164,18 @@ We use Pino via the `@ai-enhanced-web-apps/logger` package.
 - **Module Boundaries**: Strictly enforce `@nx/enforce-module-boundaries` rules. Do not bypass via relative path hacks.
 - **JSDoc/TSDoc**: Write/update detailed annotations (`/** ... */`) for all exported functions, classes, and types, focusing on parameters, behavior, exceptions, and usage examples.
 - **Documentation Maintenance**: Always keep the global [README.md](./README.md), individual library/app readmes, and this [AGENTS.md](./AGENTS.md) file up to date whenever new files, configurations, parameters, or architectural patterns are introduced or modified.
-- **CI/CD Pipeline Conventions**:
+- **Pre-Commit Hooks, Commit Message Validation & Formatting**:
+  - Husky, `lint-staged`, and Commitlint enforce code quality and commit message conventions (`.husky/pre-commit`, `.husky/commit-msg`, and `commitlint.config.mjs`).
+  - Commit messages must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `style:`, etc.).
+  - Staged TypeScript/JavaScript files are auto-fixed via `eslint --fix` and formatted via `prettier --write`.
+  - Staged configuration, markdown, and style files are formatted via `prettier --write`.
+  - Whole-monorepo type safety is checked via `tsc --noEmit`.
+  - Manual formatting checks can be run via `npm run format:check` and auto-fixed via `npm run format:write`.
+- **CI/CD & Release Pipeline Conventions**:
   - PR validation runs via `.github/workflows/ci.yml` evaluating `nx affected` across `lint`, `typecheck`, `test`, and `build`.
-  - Deployments run via `.github/workflows/deploy.yml`: pushes/merges to `develop` trigger **Preview Deployments** on Vercel, and pushes/merges to `main` trigger **Production Deployments**.
-  - Dynamic secrets in CI are resolved through `Infisical/secrets-action`.
+  - Automated releases and changelog generation run via `.github/workflows/release.yml`: pushes/merges to `main` trigger `nx release` (creating `v{version}` git tags, updating root `CHANGELOG.md`, and publishing GitHub Releases). Manual dry-run triggers are supported via `workflow_dispatch`.
+  - Deployments run via `.github/workflows/deploy.yml`: pushes/merges to `main` trigger **Production Deployments** on Vercel (preview deployments disabled).
+  - Dynamic secrets in CI are resolved through `Infisical/secrets-action` (using the `prod` environment).
   - Only affected deployable apps (`astra-aviation-rag`, `astra-document-summary`, `astra-interview-assistant`, `astra-mcp-server`) are built and deployed.
 
 ---
@@ -176,7 +184,11 @@ We use Pino via the `@ai-enhanced-web-apps/logger` package.
 
 - **Nx Tasks**: Run tasks using Nx with package manager execution (e.g. `npx nx test <project>`). Avoid executing underlying tools directly.
 - **Generators**: Eagerly run scaffolding generators first (via `nx-generate` skill) before configuring files manually.
-- **MCP Tools**: Use **Context7** for external library questions, **Nx MCP** for workspace analysis, and **Next DevTools** for Next.js diagnostics.
+- **MCP Tooling Integrations**: Actively leverage available Model Context Protocol (MCP) servers tailored for the workspace:
+  - **`github`**: Use for interacting with issues, pull requests, repository metadata, code search, and review feedback. Always prefer GitHub MCP tools over ad-hoc manual scripts or brittle CLI invocations when managing GitHub resources.
+  - **`next-devtools`**: Use for inspecting Next.js internals, App Router diagnostics, runtime evaluation, route mapping, and Next.js documentation lookup.
+  - **`context7`**: Use for querying up-to-date documentation and library references across external dependencies (e.g., Vercel AI SDK, LangChain, Tailwind CSS).
+  - **`nx-mcp`**: Use for analyzing the monorepo project graph, inspecting running tasks, inspecting task output, and validating project dependency boundaries.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

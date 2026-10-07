@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
-import { NestLoggerService } from '@ai-enhanced-web-apps/logger';
 import { AppModule } from './app/app.module';
 import { AppService } from './app/app.service';
 

@@ -35,7 +35,7 @@ List some popular programming languages along with a brief description of each:
 
     try {
       const { embedding } = await embed({
-        model,
+        model: model as any,
         value: inputText,
       });
 

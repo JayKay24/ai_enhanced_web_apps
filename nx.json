@@ -92,5 +92,28 @@
         "linter": "none"
       }
     }
+  },
+  "release": {
+    "projectsRelationship": "fixed",
+    "git": {
+      "commit": true,
+      "commitMessage": "chore(release): publish v{version} [skip ci]",
+      "tag": true,
+      "tagMessage": "v{version}",
+      "stageChanges": true
+    },
+    "version": {
+      "specifierSource": "conventional-commits",
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    },
+    "changelog": {
+      "automaticFromRef": true,
+      "workspaceChangelog": {
+        "file": "CHANGELOG.md",
+        "createRelease": "github"
+      },
+      "projectChangelogs": false
+    }
   }
 }
