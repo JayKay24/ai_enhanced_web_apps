@@ -248,6 +248,13 @@ This monorepo utilizes automated GitHub Actions workflows with `nx affected` to 
      - `apps/astra-mcp-server`
    - Dynamically injects production environment secrets (`prod`) via Infisical.
 
+3. **Automated Semantic Versioning & Changelog Generation (`.github/workflows/release.yml`)**:
+   - **Merge to `main`**: Automatically triggers `nx release`, analyzing conventional commit history, calculating the next unified semantic version (`v{version}`), generating `CHANGELOG.md`, tagging the release, and publishing a GitHub Release with formatted release notes.
+   - **Manual Trigger**: Can be executed manually via GitHub Actions `workflow_dispatch` with an optional `--dry-run` input.
+   - **Local Commands**:
+     - `npm run release:dry-run`: Preview version bump and changelog generation locally without committing or tagging.
+     - `npm run release`: Execute local release cycle.
+
 ### Required GitHub Repository Secrets
 
 To enable the pipeline, configure the following secrets in GitHub Repository Settings:
