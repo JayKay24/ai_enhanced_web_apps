@@ -172,8 +172,8 @@ We use Pino via the `@ai-enhanced-web-apps/logger` package.
   - Manual formatting checks can be run via `npm run format:check` and auto-fixed via `npm run format:write`.
 - **CI/CD Pipeline Conventions**:
   - PR validation runs via `.github/workflows/ci.yml` evaluating `nx affected` across `lint`, `typecheck`, `test`, and `build`.
-  - Deployments run via `.github/workflows/deploy.yml`: pushes/merges to `develop` trigger **Preview Deployments** on Vercel, and pushes/merges to `main` trigger **Production Deployments**.
-  - Dynamic secrets in CI are resolved through `Infisical/secrets-action`.
+  - Deployments run via `.github/workflows/deploy.yml`: pushes/merges to `main` trigger **Production Deployments** on Vercel (preview deployments disabled).
+  - Dynamic secrets in CI are resolved through `Infisical/secrets-action` (using the `prod` environment).
   - Only affected deployable apps (`astra-aviation-rag`, `astra-document-summary`, `astra-interview-assistant`, `astra-mcp-server`) are built and deployed.
 
 ---

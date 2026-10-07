@@ -240,14 +240,13 @@ This monorepo utilizes automated GitHub Actions workflows with `nx affected` to 
    - Dynamically injects development environment secrets via the `Infisical/secrets-action`.
 
 2. **Branch-Specific Deployments (`.github/workflows/deploy.yml`)**:
-   - **Merge to `develop`**: Automatically triggers **Preview Deployments** on Vercel for affected applications.
-   - **Merge to `main`**: Automatically triggers **Production Deployments** on Vercel for affected applications.
+   - **Merge to `main`**: Automatically triggers **Production Deployments** on Vercel for affected applications (preview deployments are disabled).
    - Deployable applications include:
      - `apps/astra-aviation-rag`
      - `apps/astra-document-summary`
      - `apps/astra-interview-assistant`
      - `apps/astra-mcp-server`
-   - Dynamically injects environment-specific secrets (`dev` for preview, `prod` for production) via Infisical.
+   - Dynamically injects production environment secrets (`prod`) via Infisical.
 
 ### Required GitHub Repository Secrets
 

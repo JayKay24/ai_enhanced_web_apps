@@ -9,7 +9,7 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const mode = process.argv[2] || 'preview';
+const mode = process.argv[2] || 'production';
 const isProd = mode === 'production';
 
 console.log(`=== Deploy Affected Apps (${mode.toUpperCase()}) ===`);
