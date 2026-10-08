@@ -11,8 +11,8 @@
     "prepare": "husky",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "release": "nx release",
-    "release:dry-run": "nx release --dry-run"
+    "release": "nx release --skip-publish",
+    "release:dry-run": "nx release --dry-run --skip-publish"
   },
   "private": true,
   "dependencies": {

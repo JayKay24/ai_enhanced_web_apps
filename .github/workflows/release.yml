@@ -50,10 +50,10 @@ jobs:
         if: "${{ github.event.inputs.dryRun == 'true' }}"
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
-        run: npx nx release --dry-run
+        run: npx nx release --dry-run --skip-publish
 
       - name: Run Release
         if: "${{ github.event.inputs.dryRun != 'true' }}"
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
-        run: npx nx release --yes
+        run: npx nx release --yes --skip-publish
