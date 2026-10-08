@@ -105,10 +105,7 @@
     "version": {
       "specifierSource": "conventional-commits",
       "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk",
-      "versionActionsOptions": {
-        "skipLockFileUpdate": true
-      }
+      "fallbackCurrentVersionResolver": "disk"
     },
     "changelog": {
       "automaticFromRef": true,
